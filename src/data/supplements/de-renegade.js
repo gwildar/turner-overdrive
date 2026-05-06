@@ -348,6 +348,15 @@ export default {
       phases: ["declare-charges"],
     },
     {
+      id: "hekarti's blessing",
+      displayName: "Hekarti's Blessing",
+      description:
+        "Once per turn, a model with this special rule may re-roll a single failed Casting roll.",
+      phases: ["strategy"],
+      subPhases: ["conjuration"],
+      yourTurnOnly: true,
+    },
+    {
       id: "if one head is severed",
       displayName: "If One Head is Severed\u2026Another Takes Its Place",
       aliases: ["If One Head is Severed\u2026Another Takes Its Place"],

@@ -6412,6 +6412,17 @@ export const MAGIC_ITEMS = [
     phases: ["combat"],
   },
 
+  // ─── ok-renegades-magic-items ───────────────────────────────
+  {
+    name: "Tooth-Gnoblar",
+    type: "arcane",
+    points: 10,
+    maxPerModel: 3,
+    singleUse: true,
+    effect:
+      "One use only. May be used when making a casting roll for a spell from the Lore of the Great Maw. Add +1 to the casting roll.",
+    phases: [],
+  },
   // ─── vampire-counts-magic-items ─────────────────────────────
   {
     name: `Sceptre of De Noirot`,

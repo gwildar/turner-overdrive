@@ -890,7 +890,7 @@ export const LORES = {
         num: "S",
         name: "Trollguts",
         type: "enchantment",
-        cv: "8+/11+",
+        cv: "7+/10+",
         range: '15"',
       },
     ],

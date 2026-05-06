@@ -566,6 +566,22 @@ export const SPECIAL_RULES = [
     yourTurnOnly: true,
   },
   {
+    id: "smooth ride",
+    displayName: "Smooth Ride",
+    passive: true,
+    description: "Ignores the To Hit modifier for Moving and Shooting.",
+    phases: [],
+  },
+  {
+    id: "monstrous-ranks-renegade",
+    displayName: "Monstrous Ranks",
+    aliases: ["Monstrous Ranks {renegade}"],
+    passive: true,
+    description:
+      "All Ogre Kingdoms Monstrous Infantry (except Yhetees) gain the Press of Battle and Massed Infantry special rules.",
+    phases: [],
+  },
+  {
     id: "witchbrew",
     displayName: "Witchbrew",
     passive: true,

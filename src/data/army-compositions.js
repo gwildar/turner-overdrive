@@ -97,19 +97,46 @@ export const ARMY_COMPOSITIONS = {
     ],
     rules: [],
   },
+  // ── Renegade Legacy Pack v1.5 compositions ──────────────────────────
+  // loreRemaps: used by default (v1.5 stable)
+  // draftLoreRemaps: used when draft toggle is ON (v1.5.2.2 draft override)
   "de-renegade": {
     name: "Dark Elves Renegades",
-    loreRemaps: { naggaroth: "naggaroth-renegade" },
+    loreRemaps: { naggaroth: "naggaroth-v1.5" },
+    draftLoreRemaps: { naggaroth: "naggaroth-renegade" },
     rules: [],
   },
   "ok-renegade": {
     name: "Ogre Kingdoms Renegades",
-    loreRemaps: { "great-maw": "great-maw-renegade" },
+    loreRemaps: { "great-maw": "great-maw-v1.5" },
+    draftLoreRemaps: { "great-maw": "great-maw-renegade" },
     rules: [],
   },
   "sk-renegade": {
     name: "Skaven Renegades",
-    loreRemaps: { "horned-rat": "horned-rat-renegade" },
+    loreRemaps: { "horned-rat": "horned-rat-v1.5" },
+    draftLoreRemaps: { "horned-rat": "horned-rat-renegade" },
+    rules: [],
+  },
+  // Factions covered by v1.5 only (no draft equivalent yet).
+  // OWB composition IDs — verify against actual OWB exports.
+  "vc-renegade": {
+    name: "Vampire Counts Renegades",
+    loreRemaps: { undeath: "undeath-v1.5" },
+    rules: [],
+  },
+  "lm-renegade": {
+    name: "Lizardmen Renegades",
+    loreRemaps: { lustria: "lustria-v1.5" },
+    rules: [],
+  },
+  "cd-renegade": {
+    name: "Chaos Dwarfs Renegades",
+    loreRemaps: { hashut: "hashut-v1.5" },
+    rules: [],
+  },
+  "doc-renegade": {
+    name: "Daemons of Chaos Renegades",
     rules: [],
   },
   "the-chracian-warhost": {

@@ -7,11 +7,16 @@
  * armyComposition (e.g. "de-renegade"). Standard armies are unaffected.
  */
 
+import rlpV15 from "./rlp-v1.5.js";
 import deRenegade from "./de-renegade.js";
 import okRenegade from "./ok-renegade.js";
 import skRenegade from "./sk-renegade.js";
 
-const supplements = [deRenegade, okRenegade, skRenegade];
+// rlp-v1.5 is always loaded (stable default Renegade rules).
+// The draft files (de/ok/sk-renegade) are also always loaded since their
+// unit stats, items, and rules only activate for matching armyComposition values.
+// Lore selection (v1.5 vs draft CVs) is controlled at import time in from-owb.js.
+const supplements = [rlpV15, deRenegade, okRenegade, skRenegade];
 
 export const SUPPLEMENT_UNITS = Object.assign(
   {},

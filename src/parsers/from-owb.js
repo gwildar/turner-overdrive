@@ -314,11 +314,15 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     lores.push("solar-engine");
   }
 
-  // Remap lores for composition variants (e.g. ok-renegade uses great-maw-renegade).
-  // Only applied when supplements (Renegades rules) are enabled.
-  if (armyComposition && getSupplementsEnabled()) {
+  // Remap lores for composition variants.
+  // Toggle OFF → v1.5 stable lore (loreRemaps)
+  // Toggle ON  → draft v1.5.2.2 lore (draftLoreRemaps), falling back to v1.5
+  if (armyComposition) {
     const compConfig = ARMY_COMPOSITIONS[armyComposition] || {};
-    const loreRemaps = compConfig.loreRemaps || {};
+    const isDraft = getSupplementsEnabled();
+    const loreRemaps = isDraft
+      ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
+      : compConfig.loreRemaps || {};
     for (let i = 0; i < lores.length; i++) {
       if (loreRemaps[lores[i]]) lores[i] = loreRemaps[lores[i]];
     }

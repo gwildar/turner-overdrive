@@ -41,7 +41,7 @@ export function renderSetupScreen() {
         <div class="flex justify-between items-center max-w-2xl mx-auto">
           <div></div>
           <h1 class="text-2xl font-bold text-wh-accent text-center">Turner Overdrive
-            <span class="block text-xs text-wh-muted font-normal mt-0.5">v${version} <span class="text-wh-red">Alpha</span></span>
+            <span class="block text-xs text-wh-muted font-normal mt-0.5">v${version}</span>
           </h1>
           <div class="flex items-center gap-2">
             <button id="about-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">About</button>
@@ -141,9 +141,11 @@ function renderUploadSection() {
         </ol>
       </div>
 
-      <div class="mt-4 p-3 rounded-lg border border-orange-400/30 bg-orange-400/5">
-        <p class="text-xs text-orange-400 font-semibold mb-1">Alpha Build</p>
-        <p class="text-xs text-wh-muted">Stats, rules and item effects may be incomplete or incorrect. Tested armies: Dark Elves, Exiles, Errantry, Lizardmen, Ogre Kingdoms, Vampire Counts, Troll Horde, Cathay, Mortuary Cult, Wild Hunt</p>
+      <div class="mt-4 p-3 rounded-lg border border-wh-border bg-wh-surface">
+        <p class="text-xs text-wh-accent font-semibold mb-1">Help improve coverage</p>
+        <p class="text-xs text-wh-muted mb-2">Looking for testers playing: <span class="text-wh-text">Dwarves</span>, <span class="text-wh-text">Wolves of the Sea</span>, <span class="text-wh-text">Cathay</span></p>
+        <a href="https://github.com/gwildar/turner-overdrive/issues" target="_blank" rel="noopener noreferrer"
+          class="text-xs text-wh-accent hover:underline">Report an issue or missing rules &rarr;</a>
       </div>
     </div>
   `;

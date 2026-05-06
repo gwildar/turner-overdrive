@@ -52,6 +52,15 @@ export function renderAboutScreen() {
         </div>
 
         <div class="bg-wh-surface rounded-lg border border-wh-border p-4 space-y-3">
+          <h2 class="text-lg font-bold text-wh-text">Feedback &amp; bugs</h2>
+          <p class="text-wh-muted text-sm">
+            Found a missing rule, wrong stat, or broken army? Open an issue on GitHub — no account needed to report.
+          </p>
+          <a href="https://github.com/gwildar/turner-overdrive/issues" target="_blank" rel="noopener noreferrer"
+            class="inline-block text-sm text-wh-accent hover:underline">github.com/gwildar/turner-overdrive/issues &rarr;</a>
+        </div>
+
+        <div class="bg-wh-surface rounded-lg border border-wh-border p-4 space-y-3">
           <h2 class="text-lg font-bold text-wh-text">Disclaimer</h2>
           <p class="text-wh-muted text-sm">
             This web site is completely unofficial and in no way endorsed by Games Workshop Limited.

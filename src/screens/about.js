@@ -17,6 +17,12 @@ export function renderAboutScreen() {
         <div class="bg-wh-surface rounded-lg border border-wh-border p-4 space-y-3">
           <h2 class="text-lg font-bold text-wh-text">Turner Overdrive</h2>
           <p class="text-wh-muted text-sm">
+            A game-day companion for Warhammer: The Old World. Import your army list from Old World Builder or New Recruit and the app gives you a phase-by-phase guide to your army — showing the special rules, spells, magic items, and combat stats that matter at each step of the turn.
+          </p>
+          <p class="text-wh-muted text-sm">
+            No more flipping through the book mid-game. Everything relevant to the current phase surfaces automatically, for both your turn and your opponent's.
+          </p>
+          <p class="text-wh-muted text-sm">
             This is a free resource. No profit is being made from this site.
           </p>
         </div>

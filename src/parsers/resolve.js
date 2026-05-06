@@ -3,6 +3,17 @@ import { MAGIC_ITEMS } from "../data/magic-items.js";
 import { SPECIAL_RULES } from "../data/special-rules.js";
 import { UNIT_STATS } from "../data/units.js";
 
+// Index: lowercased id/alias → rule object. O(1) lookup in resolveSpecialRules.
+const RULE_INDEX = new Map();
+for (const rule of SPECIAL_RULES) {
+  RULE_INDEX.set(rule.id.toLowerCase(), rule);
+  if (rule.aliases) {
+    for (const alias of rule.aliases) {
+      RULE_INDEX.set(alias.toLowerCase(), rule);
+    }
+  }
+}
+
 // Maps canonical mount name (lowercase) → units.js key.
 // Used for mounts whose slug doesn't directly match a units.js key.
 const MOUNT_KEY_OVERRIDES = {
@@ -322,32 +333,25 @@ export function resolveSpecialRules(rulesString) {
 
   for (const rawPart of parts) {
     // Strip trailing * — OWB uses it as a footnote marker for conditional rules
-    const part = rawPart.replace(/\*$/, "");
-    // Try to find in SPECIAL_RULES by id or alias
-    let found = null;
+    const part = rawPart.replace(/\*$/, "").trim();
+    // Strip {annotation} (e.g. "{renegade}", "{dark elves}") for fallback lookup
+    const cleanPart = part.replace(/\s*\{[^}]*\}/g, "").trim();
 
-    for (const rule of SPECIAL_RULES) {
-      if (rule.id === part.toLowerCase()) {
-        found = rule;
-        break;
-      }
-      if (
-        rule.aliases?.some(
-          (alias) => alias.toLowerCase() === part.toLowerCase(),
-        )
-      ) {
-        found = rule;
-        break;
-      }
-    }
+    // Look up in RULE_INDEX. Check annotated form first (so variant-specific
+    // aliases like "Murderous {renegade}" resolve before falling back to the standard
+    // "Murderous" entry), then clean form.
+    const found =
+      RULE_INDEX.get(part.toLowerCase()) ||
+      (cleanPart !== part ? RULE_INDEX.get(cleanPart.toLowerCase()) : null) ||
+      null;
 
     if (found) {
       rules.push(found);
     } else {
-      // Keep unrecognised rules as bare entries
+      // Keep unrecognised rules as bare entries (use clean name for display)
       rules.push({
         id: null,
-        displayName: part,
+        displayName: cleanPart || part,
         phases: [],
       });
     }

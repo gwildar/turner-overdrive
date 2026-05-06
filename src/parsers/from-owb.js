@@ -116,7 +116,7 @@ function calculateUnitPoints(raw) {
 /**
  * Parse a single unit from OWB export format to canonical unit
  */
-function parseCanonicalUnit(raw, category) {
+function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Core identity
   const id = raw.id || "unknown";
   const strength = raw.strength || 1;
@@ -127,8 +127,14 @@ function parseCanonicalUnit(raw, category) {
   const armour = collectActive(raw.armor);
 
   // Gather special rules text — include active option names so rules like
-  // Ambushers, Scouts, The Grail Vow etc. are resolved from the options array
-  let specialRulesText = raw.specialRules?.name_en || "";
+  // Ambushers, Scouts, The Grail Vow etc. are resolved from the options array.
+  // If the unit has composition-specific rules (e.g. ok-renegade overrides),
+  // prefer those over the top-level specialRules.
+  const compositionRules =
+    armyComposition &&
+    typeof raw.armyComposition === "object" &&
+    raw.armyComposition?.[armyComposition]?.specialRules?.name_en;
+  let specialRulesText = compositionRules || raw.specialRules?.name_en || "";
   if (activeOptions.length > 0) {
     const optionRulesText = activeOptions.join(", ");
     specialRulesText = specialRulesText
@@ -307,6 +313,15 @@ function parseCanonicalUnit(raw, category) {
     lores.push("solar-engine");
   }
 
+  // Remap lores for composition variants (e.g. ok-renegade uses great-maw-renegade)
+  if (armyComposition) {
+    const compConfig = ARMY_COMPOSITIONS[armyComposition] || {};
+    const loreRemaps = compConfig.loreRemaps || {};
+    for (let i = 0; i < lores.length; i++) {
+      if (loreRemaps[lores[i]]) lores[i] = loreRemaps[lores[i]];
+    }
+  }
+
   const isCaster = lores.length > 0;
 
   // Extract faction lores from special rules
@@ -412,19 +427,20 @@ export function fromOwb(json) {
     "heroes",
   ];
 
+  const composition = json.armyComposition || "";
+
   // Parse units from each category
   for (const category of categories) {
     const categoryUnits = json[category];
     if (Array.isArray(categoryUnits)) {
       for (const raw of categoryUnits) {
-        const unit = parseCanonicalUnit(raw, category);
+        const unit = parseCanonicalUnit(raw, category, composition);
         units.push(unit);
       }
     }
   }
 
   // Apply Army of Infamy composition bonuses if applicable
-  const composition = json.armyComposition || "";
   if (composition && ARMY_COMPOSITIONS[composition]) {
     const bonusRules = ARMY_COMPOSITIONS[composition].rules || [];
     for (const bonus of bonusRules) {

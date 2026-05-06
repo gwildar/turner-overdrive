@@ -13,6 +13,7 @@ const KEYS = {
   deploymentTime: "tow-deployment-time",
   displayMode: "tow-display-mode",
   scenario: "tow-scenario",
+  supplementsEnabled: "tow-supplements-enabled",
 };
 
 const DEFAULT_SCENARIO = {
@@ -241,4 +242,12 @@ export function getDisplayMode() {
 
 export function saveDisplayMode(mode) {
   save(KEYS.displayMode, mode);
+}
+
+export function getSupplementsEnabled() {
+  return load(KEYS.supplementsEnabled, false);
+}
+
+export function saveSupplementsEnabled(enabled) {
+  save(KEYS.supplementsEnabled, enabled);
 }

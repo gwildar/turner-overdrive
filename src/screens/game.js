@@ -33,8 +33,8 @@ import {
 import { renderScoringUI, bindScoringEvents } from "./scoring.js";
 import { renderSpecialFeaturesTable } from "../context/scenario-context.js";
 import { navigate } from "../navigate.js";
+import { getApp } from "./_app.js";
 
-const app = document.getElementById("app");
 const allSubPhases = getAllSubPhases();
 
 export function renderGameScreen(army) {
@@ -51,7 +51,7 @@ export function renderGameScreen(army) {
     visiblePhases.findIndex((sp) => sp.subPhase.id === subPhase.id) + 1;
   const visibleTotal = visiblePhases.length;
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       <!-- Header -->
       <header class="bg-wh-surface border-b border-wh-border p-3">

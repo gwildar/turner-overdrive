@@ -97,6 +97,21 @@ export const ARMY_COMPOSITIONS = {
     ],
     rules: [],
   },
+  "de-renegade": {
+    name: "Dark Elves Renegades",
+    loreRemaps: { naggaroth: "naggaroth-renegade" },
+    rules: [],
+  },
+  "ok-renegade": {
+    name: "Ogre Kingdoms Renegades",
+    loreRemaps: { "great-maw": "great-maw-renegade" },
+    rules: [],
+  },
+  "sk-renegade": {
+    name: "Skaven Renegades",
+    loreRemaps: { "horned-rat": "horned-rat-renegade" },
+    rules: [],
+  },
   "the-chracian-warhost": {
     name: "The Chracian Warhost",
     deploymentCards: [

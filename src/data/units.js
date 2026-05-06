@@ -1,4 +1,6 @@
-export const UNIT_STATS = {
+import { SUPPLEMENT_UNITS } from "./supplements/index.js";
+
+const _BASE_UNITS = {
   "abyssal-terror": [
     {
       A: "3",
@@ -1654,6 +1656,7 @@ export const UNIT_STATS = {
       },
     ],
   },
+
   "blue-horrors-of-tzeentch": {
     shared: {
       rules: [
@@ -2710,60 +2713,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "cauldron-of-blood-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Blessings of Khaine",
-        "Close Order",
-        "Dragged Along",
-        "Elven Reflexes",
-        "Frenzy",
-        "Hatred (High Elves)",
-        "Impact Hits (D6+1)",
-        "Large Target",
-        "Magic Resistance (-1)",
-        "Murderous",
-        "Poisoned Attacks",
-        "Terror",
-      ],
-      troopType: ["HCh"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "-",
-        I: "-",
-        M: "2",
-        S: "5",
-        T: "5",
-        W: "5",
-        BS: "-",
-        Ld: "-",
-        WS: "-",
-        Name: "Cauldron of Blood",
-        "Magic-Res": "-1",
-        "Impact-Hits": "D6+1",
-        AS: "4",
-        equipment: [],
-      },
-      {
-        A: "1",
-        I: "5",
-        M: "-",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "4",
-        Ld: "9",
-        WS: "4",
-        Name: "Witch Elf Crew (x2)",
-        "Magic-Res": "-1",
-        equipment: ["Two hand weapons"],
-      },
-    ],
-  },
+
   "centigor-herd": {
     shared: {
       rules: [
@@ -3902,79 +3852,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "clanrats-renegade": {
-    shared: {
-      rules: [
-        "Close Order",
-        "Horde",
-        "Regimental Unit",
-        "Scurry Away",
-        "Warband",
-      ],
-      equipment: ["Hand weapons", "light armour"],
-      troopType: ["RI"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "1",
-        I: "4",
-        M: "5",
-        S: "3",
-        T: "3",
-        W: "1",
-        BS: "3",
-        Ld: "4",
-        WS: "3",
-        Name: "Clanrat",
-        as: 6,
-      },
-      {
-        A: "2",
-        I: "4",
-        M: "5",
-        S: "3",
-        T: "3",
-        W: "1",
-        BS: "3",
-        Ld: "5",
-        WS: "3",
-        Name: "Clawleader",
-        as: 6,
-      },
-    ],
-  },
-  cockatrice: [
-    {
-      A: "6",
-      I: "6",
-      M: "4",
-      S: "4",
-      T: "5",
-      W: "4",
-      BS: "5",
-      Ld: "6",
-      WS: "4",
-      Name: "Cockatrice",
-      as: 5,
-      Stomps: "1",
-      Fly: "10",
-      rules: [
-        "Close Order",
-        "Fly (10)",
-        "Large Target",
-        "Stomp Attacks (1)",
-        "Stony Stare",
-        "Swiftstride",
-        "Terror",
-      ],
-      equipment: ["hand weapon", "petrifying gaze", "heavy armour"],
-      troopType: ["MCr"],
-      magic: [],
-      optionalRules: [],
-    },
-  ],
+
   "cold-one": [
     {
       A: "2",
@@ -9957,97 +9835,7 @@ export const UNIT_STATS = {
       optionalRules: [],
     },
   ],
-  "hell-pit-abomination-renegade": [
-    {
-      A: "D6+1",
-      I: "4",
-      M: "3D6",
-      S: "6",
-      T: "6",
-      W: "6",
-      BS: "1",
-      Ld: "8",
-      WS: "3",
-      Name: "Hell Pit Abomination",
-      Regen: "5+",
-      "Magic-Res": "-1",
-      Stomps: "D3+1",
-      "Impact-Hits": "D3+1",
-      rules: [
-        "Abominable Attacks",
-        "Close Order",
-        "Immune to Psychology",
-        "Impact Hits (D3+1)",
-        "Large Target",
-        "Magic Resistance (-1)",
-        "Random Attacks",
-        "Random Movement",
-        "Regeneration (5+)",
-        "Stomp Attacks (D3+1)",
-        "Terror",
-        "Timmm-berrr!",
-        "Too Horrible to Die",
-        "Unbreakable",
-      ],
-      equipment: ["Warpstone claws"],
-      troopType: ["Be"],
-      magic: [],
-      optionalRules: [],
-    },
-  ],
-  hellcannon: {
-    shared: {
-      crewed: true,
-      rules: [
-        "Armour Bane (1)",
-        "Caged Fury",
-        "Close Order",
-        "Ensorcelled Weapons",
-        "Immune to Psychology",
-        "Impact Hits (D6)",
-        "Large Target",
-        "Monster Handlers",
-        "Regeneration (6+)",
-        "Terror",
-        "Unbreakable",
-        "Warp-spawned",
-      ],
-      troopType: ["Be"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "5",
-        I: "1",
-        M: "3",
-        S: "5",
-        T: "6",
-        W: "5",
-        BS: "3",
-        Ld: "4",
-        WS: "4",
-        Name: "Hellcannon",
-        Regen: "6+",
-        "Impact-Hits": "D6",
-        equipment: ["Doomfire"],
-      },
-      {
-        A: "1",
-        I: "2",
-        M: "3",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "-",
-        Ld: "9",
-        WS: "4",
-        Name: "Chaos Dwarf Handlers (x3)",
-        Regen: "6+",
-        equipment: ["Hand weapons"],
-      },
-    ],
-  },
+
   "hellflayer-of-slaanesh": {
     shared: {
       crewed: true,
@@ -11754,6 +11542,7 @@ export const UNIT_STATS = {
         Ld: "6",
         WS: "5",
         Name: "Kharibdyss",
+        AS: "5",
         Stomps: "D3+1",
         equipment: ["Cavernous maw", "writhing tentacles"],
       },
@@ -11772,6 +11561,7 @@ export const UNIT_STATS = {
       },
     ],
   },
+
   "khemrian-warsphinx": {
     shared: {
       crewed: true,
@@ -15980,59 +15770,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "plague-furnace-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Dragged Along",
-        "Fear",
-        "Frenzy",
-        "Great Censer",
-        "Impact Hits (D3+1)",
-        "Large Target",
-        "Magic Resistance (-1)",
-        "Poisoned Attacks",
-        "Scurrying Masses",
-        "Stomp Attacks (D3+1)",
-      ],
-      troopType: ["HCh"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "-",
-        I: "-",
-        M: "2",
-        S: "5",
-        T: "6",
-        W: "5",
-        BS: "-",
-        Ld: "-",
-        WS: "-",
-        Name: "Plague Furnace",
-        "Magic-Res": "-1",
-        Stomps: "D3+1",
-        "Impact-Hits": "D3+1",
-        AS: "4",
-        equipment: ["Billowing Death"],
-      },
-      {
-        A: "2",
-        I: "3",
-        M: "-",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "0",
-        Ld: "5",
-        WS: "3",
-        Name: "Plague Monk Crew (x3)",
-        "Magic-Res": "-1",
-        equipment: ["Hand weapon"],
-      },
-    ],
-  },
+
   "plague-monks": {
     shared: {
       rules: ["Close Order", "Frenzy", "Horde", "Scurry Away", "Warband"],
@@ -17624,58 +17362,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "screaming-bell-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Armour Bane (2, Rat Ogre only)",
-        "Blessings of the Horned Rat",
-        "Dragged Along",
-        "Impact Hits (D6+1)",
-        "Large Target",
-        "Magic Resistance (-3)",
-        "Scurrying Masses",
-        "Stubborn",
-        "Terror",
-        "Tolling the Bell",
-      ],
-      troopType: ["HCh"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "-",
-        I: "-",
-        M: "2",
-        S: "5",
-        T: "6",
-        W: "5",
-        BS: "-",
-        Ld: "-",
-        WS: "-",
-        Name: "Screaming Bell",
-        "Magic-Res": "-3",
-        "Impact-Hits": "D6+1",
-        AS: "4",
-        equipment: [],
-      },
-      {
-        A: "3",
-        I: "4",
-        M: "-",
-        S: "5",
-        T: "-",
-        W: "-",
-        BS: "0",
-        Ld: "5",
-        WS: "3",
-        Name: "Rat Ogre Crew (x1)",
-        "Magic-Res": "-3",
-        equipment: ["Hand weapon"],
-      },
-    ],
-  },
+
   "screaming-skull-catapult": {
     shared: {
       crewed: true,
@@ -18470,6 +18157,7 @@ export const UNIT_STATS = {
       },
     ],
   },
+
   "sisters-of-the-thorn": {
     shared: {
       rules: [
@@ -22409,6 +22097,7 @@ export const UNIT_STATS = {
         Ld: "6",
         WS: "4",
         Name: "War Hydra",
+        AS: "5",
         Regen: "5+",
         Stomps: "D3",
         equipment: ["Wicked claws", "serrated maws", "fiery breath"],
@@ -22429,6 +22118,7 @@ export const UNIT_STATS = {
       },
     ],
   },
+
   "war-lions": [
     {
       A: "2",
@@ -23691,3 +23381,5 @@ export const UNIT_STATS = {
     },
   ],
 };
+
+export const UNIT_STATS = { ..._BASE_UNITS, ...SUPPLEMENT_UNITS };

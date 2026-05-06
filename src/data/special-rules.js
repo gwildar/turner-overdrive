@@ -11,6 +11,8 @@
  * Source: https://tow.whfb.app/special-rules
  */
 
+import { SUPPLEMENT_RULES } from "./supplements/index.js";
+
 export const SPECIAL_RULES = [
   {
     id: "the arrow of kurnous",
@@ -377,7 +379,8 @@ export const SPECIAL_RULES = [
     id: "dark runes",
     displayName: "Dark Runes",
     passive: true,
-    description: "5+ Ward save against non-magical shooting attacks.",
+    description:
+      "5+ Ward save against any wound caused by a non-magical attack.",
     phases: [],
   },
   {
@@ -2515,6 +2518,7 @@ export const SPECIAL_RULES = [
     description:
       "Before the first-turn roll-off, either player may propose a Warriors' Duel. Each side nominates one champion (infantry or cavalry, exactly 1 Wound). Champions fight in a challenge until one falls — the winner's army takes the first turn. If both fall simultaneously, revert to a standard roll-off. If the opponent declines, Wolves of the Sea automatically takes the first turn.",
   },
+  ...SUPPLEMENT_RULES,
 ];
 
 /**

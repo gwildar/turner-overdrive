@@ -1,5 +1,7 @@
 // Spell types: assailment, conveyance, enchantment, hex, magic-missile, magical-vortex
 
+import { SUPPLEMENT_SPELLS } from "./supplements/index.js";
+
 export const LORES = {
   "battle-magic": {
     name: "Battle Magic",
@@ -1074,6 +1076,7 @@ export const LORES = {
       },
     ],
   },
+  ...SUPPLEMENT_SPELLS,
 };
 
 // Map from lore display name (lowercase) → lore key

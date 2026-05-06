@@ -1,9 +1,8 @@
 import { navigate } from "../navigate.js";
-
-const app = document.getElementById("app");
+import { getApp } from "./_app.js";
 
 export function renderAboutScreen() {
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       <header class="p-4 border-b border-wh-border">
         <div class="flex justify-between items-center max-w-2xl mx-auto">

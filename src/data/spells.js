@@ -804,6 +804,13 @@ export const LORES = {
       { num: "S", name: "Cursing Word", type: "hex", cv: "9+", range: '12"' },
       {
         num: "S",
+        name: "Power of Darkness",
+        type: "enchantment",
+        cv: "7+",
+        range: "Self",
+      },
+      {
+        num: "S",
         name: "Black Horror",
         type: "magical-vortex",
         cv: "9+",

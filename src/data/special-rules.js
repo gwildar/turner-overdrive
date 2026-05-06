@@ -377,7 +377,8 @@ export const SPECIAL_RULES = [
     id: "dark runes",
     displayName: "Dark Runes",
     passive: true,
-    description: "5+ Ward save against non-magical shooting attacks.",
+    description:
+      "5+ Ward save against any wound caused by a non-magical attack.",
     phases: [],
   },
   {
@@ -523,6 +524,46 @@ export const SPECIAL_RULES = [
     description:
       "At Start of Turn, mount makes a Leadership test (unmodified). If failed, the mount gains Frenzy (not the rider, and no +1 Attack for rider) until next Start of Turn.",
     phases: ["start-of-turn"],
+  },
+  {
+    id: "altar of khaine",
+    displayName: "Altar of Khaine",
+    passive: true,
+    description:
+      "This model has a 5+ Ward save against any wounds suffered. Any unit joined by this model gains a 6+ Ward save against any wounds suffered.",
+    phases: [],
+  },
+  {
+    id: "murderous-renegade",
+    displayName: "Murderous",
+    aliases: ["Murderous {renegade}"],
+    description:
+      "Re-roll any To Wound rolls of a natural 1 in combat. Applies to all mundane weapons. Does not apply to magic weapons or the model's mount.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "will of the gods",
+    displayName: "Will of the Gods",
+    passive: true,
+    description:
+      "This model (Heavy Chariot) may join an Infantry unit with Unit Strength 10+. When it does, it must be placed in the centre of the front rank and loses the Lumbering rule. Only one such model may join each unit.",
+    phases: [],
+  },
+  {
+    id: "first to the fray",
+    displayName: "First to the Fray",
+    description:
+      'Maximum charge range is increased by 3". When making a Charge roll, apply a +D3 modifier to the result.',
+    phases: ["declare-charges"],
+  },
+  {
+    id: "if one head is severed",
+    displayName: "If One Head is Severed…Another Takes Its Place",
+    aliases: ["If One Head is Severed\u2026Another Takes Its Place"],
+    description:
+      "In your Command sub-phase, roll a D6 for each wound this model has lost. On a 4+ the model immediately recovers that wound.",
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
   },
   {
     id: "witchbrew",

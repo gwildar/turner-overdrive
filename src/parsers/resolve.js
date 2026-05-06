@@ -322,32 +322,42 @@ export function resolveSpecialRules(rulesString) {
 
   for (const rawPart of parts) {
     // Strip trailing * — OWB uses it as a footnote marker for conditional rules
-    const part = rawPart.replace(/\*$/, "");
-    // Try to find in SPECIAL_RULES by id or alias
-    let found = null;
+    const part = rawPart.replace(/\*$/, "").trim();
+    // Strip {annotation} (e.g. "{renegade}", "{dark elves}") for fallback lookup
+    const cleanPart = part.replace(/\s*\{[^}]*\}/g, "").trim();
 
-    for (const rule of SPECIAL_RULES) {
-      if (rule.id === part.toLowerCase()) {
-        found = rule;
-        break;
+    // Try to find in SPECIAL_RULES. Check annotated form first (so variant-specific
+    // aliases like "Murderous {renegade}" resolve before falling back to the standard
+    // "Murderous" entry), then clean form.
+    let found = null;
+    for (const candidate of [
+      part,
+      ...(cleanPart !== part ? [cleanPart] : []),
+    ]) {
+      for (const rule of SPECIAL_RULES) {
+        if (rule.id === candidate.toLowerCase()) {
+          found = rule;
+          break;
+        }
+        if (
+          rule.aliases?.some(
+            (alias) => alias.toLowerCase() === candidate.toLowerCase(),
+          )
+        ) {
+          found = rule;
+          break;
+        }
       }
-      if (
-        rule.aliases?.some(
-          (alias) => alias.toLowerCase() === part.toLowerCase(),
-        )
-      ) {
-        found = rule;
-        break;
-      }
+      if (found) break;
     }
 
     if (found) {
       rules.push(found);
     } else {
-      // Keep unrecognised rules as bare entries
+      // Keep unrecognised rules as bare entries (use clean name for display)
       rules.push({
         id: null,
-        displayName: part,
+        displayName: cleanPart || part,
         phases: [],
       });
     }

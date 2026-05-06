@@ -97,6 +97,10 @@ export const ARMY_COMPOSITIONS = {
     ],
     rules: [],
   },
+  "de-renegade": {
+    name: "Dark Elves Renegades",
+    rules: [],
+  },
   "the-chracian-warhost": {
     name: "The Chracian Warhost",
     deploymentCards: [

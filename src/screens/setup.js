@@ -13,8 +13,6 @@ import {
   getPhaseIndex,
   getDisplayMode,
   saveDisplayMode,
-  getSupplementsEnabled,
-  saveSupplementsEnabled,
 } from "../state.js";
 import { getAllSubPhases, PHASES } from "../phases.js";
 import { formatSlug } from "../helpers.js";
@@ -34,7 +32,6 @@ export function renderSetupScreen() {
   renderScreen(() => {
     const army = getArmy();
     const currentMode = getDisplayMode();
-    const supplementsEnabled = getSupplementsEnabled();
     const wasRecovered = sessionStorage.getItem("tow-recovered");
     sessionStorage.removeItem("tow-recovered");
 
@@ -76,12 +73,7 @@ export function renderSetupScreen() {
         </div>
         <div class="mt-6 border-t border-wh-border pt-4">
           <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
-          <p class="text-xs text-wh-muted mb-3">Enable variant rules, spells, and items from community supplements (Renegades armies). Requires re-uploading your army list after toggling.</p>
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" id="supplements-toggle" ${supplementsEnabled ? "checked" : ""}
-              class="w-4 h-4 accent-wh-accent cursor-pointer" />
-            <span class="text-sm text-wh-text">Renegades supplement rules</span>
-          </label>
+          <p class="text-xs text-wh-muted mb-3">Renegades supplement rules, spells, and items are always available — they activate automatically when you import a Renegades army from OWB.</p>
         </div>
         <button id="settings-close" class="mt-4 w-full py-2 text-sm text-wh-muted hover:text-wh-text transition-colors">Close</button>
       </dialog>
@@ -117,13 +109,6 @@ export function renderSetupScreen() {
         saveDisplayMode("lightweight");
         document.getElementById("settings-modal")?.close();
         renderSetupScreen();
-      });
-
-    document
-      .getElementById("supplements-toggle")
-      ?.addEventListener("change", (e) => {
-        saveSupplementsEnabled(e.target.checked);
-        window.location.reload();
       });
   });
 }

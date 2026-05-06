@@ -2,24 +2,16 @@
  * Supplement registry.
  * Add new supplements here — they are automatically merged into the core data.
  *
- * Supplements are opt-in via the "tow-supplements-enabled" localStorage key.
- * Reading localStorage directly here avoids circular imports with state.js.
+ * Supplement data is always available. Rules, items, and unit variants are
+ * faction-scoped and only activate for armies that have the matching
+ * armyComposition (e.g. "de-renegade"). Standard armies are unaffected.
  */
 
 import deRenegade from "./de-renegade.js";
 import okRenegade from "./ok-renegade.js";
 import skRenegade from "./sk-renegade.js";
 
-function isEnabled() {
-  try {
-    const raw = localStorage.getItem("tow-supplements-enabled");
-    return raw ? JSON.parse(raw) : false;
-  } catch {
-    return false;
-  }
-}
-
-const supplements = isEnabled() ? [deRenegade, okRenegade, skRenegade] : [];
+const supplements = [deRenegade, okRenegade, skRenegade];
 
 export const SUPPLEMENT_UNITS = Object.assign(
   {},

@@ -37,9 +37,7 @@ This review assesses the current architecture for correctness, maintainability, 
 
 **M3. Game header duplicated between `game.js` and `opponent-turn.js`** ✅ Fixed v3.9.10 — `src/screens/game-header.js` `renderGameHeader()`
 
-**M4. Supplement toggle requires page reload** — `src/data/supplements/index.js:12-21`
-
-`isEnabled()` reads localStorage at module evaluation time. `SUPPLEMENT_*` exports are computed once. Toggling requires `window.location.reload()`. Also means supplement state is baked in at test import time — tests can't toggle supplements without module re-evaluation.
+**M4. Supplement toggle requires page reload** ✅ Fixed v3.10.1 — supplements always loaded; `isEnabled()` gate and `window.location.reload()` removed
 
 **M5. Thin New Recruit parser test coverage** ✅ Fixed v3.9.11 — 9 new assertions + NR armour save bug fixed
 

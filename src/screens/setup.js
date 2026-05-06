@@ -131,7 +131,7 @@ export function renderSetupScreen() {
 function renderUploadSection() {
   return `
     <div class="mt-8">
-      <h2 class="text-sm text-wh-muted text-center mb-6">Phase-by-phase rules companion for Warhammer: The Old World.<br />Import your army list to get started.</h2>
+      <h2 class="text-base text-wh-muted text-center mb-4">Phase-by-phase rules companion for Warhammer: The Old World.<br />Import your army list to get started.</h2>
       <div id="drop-zone"
         class="border-2 border-dashed border-wh-border rounded-xl p-12 text-center
                hover:border-wh-accent transition-colors cursor-pointer">

@@ -1,4 +1,6 @@
-export const UNIT_STATS = {
+import { SUPPLEMENT_UNITS } from "./supplements/index.js";
+
+const _BASE_UNITS = {
   "abyssal-terror": [
     {
       A: "3",
@@ -1654,73 +1656,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "bloodwrack-shrine-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Close Order",
-        "Hatred (High Elves)",
-        "Impact Hits (D6+1)",
-        "Impetuous",
-        "Large Target",
-        "Magic Resistance (-1)",
-        "Murderous",
-        "Poisoned Attacks",
-        "Stony Stare",
-        "Terror",
-        "Will of the Gods",
-      ],
-      troopType: ["HCh"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "-",
-        I: "-",
-        M: "7",
-        S: "5",
-        T: "5",
-        W: "5",
-        BS: "-",
-        Ld: "-",
-        WS: "-",
-        Name: "Bloodwrack Shrine",
-        "Magic-Res": "-1",
-        "Impact-Hits": "D6+1",
-        AS: "4",
-        equipment: [],
-      },
-      {
-        A: "1",
-        I: "5",
-        M: "-",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "4",
-        Ld: "8",
-        WS: "4",
-        Name: "Shrinekeeper (x2)",
-        "Magic-Res": "-1",
-        equipment: ["Cavalry spears"],
-      },
-      {
-        A: "3",
-        I: "5",
-        M: "-",
-        S: "4",
-        T: "-",
-        W: "-",
-        BS: "5",
-        Ld: "-",
-        WS: "5",
-        Name: "Bloodwrack Medusa",
-        "Magic-Res": "-1",
-        equipment: ["Cavalry spear", "petrifying gaze"],
-      },
-    ],
-  },
+
   "blue-horrors-of-tzeentch": {
     shared: {
       rules: [
@@ -2777,60 +2713,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "cauldron-of-blood-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Altar of Khaine",
-        "Blessings of Khaine",
-        "Close Order",
-        "Elven Reflexes",
-        "Frenzy",
-        "Hatred (High Elves)",
-        "Impact Hits (D6+1)",
-        "Large Target",
-        "Magic Resistance (-1)",
-        "Terror",
-        "Will of the Gods",
-      ],
-      troopType: ["HCh"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "-",
-        I: "-",
-        M: "5",
-        S: "5",
-        T: "5",
-        W: "5",
-        BS: "-",
-        Ld: "-",
-        WS: "-",
-        Name: "Cauldron of Blood",
-        "Magic-Res": "-1",
-        "Impact-Hits": "D6+1",
-        AS: "4",
-        equipment: [],
-      },
-      {
-        A: "1",
-        I: "5",
-        M: "-",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "4",
-        Ld: "8",
-        WS: "4",
-        Name: "Witch Elf Crew (x2)",
-        "Magic-Res": "-1",
-        rules: ["Murderous", "Poisoned Attacks", "Strike First"],
-        equipment: ["Two hand weapons"],
-      },
-    ],
-  },
+
   "centigor-herd": {
     shared: {
       rules: [
@@ -11840,53 +11723,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "kharibdyss-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Abyssal Howl",
-        "Close Order",
-        "Immune to Psychology",
-        "Large Target",
-        "Monster Handlers",
-        "Stomp Attacks (D3+1)",
-        "Terror",
-      ],
-      troopType: ["Be"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "5",
-        I: "4",
-        M: "6",
-        S: "7",
-        T: "5",
-        W: "5",
-        BS: "0",
-        Ld: "6",
-        WS: "5",
-        Name: "Kharibdyss",
-        AS: "4",
-        Stomps: "D3+1",
-        equipment: ["Cavernous maw", "writhing tentacles"],
-      },
-      {
-        A: "1",
-        I: "4",
-        M: "6",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "-",
-        Ld: "8",
-        WS: "4",
-        Name: "Beastmaster Handlers (x2)",
-        equipment: ["Hand weapons", "whips"],
-      },
-    ],
-  },
+
   "khemrian-warsphinx": {
     shared: {
       crewed: true,
@@ -18585,51 +18422,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "sisters-of-slaughter-renegade": {
-    shared: {
-      rules: [
-        "Dance of Death",
-        "First to the Fray",
-        "Hatred (High Elves)",
-        "Loner",
-        "Murderous",
-        "Open Order",
-        "Skirmishers",
-        "Strike First",
-        "Warband",
-      ],
-      equipment: ["Hand weapons", "lash & buckler"],
-      troopType: ["RI"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "2",
-        I: "6",
-        M: "5",
-        S: "3",
-        T: "3",
-        W: "1",
-        BS: "4",
-        Ld: "9",
-        WS: "6",
-        Name: "Sister of Slaughter",
-      },
-      {
-        A: "3",
-        I: "6",
-        M: "5",
-        S: "3",
-        T: "3",
-        W: "1",
-        BS: "4",
-        Ld: "9",
-        WS: "6",
-        Name: "Hag",
-      },
-    ],
-  },
+
   "sisters-of-the-thorn": {
     shared: {
       rules: [
@@ -22590,58 +22383,7 @@ export const UNIT_STATS = {
       },
     ],
   },
-  "war-hydra-renegade": {
-    shared: {
-      crewed: true,
-      rules: [
-        "Close Order",
-        "Extra Attacks (+remaining Wounds)",
-        "Flammable",
-        "If One Head is Severed",
-        "Immune to Psychology",
-        "Large Target",
-        "Monster Handlers",
-        "Regeneration (5+)",
-        "Stomp Attacks (D3+1)",
-        "Terror",
-      ],
-      troopType: ["Be"],
-      magic: [],
-      optionalRules: [],
-    },
-    stats: [
-      {
-        A: "2",
-        I: "3",
-        M: "6",
-        S: "5",
-        T: "5",
-        W: "5",
-        BS: "0",
-        Ld: "6",
-        WS: "4",
-        Name: "War Hydra",
-        AS: "4",
-        Regen: "5+",
-        Stomps: "D3+1",
-        equipment: ["Wicked claws", "serrated maws", "fiery breath"],
-      },
-      {
-        A: "1",
-        I: "4",
-        M: "6",
-        S: "3",
-        T: "-",
-        W: "-",
-        BS: "-",
-        Ld: "8",
-        WS: "4",
-        Name: "Beastmaster Handlers (x2)",
-        Regen: "5+",
-        equipment: ["Hand weapons", "whips"],
-      },
-    ],
-  },
+
   "war-lions": [
     {
       A: "2",
@@ -23904,3 +23646,5 @@ export const UNIT_STATS = {
     },
   ],
 };
+
+export const UNIT_STATS = { ..._BASE_UNITS, ...SUPPLEMENT_UNITS };

@@ -20,6 +20,8 @@
  * Source: https://tow.whfb.app/magic-items
  */
 
+import { SUPPLEMENT_ITEMS } from "./supplements/index.js";
+
 export const MAGIC_ITEMS = [
   // ─── Magic Weapons ──────────────────────────────────────────────────
   {
@@ -6412,17 +6414,6 @@ export const MAGIC_ITEMS = [
     phases: ["combat"],
   },
 
-  // ─── ok-renegades-magic-items ───────────────────────────────
-  {
-    name: "Tooth-Gnoblar",
-    type: "arcane",
-    points: 10,
-    maxPerModel: 3,
-    singleUse: true,
-    effect:
-      "One use only. May be used when making a casting roll for a spell from the Lore of the Great Maw. Add +1 to the casting roll.",
-    phases: [],
-  },
   // ─── vampire-counts-magic-items ─────────────────────────────
   {
     name: `Sceptre of De Noirot`,
@@ -6431,6 +6422,7 @@ export const MAGIC_ITEMS = [
     effect: `The bearer of the Sceptre of de Noirot may attempt to resurrect the fallen by using the Invocation of Nehek special rule twice during their Command sub-phase (rather than the usual once). Roll a D6 each time the sceptre is used. On a roll of 1, the bearer loses a single Wound.`,
     phases: ["passive"],
   },
+  ...SUPPLEMENT_ITEMS,
 ];
 
 /**

@@ -1,5 +1,7 @@
 // Spell types: assailment, conveyance, enchantment, hex, magic-missile, magical-vortex
 
+import { SUPPLEMENT_SPELLS } from "./supplements/index.js";
+
 export const LORES = {
   "battle-magic": {
     name: "Battle Magic",
@@ -811,28 +813,6 @@ export const LORES = {
       },
     ],
   },
-  "naggaroth-renegade": {
-    name: "Lore of Naggaroth",
-    faction: "Dark Elves",
-    signatureOnly: true,
-    spells: [
-      { num: "S", name: "Cursing Word", type: "hex", cv: "9+", range: '12"' },
-      {
-        num: "S",
-        name: "Power of Darkness",
-        type: "enchantment",
-        cv: "7+",
-        range: "Self",
-      },
-      {
-        num: "S",
-        name: "Black Horror",
-        type: "magical-vortex",
-        cv: "9+",
-        range: '18"',
-      },
-    ],
-  },
   nehekhara: {
     name: "Lore of Nehekhara",
     faction: "Tomb Kings",
@@ -906,27 +886,6 @@ export const LORES = {
         name: "Trollguts",
         type: "enchantment",
         cv: "8+/11+",
-        range: '15"',
-      },
-    ],
-  },
-  "great-maw-renegade": {
-    name: "Lore of the Great Maw",
-    faction: "Ogre Kingdoms",
-    signatureOnly: true,
-    spells: [
-      {
-        num: "S",
-        name: "Toothcracker",
-        type: "enchantment",
-        cv: "7+/10+",
-        range: '12"',
-      },
-      {
-        num: "S",
-        name: "Trollguts",
-        type: "enchantment",
-        cv: "7+/10+",
         range: '15"',
       },
     ],
@@ -1117,6 +1076,7 @@ export const LORES = {
       },
     ],
   },
+  ...SUPPLEMENT_SPELLS,
 };
 
 // Map from lore display name (lowercase) → lore key

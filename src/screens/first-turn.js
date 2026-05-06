@@ -3,13 +3,12 @@ import { PHASES, getAllSubPhases } from "../phases.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
 import { hasStartOfTurnContent } from "./game.js";
+import { getApp } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
-const app = document.getElementById("app");
-
 export function renderFirstTurnScreen(army) {
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       ${renderSetupHeader(army, "first-turn")}
 

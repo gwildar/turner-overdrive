@@ -28,10 +28,9 @@ import { renderSpecialFeaturesTable } from "../context/scenario-context.js";
 import { renderMiscastPanel } from "../context/miscast.js";
 import { navigate } from "../navigate.js";
 import { hasStartOfTurnContent } from "./game.js";
+import { getApp } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
-
-const app = document.getElementById("app");
 
 export function renderOpponentTurnScreen(army) {
   if (getStartTime() === null) {
@@ -43,7 +42,7 @@ export function renderOpponentTurnScreen(army) {
   const isFirst = opPhaseIdx === 0;
   const isLast = opPhaseIdx === PHASES.length - 1;
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       <!-- Header -->
       <header class="bg-wh-surface border-b border-wh-border p-3">

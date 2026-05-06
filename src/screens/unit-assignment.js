@@ -3,8 +3,7 @@ import { navigate } from "../navigate.js";
 import { displayUnitName } from "../utils/unit-name.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
 import { getCasters } from "../army.js";
-
-const app = document.getElementById("app");
+import { getApp } from "./_app.js";
 
 const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
 
@@ -88,7 +87,7 @@ export function renderUnitAssignmentScreen(army) {
   const regularUnits = army.units.filter((u) => !isCharacter(u));
   const unassignedChars = characters.filter((c) => !assignedCharIds.has(c.id));
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       ${renderSetupHeader(army, "characters")}
       <main class="flex-1 p-4 max-w-4xl mx-auto w-full">

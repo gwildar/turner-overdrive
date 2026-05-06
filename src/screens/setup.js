@@ -20,6 +20,7 @@ import { getAllSubPhases, PHASES } from "../phases.js";
 import { formatSlug } from "../helpers.js";
 import { navigate } from "../navigate.js";
 import { validateArmy } from "../army-validation.js";
+import { getApp } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
@@ -29,8 +30,6 @@ export function setCurrentWarnings(w) {
   currentWarnings = w;
 }
 
-const app = document.getElementById("app");
-
 export function renderSetupScreen() {
   const army = getArmy();
   const currentMode = getDisplayMode();
@@ -38,7 +37,7 @@ export function renderSetupScreen() {
   const wasRecovered = sessionStorage.getItem("tow-recovered");
   sessionStorage.removeItem("tow-recovered");
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       <header class="bg-wh-surface p-4 border-b border-wh-border">
         <div class="flex justify-between items-center max-w-2xl mx-auto">

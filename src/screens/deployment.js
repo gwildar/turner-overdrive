@@ -6,8 +6,7 @@ import {
 import { getStartTime, saveDeploymentTime, resetStartTime } from "../state.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
-
-const app = document.getElementById("app");
+import { getApp } from "./_app.js";
 
 const DEPLOYMENT_RULE_IDS = new Set([
   "scouts",
@@ -144,7 +143,7 @@ export function renderDeploymentScreen(army) {
   if (getStartTime() === null) {
     resetStartTime();
   }
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       ${renderSetupHeader(army, "deploy")}
       <main class="flex-1 p-4 max-w-4xl mx-auto w-full">

@@ -1,8 +1,7 @@
 import { saveScenarioOptions, getScenarioOptions } from "../state.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
-
-const app = document.getElementById("app");
+import { getApp } from "./_app.js";
 
 const CONDITIONS = [
   {
@@ -79,7 +78,7 @@ function renderCard(condition, opts) {
 export function renderScenarioSetupScreen(army) {
   const opts = getScenarioOptions();
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       ${renderSetupHeader(army, "scenario")}
       <main class="flex-1 p-4 max-w-4xl mx-auto w-full">

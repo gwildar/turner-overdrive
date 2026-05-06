@@ -13,10 +13,9 @@ import {
 import { getAllSubPhases, PHASES } from "../phases.js";
 import { navigate } from "../navigate.js";
 import { formatDuration } from "../helpers.js";
+import { getApp } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
-
-const app = document.getElementById("app");
 
 export function renderGameOverScreen(army) {
   const scores = getScores();
@@ -89,7 +88,7 @@ export function renderGameOverScreen(army) {
       ? `Strategic Locations (${slOpts.count})`
       : "Strategic Objectives";
 
-  app.innerHTML = `
+  getApp().innerHTML = `
     <div class="min-h-dvh flex flex-col">
       <header class="bg-wh-surface border-b border-wh-border p-3">
         <div class="flex items-center justify-between">

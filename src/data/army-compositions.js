@@ -99,6 +99,7 @@ export const ARMY_COMPOSITIONS = {
   },
   "de-renegade": {
     name: "Dark Elves Renegades",
+    loreRemaps: { naggaroth: "naggaroth-renegade" },
     rules: [],
   },
   "ok-renegade": {

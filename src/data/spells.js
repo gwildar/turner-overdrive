@@ -804,6 +804,21 @@ export const LORES = {
       { num: "S", name: "Cursing Word", type: "hex", cv: "9+", range: '12"' },
       {
         num: "S",
+        name: "Black Horror",
+        type: "magical-vortex",
+        cv: "9+",
+        range: '18"',
+      },
+    ],
+  },
+  "naggaroth-renegade": {
+    name: "Lore of Naggaroth",
+    faction: "Dark Elves",
+    signatureOnly: true,
+    spells: [
+      { num: "S", name: "Cursing Word", type: "hex", cv: "9+", range: '12"' },
+      {
+        num: "S",
         name: "Power of Darkness",
         type: "enchantment",
         cv: "7+",

@@ -73,12 +73,13 @@ function buildStatBlockFromProfile(modelProfile) {
  */
 function gatherSelectionsData(selections) {
   const equipment = [];
+  const armour = [];
   const magicItemNames = [];
   const rulesText = [];
   const mountName = null;
 
   if (!Array.isArray(selections))
-    return { equipment, magicItemNames, rulesText, mountName };
+    return { equipment, armour, magicItemNames, rulesText, mountName };
 
   for (const selection of selections) {
     if (!selection.profiles) continue;
@@ -96,33 +97,25 @@ function gatherSelectionsData(selections) {
         case "Magic Standards":
         case "Arcane Items":
         case "Talismans":
-          // All of these become magic item names
           magicItemNames.push(profile.name);
           break;
 
         case "Armour":
-          equipment.push(profile.name);
+          armour.push(profile.name);
           break;
 
         case "Special Rule":
         case "Spell":
         case "Command":
-          // Collect special rules and commands as text
           if (profile.name) {
             rulesText.push(profile.name);
           }
           break;
 
         case "Mount":
-          // Mount found
-          if (profile.name && !mountName) {
-            // Store mount name for later resolution
-            // Note: we return this separately as we can't reassign in this context
-          }
           break;
 
         default:
-          // Ignore other profile types
           break;
       }
     }
@@ -131,12 +124,13 @@ function gatherSelectionsData(selections) {
     if (selection.selections) {
       const nested = gatherSelectionsData(selection.selections);
       equipment.push(...nested.equipment);
+      armour.push(...nested.armour);
       magicItemNames.push(...nested.magicItemNames);
       rulesText.push(...nested.rulesText);
     }
   }
 
-  return { equipment, magicItemNames, rulesText, mountName };
+  return { equipment, armour, magicItemNames, rulesText, mountName };
 }
 
 /**
@@ -197,8 +191,8 @@ function parseCanonicalUnit(selection, category) {
     }
   }
 
-  // Gather equipment and magic items from nested selections
-  const { equipment, magicItemNames, rulesText } = gatherSelectionsData(
+  // Gather equipment, armour, and magic items from nested selections
+  const { equipment, armour, magicItemNames, rulesText } = gatherSelectionsData(
     selection.selections,
   );
 
@@ -235,7 +229,7 @@ function parseCanonicalUnit(selection, category) {
   // Compute saves
   const armourSave = computeArmourSave(
     equipment,
-    [],
+    armour,
     resolvedMagicItems,
     resolvedMount,
     specialRules,

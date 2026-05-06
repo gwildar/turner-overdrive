@@ -890,6 +890,27 @@ export const LORES = {
         num: "S",
         name: "Trollguts",
         type: "enchantment",
+        cv: "8+/11+",
+        range: '15"',
+      },
+    ],
+  },
+  "great-maw-renegade": {
+    name: "Lore of the Great Maw",
+    faction: "Ogre Kingdoms",
+    signatureOnly: true,
+    spells: [
+      {
+        num: "S",
+        name: "Toothcracker",
+        type: "enchantment",
+        cv: "7+/10+",
+        range: '12"',
+      },
+      {
+        num: "S",
+        name: "Trollguts",
+        type: "enchantment",
         cv: "7+/10+",
         range: '15"',
       },

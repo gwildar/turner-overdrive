@@ -103,6 +103,7 @@ export const ARMY_COMPOSITIONS = {
   },
   "ok-renegade": {
     name: "Ogre Kingdoms Renegades",
+    loreRemaps: { "great-maw": "great-maw-renegade" },
     rules: [],
   },
   "the-chracian-warhost": {

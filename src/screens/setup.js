@@ -13,6 +13,8 @@ import {
   getPhaseIndex,
   getDisplayMode,
   saveDisplayMode,
+  getSupplementsEnabled,
+  saveSupplementsEnabled,
 } from "../state.js";
 import { getAllSubPhases, PHASES } from "../phases.js";
 import { formatSlug } from "../helpers.js";
@@ -32,6 +34,7 @@ const app = document.getElementById("app");
 export function renderSetupScreen() {
   const army = getArmy();
   const currentMode = getDisplayMode();
+  const supplementsEnabled = getSupplementsEnabled();
   const wasRecovered = sessionStorage.getItem("tow-recovered");
   sessionStorage.removeItem("tow-recovered");
 
@@ -71,6 +74,15 @@ export function renderSetupScreen() {
           <span class="block text-xs font-normal mt-0.5 ${currentMode === "lightweight" ? "text-wh-accent/70" : "text-wh-muted"}">Spells, items &amp; rules only</span>
         </button>
       </div>
+      <div class="mt-6 border-t border-wh-border pt-4">
+        <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
+        <p class="text-xs text-wh-muted mb-3">Enable variant rules, spells, and items from community supplements (Renegades armies). Requires re-uploading your army list after toggling.</p>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" id="supplements-toggle" ${supplementsEnabled ? "checked" : ""}
+            class="w-4 h-4 accent-wh-accent cursor-pointer" />
+          <span class="text-sm text-wh-text">Renegades supplement rules</span>
+        </label>
+      </div>
       <button id="settings-close" class="mt-4 w-full py-2 text-sm text-wh-muted hover:text-wh-text transition-colors">Close</button>
     </dialog>
   `;
@@ -104,6 +116,13 @@ export function renderSetupScreen() {
     document.getElementById("settings-modal")?.close();
     renderSetupScreen();
   });
+
+  document
+    .getElementById("supplements-toggle")
+    ?.addEventListener("change", (e) => {
+      saveSupplementsEnabled(e.target.checked);
+      window.location.reload();
+    });
 }
 
 function renderUploadSection() {

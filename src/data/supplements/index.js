@@ -1,12 +1,24 @@
 /**
  * Supplement registry.
  * Add new supplements here — they are automatically merged into the core data.
+ *
+ * Supplements are opt-in via the "tow-supplements-enabled" localStorage key.
+ * Reading localStorage directly here avoids circular imports with state.js.
  */
 
 import deRenegade from "./de-renegade.js";
 import okRenegade from "./ok-renegade.js";
 
-const supplements = [deRenegade, okRenegade];
+function isEnabled() {
+  try {
+    const raw = localStorage.getItem("tow-supplements-enabled");
+    return raw ? JSON.parse(raw) : false;
+  } catch {
+    return false;
+  }
+}
+
+const supplements = isEnabled() ? [deRenegade, okRenegade] : [];
 
 export const SUPPLEMENT_UNITS = Object.assign(
   {},

@@ -15,18 +15,20 @@ export function showErrorOverlay(err) {
   overlay.innerHTML = `
     <div style="background:#1a1a1a;border:1px solid #444;border-radius:0.5rem;padding:1.5rem;max-width:28rem;width:100%;text-align:center;color:#e5e7eb;">
       <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:0.75rem;color:#f87171;">Something went wrong</h2>
-      <p style="font-size:0.875rem;color:#9ca3af;margin-bottom:1.25rem;word-break:break-word;">${message}</p>
+      <p id="error-message" style="font-size:0.875rem;color:#9ca3af;margin-bottom:1.25rem;word-break:break-word;"></p>
       <button data-action="restart" style="background:#7c3aed;color:#fff;border:none;border-radius:0.375rem;padding:0.5rem 1.25rem;font-size:0.875rem;cursor:pointer;">
         Clear data &amp; restart
       </button>
     </div>
   `;
 
+  overlay.querySelector("#error-message").textContent = message;
+
   overlay
     .querySelector("[data-action='restart']")
     .addEventListener("click", () => {
       clearAll();
-      location.assign("/");
+      location.assign(import.meta.env.BASE_URL || "/");
     });
 
   document.body.appendChild(overlay);

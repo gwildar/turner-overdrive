@@ -205,13 +205,16 @@ export const PHASES = [
   },
 ];
 
+let _allSubPhases;
 export function getAllSubPhases() {
+  if (_allSubPhases) return _allSubPhases;
   const result = [];
   for (const phase of PHASES) {
     for (const sub of phase.subPhases) {
       result.push({ phase, subPhase: sub });
     }
   }
+  _allSubPhases = result;
   return result;
 }
 

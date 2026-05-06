@@ -227,6 +227,45 @@ export default {
       ],
     },
 
+    // Standalone Bloodwrack Medusa — loses Frenzy, gains Impetuous + Halberd,
+    // petrifying gaze gets Multiple Shots (D3)
+    "bloodwrack-medusa-renegade": [
+      {
+        A: "3",
+        I: "5",
+        M: "7",
+        S: "4",
+        T: "4",
+        W: "4",
+        BS: "5",
+        Ld: "7",
+        WS: "5",
+        Name: "Bloodwrack Medusa",
+        as: 6,
+        "Magic-Res": "-1",
+        rules: [
+          "Close Order",
+          "Elven Reflexes",
+          "Fear",
+          "Hatred (High Elves)",
+          "Impetuous",
+          "Magic Resistance (-1)",
+          "Murderous",
+          "Poisoned Attacks",
+          "Stony Stare",
+        ],
+        equipment: [
+          "Hand weapon",
+          "halberd",
+          "petrifying gaze",
+          "light armour",
+        ],
+        troopType: ["MCr"],
+        magic: [],
+        optionalRules: [],
+      },
+    ],
+
     "kharibdyss-renegade": {
       shared: {
         crewed: true,
@@ -344,5 +383,47 @@ export default {
     },
   },
 
-  magicItems: [],
+  // Draft-corrected versions of items that differ from core.
+  // These override core lookups via MAGIC_ITEM_MAP (last loaded wins).
+  magicItems: [
+    {
+      name: "Whip of Agony",
+      type: "weapon",
+      points: 20,
+      effect:
+        "S+1, AP -1. Magical Attacks. High Beastmasters only. Any enemy model that suffers one or more unsaved wounds suffers a -1 modifier to its Toughness (min 1) for the remainder of the game.",
+      phases: ["combat"],
+    },
+    {
+      name: "Cold-Blooded Banner",
+      type: "banner",
+      points: 20,
+      singleUse: true,
+      effect:
+        "Single use. A unit carrying this may use it after making any test against its Leadership characteristic, including a Break test. When it does, it may re-roll the test.",
+      phases: ["combat"],
+    },
+    {
+      name: "Tome of Furion",
+      type: "arcane-item",
+      points: 15,
+      extremely: true,
+      maxPerModel: 1,
+      effect:
+        "0-1 per model. The bearer knows one more spell (chosen in the usual way) than is normal for their Level of Wizardry.",
+      phases: ["passive"],
+    },
+    {
+      name: "Focus Familiar",
+      type: "arcane-item",
+      points: 10,
+      extremely: true,
+      singleUse: true,
+      effect:
+        'Single use. When casting a spell, place a marker within 12" of the bearer. The range and effects of the spell are measured from this marker (360° vision arc from marker). Dispel range also measured from marker unless a vortex.',
+      phases: ["strategy"],
+      subPhases: ["conjuration"],
+      yourTurnOnly: true,
+    },
+  ],
 };

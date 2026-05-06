@@ -6,7 +6,7 @@ import {
 import { getStartTime, saveDeploymentTime, resetStartTime } from "../state.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const DEPLOYMENT_RULE_IDS = new Set([
   "scouts",
@@ -140,44 +140,46 @@ function renderPostDeploymentUnits(army) {
 }
 
 export function renderDeploymentScreen(army) {
-  if (getStartTime() === null) {
-    resetStartTime();
-  }
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      ${renderSetupHeader(army, "deploy")}
-      <main class="flex-1 p-4 max-w-4xl mx-auto w-full">
-        <div class="mb-4">
-          <h2 class="text-2xl font-bold text-wh-text">Deployment</h2>
-        </div>
-        ${renderDeploymentCards(army)}
-        ${renderExplainer()}
-        ${renderDeploymentUnits(army)}
-        ${renderPostDeploymentUnits(army)}
-      </main>
-      <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
-        <div class="max-w-2xl mx-auto flex gap-3">
-          <button id="prev-btn"
-            class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors bg-wh-card text-wh-text hover:bg-wh-border">
-            &#8592; Back
-          </button>
-          <button id="next-btn"
-            class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
-            Next &#8594;
-          </button>
-        </div>
-      </footer>
-    </div>
-  `;
+  renderScreen(() => {
+    if (getStartTime() === null) {
+      resetStartTime();
+    }
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        ${renderSetupHeader(army, "deploy")}
+        <main class="flex-1 p-4 max-w-4xl mx-auto w-full">
+          <div class="mb-4">
+            <h2 class="text-2xl font-bold text-wh-text">Deployment</h2>
+          </div>
+          ${renderDeploymentCards(army)}
+          ${renderExplainer()}
+          ${renderDeploymentUnits(army)}
+          ${renderPostDeploymentUnits(army)}
+        </main>
+        <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
+          <div class="max-w-2xl mx-auto flex gap-3">
+            <button id="prev-btn"
+              class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors bg-wh-card text-wh-text hover:bg-wh-border">
+              &#8592; Back
+            </button>
+            <button id="next-btn"
+              class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
+              Next &#8594;
+            </button>
+          </div>
+        </footer>
+      </div>
+    `;
 
-  document.getElementById("prev-btn").addEventListener("click", () => {
-    navigate("/scenario-setup");
-  });
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      navigate("/scenario-setup");
+    });
 
-  document.getElementById("next-btn").addEventListener("click", () => {
-    saveDeploymentTime(Date.now() - getStartTime());
-    resetStartTime(); // seeds the timer for the game screen
-    navigate("/first-turn");
+    document.getElementById("next-btn").addEventListener("click", () => {
+      saveDeploymentTime(Date.now() - getStartTime());
+      resetStartTime(); // seeds the timer for the game screen
+      navigate("/first-turn");
+    });
+    bindSetupHeaderEvents();
   });
-  bindSetupHeaderEvents();
 }

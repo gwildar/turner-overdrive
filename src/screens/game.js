@@ -34,107 +34,109 @@ import {
 import { renderScoringUI, bindScoringEvents } from "./scoring.js";
 import { renderSpecialFeaturesTable } from "../context/scenario-context.js";
 import { navigate } from "../navigate.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
 export function renderGameScreen(army) {
-  if (getStartTime() === null) {
-    resetStartTime();
-  }
-  const phaseIdx = getPhaseIndex();
-  const round = getRound();
-  const { phase, subPhase } = allSubPhases[phaseIdx];
-  const isFirst = phaseIdx === 0;
-  const isLast = phaseIdx === allSubPhases.length - 1;
-  const visiblePhases = getVisibleSubPhases(army);
-  const visibleStep =
-    visiblePhases.findIndex((sp) => sp.subPhase.id === subPhase.id) + 1;
-  const visibleTotal = visiblePhases.length;
+  renderScreen(() => {
+    if (getStartTime() === null) {
+      resetStartTime();
+    }
+    const phaseIdx = getPhaseIndex();
+    const round = getRound();
+    const { phase, subPhase } = allSubPhases[phaseIdx];
+    const isFirst = phaseIdx === 0;
+    const isLast = phaseIdx === allSubPhases.length - 1;
+    const visiblePhases = getVisibleSubPhases(army);
+    const visibleStep =
+      visiblePhases.findIndex((sp) => sp.subPhase.id === subPhase.id) + 1;
+    const visibleTotal = visiblePhases.length;
 
-  const activePhaseIndex = PHASES.findIndex((p) => p.id === phase.id);
+    const activePhaseIndex = PHASES.findIndex((p) => p.id === phase.id);
 
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      ${renderGameHeader({ army, round, activePhaseIndex, isOpponentTurn: false })}
-
-      <!-- Main content -->
-      <main class="flex-1 overflow-y-auto p-4">
-        <div class="max-w-2xl mx-auto">
-          <!-- Phase & sub-phase heading -->
-          <div class="mb-4">
-            <span class="text-xs uppercase tracking-wider ${PHASE_TEXT[phase.colour]}">${phase.name}</span>
-            <h2 class="text-2xl font-bold text-wh-text">${subPhase.name}</h2>
-            <span class="text-xs text-wh-muted">Step ${visibleStep} of ${visibleTotal}</span>
-          </div>
-
-          <!-- Rules -->
-          <details class="mb-4">
-          <summary>Rules Summary</summary>
-          <div class="bg-wh-surface rounded-lg border border-wh-border p-4 mt-1 mb-4">
-            <ul class="space-y-2">
-              ${subPhase.rules
-                .map((rule) => {
-                  if (rule.startsWith("•")) {
-                    return `<li class="flex gap-2 text-sm ml-5">
-                    <span class="text-wh-muted mt-0.5 shrink-0">•</span>
-                    <span>${rule.slice(1).trim()}</span>
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        ${renderGameHeader({ army, round, activePhaseIndex, isOpponentTurn: false })}
+  
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto p-4">
+          <div class="max-w-2xl mx-auto">
+            <!-- Phase & sub-phase heading -->
+            <div class="mb-4">
+              <span class="text-xs uppercase tracking-wider ${PHASE_TEXT[phase.colour]}">${phase.name}</span>
+              <h2 class="text-2xl font-bold text-wh-text">${subPhase.name}</h2>
+              <span class="text-xs text-wh-muted">Step ${visibleStep} of ${visibleTotal}</span>
+            </div>
+  
+            <!-- Rules -->
+            <details class="mb-4">
+            <summary>Rules Summary</summary>
+            <div class="bg-wh-surface rounded-lg border border-wh-border p-4 mt-1 mb-4">
+              <ul class="space-y-2">
+                ${subPhase.rules
+                  .map((rule) => {
+                    if (rule.startsWith("•")) {
+                      return `<li class="flex gap-2 text-sm ml-5">
+                      <span class="text-wh-muted mt-0.5 shrink-0">•</span>
+                      <span>${rule.slice(1).trim()}</span>
+                    </li>`;
+                    }
+                    return `<li class="flex gap-2 text-sm">
+                    <span class="${PHASE_TEXT[phase.colour]} mt-0.5 shrink-0">&#9654;</span>
+                    <span>${rule}</span>
                   </li>`;
-                  }
-                  return `<li class="flex gap-2 text-sm">
-                  <span class="${PHASE_TEXT[phase.colour]} mt-0.5 shrink-0">&#9654;</span>
-                  <span>${rule}</span>
-                </li>`;
-                })
-                .join("")}
-            </ul>
-          </div>
-          </details>
-
-          <!-- Pinned rule -->
-          ${
-            subPhase.pinnedRule
-              ? `<div class="bg-wh-surface rounded-lg border border-wh-border p-4 mb-4">
-            <ul class="space-y-2">
-              <li class="flex gap-2 text-sm">
-                <span class="${PHASE_TEXT[phase.colour]} mt-0.5 shrink-0">&#9654;</span>
-                <span>${subPhase.pinnedRule}</span>
-              </li>
-            </ul>
-          </div>`
-              : ""
-          }
-
-          <!-- Contextual army info -->
-          ${renderPhaseContext(army, phase, subPhase)}
-
-        </div>
-      </main>
-
-      <!-- Footer nav -->
-      <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
-        <div class="max-w-2xl mx-auto flex gap-3">
-          <button id="prev-btn"
-            class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors
+                  })
+                  .join("")}
+              </ul>
+            </div>
+            </details>
+  
+            <!-- Pinned rule -->
             ${
-              isFirst && !canGoBackToPreviousTurn()
-                ? "bg-wh-card text-wh-muted cursor-not-allowed opacity-50"
-                : "bg-wh-card text-wh-text hover:bg-wh-border"
-            }"
-            ${isFirst && !canGoBackToPreviousTurn() ? "disabled" : ""}>
-            ${isFirst && canGoBackToPreviousTurn() ? "&#8592; Opponent Turn" : "&#8592; Previous"}
-          </button>
-          <button id="next-btn"
-            class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors
-            bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
-            ${isLast ? "End Turn &#10226;" : "Next &#8594;"}
-          </button>
-        </div>
-      </footer>
-    </div>
-  `;
+              subPhase.pinnedRule
+                ? `<div class="bg-wh-surface rounded-lg border border-wh-border p-4 mb-4">
+              <ul class="space-y-2">
+                <li class="flex gap-2 text-sm">
+                  <span class="${PHASE_TEXT[phase.colour]} mt-0.5 shrink-0">&#9654;</span>
+                  <span>${subPhase.pinnedRule}</span>
+                </li>
+              </ul>
+            </div>`
+                : ""
+            }
+  
+            <!-- Contextual army info -->
+            ${renderPhaseContext(army, phase, subPhase)}
+  
+          </div>
+        </main>
+  
+        <!-- Footer nav -->
+        <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
+          <div class="max-w-2xl mx-auto flex gap-3">
+            <button id="prev-btn"
+              class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors
+              ${
+                isFirst && !canGoBackToPreviousTurn()
+                  ? "bg-wh-card text-wh-muted cursor-not-allowed opacity-50"
+                  : "bg-wh-card text-wh-text hover:bg-wh-border"
+              }"
+              ${isFirst && !canGoBackToPreviousTurn() ? "disabled" : ""}>
+              ${isFirst && canGoBackToPreviousTurn() ? "&#8592; Opponent Turn" : "&#8592; Previous"}
+            </button>
+            <button id="next-btn"
+              class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors
+              bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
+              ${isLast ? "End Turn &#10226;" : "Next &#8594;"}
+            </button>
+          </div>
+        </footer>
+      </div>
+    `;
 
-  bindGameActions(army);
+    bindGameActions(army);
+  });
 }
 
 const PHASE_CASTER_RENDERERS = {

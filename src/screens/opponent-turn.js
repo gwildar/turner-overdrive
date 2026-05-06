@@ -28,63 +28,65 @@ import { renderSpecialFeaturesTable } from "../context/scenario-context.js";
 import { renderMiscastPanel } from "../context/miscast.js";
 import { navigate } from "../navigate.js";
 import { hasStartOfTurnContent } from "./game.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
 export function renderOpponentTurnScreen(army) {
-  if (getStartTime() === null) {
-    resetStartTime();
-  }
-  const opPhaseIdx = getPhaseIndex();
-  const round = getRound();
-  const phase = PHASES[opPhaseIdx];
-  const isFirst = opPhaseIdx === 0;
-  const isLast = opPhaseIdx === PHASES.length - 1;
+  renderScreen(() => {
+    if (getStartTime() === null) {
+      resetStartTime();
+    }
+    const opPhaseIdx = getPhaseIndex();
+    const round = getRound();
+    const phase = PHASES[opPhaseIdx];
+    const isFirst = opPhaseIdx === 0;
+    const isLast = opPhaseIdx === PHASES.length - 1;
 
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      ${renderGameHeader({ army, round, activePhaseIndex: opPhaseIdx, isOpponentTurn: true })}
-
-      <!-- Main content -->
-      <main class="flex-1 overflow-y-auto p-4">
-        <div class="max-w-2xl mx-auto">
-          <!-- Phase heading -->
-          <div class="mb-4">
-            <span class="text-xs uppercase tracking-wider text-wh-red">Opponent's Turn</span>
-            <h2 class="text-2xl font-bold text-wh-text">${phase.name}</h2>
-            <span class="text-xs text-wh-muted">Phase ${opPhaseIdx + 1} of ${PHASES.length}</span>
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        ${renderGameHeader({ army, round, activePhaseIndex: opPhaseIdx, isOpponentTurn: true })}
+  
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto p-4">
+          <div class="max-w-2xl mx-auto">
+            <!-- Phase heading -->
+            <div class="mb-4">
+              <span class="text-xs uppercase tracking-wider text-wh-red">Opponent's Turn</span>
+              <h2 class="text-2xl font-bold text-wh-text">${phase.name}</h2>
+              <span class="text-xs text-wh-muted">Phase ${opPhaseIdx + 1} of ${PHASES.length}</span>
+            </div>
+  
+            <!-- Contextual army info -->
+            ${renderOpponentPhaseContext(army, phase)}
           </div>
+        </main>
+  
+        <!-- Footer nav -->
+        <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
+          <div class="max-w-2xl mx-auto flex gap-3">
+            <button id="prev-btn"
+              class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors
+              ${
+                isFirst && !canGoBackToPreviousTurn()
+                  ? "bg-wh-card text-wh-muted cursor-not-allowed opacity-50"
+                  : "bg-wh-card text-wh-text hover:bg-wh-border"
+              }"
+              ${isFirst && !canGoBackToPreviousTurn() ? "disabled" : ""}>
+              ${isFirst && canGoBackToPreviousTurn() ? "&#8592; Your Turn" : "&#8592; Previous"}
+            </button>
+            <button id="next-btn"
+              class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors
+              bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
+              ${isLast ? "End Turn &#10226;" : "Next &#8594;"}
+            </button>
+          </div>
+        </footer>
+      </div>
+    `;
 
-          <!-- Contextual army info -->
-          ${renderOpponentPhaseContext(army, phase)}
-        </div>
-      </main>
-
-      <!-- Footer nav -->
-      <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
-        <div class="max-w-2xl mx-auto flex gap-3">
-          <button id="prev-btn"
-            class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors
-            ${
-              isFirst && !canGoBackToPreviousTurn()
-                ? "bg-wh-card text-wh-muted cursor-not-allowed opacity-50"
-                : "bg-wh-card text-wh-text hover:bg-wh-border"
-            }"
-            ${isFirst && !canGoBackToPreviousTurn() ? "disabled" : ""}>
-            ${isFirst && canGoBackToPreviousTurn() ? "&#8592; Your Turn" : "&#8592; Previous"}
-          </button>
-          <button id="next-btn"
-            class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors
-            bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
-            ${isLast ? "End Turn &#10226;" : "Next &#8594;"}
-          </button>
-        </div>
-      </footer>
-    </div>
-  `;
-
-  bindOpponentTurnActions(army);
+    bindOpponentTurnActions(army);
+  });
 }
 
 function renderOpponentPhaseContext(army, phase) {

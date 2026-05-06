@@ -20,7 +20,7 @@ import { getAllSubPhases, PHASES } from "../phases.js";
 import { formatSlug } from "../helpers.js";
 import { navigate } from "../navigate.js";
 import { validateArmy } from "../army-validation.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
@@ -31,97 +31,101 @@ export function setCurrentWarnings(w) {
 }
 
 export function renderSetupScreen() {
-  const army = getArmy();
-  const currentMode = getDisplayMode();
-  const supplementsEnabled = getSupplementsEnabled();
-  const wasRecovered = sessionStorage.getItem("tow-recovered");
-  sessionStorage.removeItem("tow-recovered");
+  renderScreen(() => {
+    const army = getArmy();
+    const currentMode = getDisplayMode();
+    const supplementsEnabled = getSupplementsEnabled();
+    const wasRecovered = sessionStorage.getItem("tow-recovered");
+    sessionStorage.removeItem("tow-recovered");
 
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      <header class="bg-wh-surface p-4 border-b border-wh-border">
-        <div class="flex justify-between items-center max-w-2xl mx-auto">
-          <div></div>
-          <h1 class="text-2xl font-bold text-wh-accent text-center">Turner Overdrive
-            <span class="block text-xs text-wh-muted font-normal mt-0.5">v${version}</span>
-          </h1>
-          <div class="flex items-center gap-2">
-            <button id="about-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">About</button>
-            <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-base text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">&#9881;</button>
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        <header class="bg-wh-surface p-4 border-b border-wh-border">
+          <div class="flex justify-between items-center max-w-2xl mx-auto">
+            <div></div>
+            <h1 class="text-2xl font-bold text-wh-accent text-center">Turner Overdrive
+              <span class="block text-xs text-wh-muted font-normal mt-0.5">v${version}</span>
+            </h1>
+            <div class="flex items-center gap-2">
+              <button id="about-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">About</button>
+              <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-base text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">&#9881;</button>
+            </div>
           </div>
+        </header>
+  
+        <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
+          ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved game data was cleared due to an error. Please re-upload your army.</p>` : ""}
+          ${army ? renderArmySummary(army, currentWarnings) : renderUploadSection()}
+        </main>
+      </div>
+  
+      <dialog id="settings-modal" class="bg-wh-surface border border-wh-border rounded-lg p-6 w-full max-w-sm backdrop:bg-black/60 m-auto">
+        <h2 class="text-lg font-bold text-wh-text mb-1">Display Mode</h2>
+        <p class="text-xs text-wh-muted mb-4">Lightweight mode hides combat, movement, and shooting panels. Keeps spells, magic items, and special rules.</p>
+        <div class="flex flex-col gap-3">
+          <button id="mode-standard"
+            class="px-4 py-3 rounded-lg border text-sm font-semibold transition-colors ${currentMode === "standard" ? "border-wh-accent text-wh-accent bg-wh-accent/10" : "border-wh-border text-wh-muted hover:border-wh-accent hover:text-wh-accent"}">
+            Standard
+            <span class="block text-xs font-normal mt-0.5 ${currentMode === "standard" ? "text-wh-accent/70" : "text-wh-muted"}">All panels shown</span>
+          </button>
+          <button id="mode-lightweight"
+            class="px-4 py-3 rounded-lg border text-sm font-semibold transition-colors ${currentMode === "lightweight" ? "border-wh-accent text-wh-accent bg-wh-accent/10" : "border-wh-border text-wh-muted hover:border-wh-accent hover:text-wh-accent"}">
+            Lightweight
+            <span class="block text-xs font-normal mt-0.5 ${currentMode === "lightweight" ? "text-wh-accent/70" : "text-wh-muted"}">Spells, items &amp; rules only</span>
+          </button>
         </div>
-      </header>
+        <div class="mt-6 border-t border-wh-border pt-4">
+          <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
+          <p class="text-xs text-wh-muted mb-3">Enable variant rules, spells, and items from community supplements (Renegades armies). Requires re-uploading your army list after toggling.</p>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="supplements-toggle" ${supplementsEnabled ? "checked" : ""}
+              class="w-4 h-4 accent-wh-accent cursor-pointer" />
+            <span class="text-sm text-wh-text">Renegades supplement rules</span>
+          </label>
+        </div>
+        <button id="settings-close" class="mt-4 w-full py-2 text-sm text-wh-muted hover:text-wh-text transition-colors">Close</button>
+      </dialog>
+    `;
 
-      <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
-        ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved game data was cleared due to an error. Please re-upload your army.</p>` : ""}
-        ${army ? renderArmySummary(army, currentWarnings) : renderUploadSection()}
-      </main>
-    </div>
+    if (army) {
+      bindArmyActions();
+    } else {
+      bindUpload();
+    }
 
-    <dialog id="settings-modal" class="bg-wh-surface border border-wh-border rounded-lg p-6 w-full max-w-sm backdrop:bg-black/60 m-auto">
-      <h2 class="text-lg font-bold text-wh-text mb-1">Display Mode</h2>
-      <p class="text-xs text-wh-muted mb-4">Lightweight mode hides combat, movement, and shooting panels. Keeps spells, magic items, and special rules.</p>
-      <div class="flex flex-col gap-3">
-        <button id="mode-standard"
-          class="px-4 py-3 rounded-lg border text-sm font-semibold transition-colors ${currentMode === "standard" ? "border-wh-accent text-wh-accent bg-wh-accent/10" : "border-wh-border text-wh-muted hover:border-wh-accent hover:text-wh-accent"}">
-          Standard
-          <span class="block text-xs font-normal mt-0.5 ${currentMode === "standard" ? "text-wh-accent/70" : "text-wh-muted"}">All panels shown</span>
-        </button>
-        <button id="mode-lightweight"
-          class="px-4 py-3 rounded-lg border text-sm font-semibold transition-colors ${currentMode === "lightweight" ? "border-wh-accent text-wh-accent bg-wh-accent/10" : "border-wh-border text-wh-muted hover:border-wh-accent hover:text-wh-accent"}">
-          Lightweight
-          <span class="block text-xs font-normal mt-0.5 ${currentMode === "lightweight" ? "text-wh-accent/70" : "text-wh-muted"}">Spells, items &amp; rules only</span>
-        </button>
-      </div>
-      <div class="mt-6 border-t border-wh-border pt-4">
-        <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
-        <p class="text-xs text-wh-muted mb-3">Enable variant rules, spells, and items from community supplements (Renegades armies). Requires re-uploading your army list after toggling.</p>
-        <label class="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" id="supplements-toggle" ${supplementsEnabled ? "checked" : ""}
-            class="w-4 h-4 accent-wh-accent cursor-pointer" />
-          <span class="text-sm text-wh-text">Renegades supplement rules</span>
-        </label>
-      </div>
-      <button id="settings-close" class="mt-4 w-full py-2 text-sm text-wh-muted hover:text-wh-text transition-colors">Close</button>
-    </dialog>
-  `;
-
-  if (army) {
-    bindArmyActions();
-  } else {
-    bindUpload();
-  }
-
-  document.getElementById("about-btn")?.addEventListener("click", () => {
-    navigate("/about");
-  });
-
-  document.getElementById("settings-btn")?.addEventListener("click", () => {
-    document.getElementById("settings-modal")?.showModal();
-  });
-
-  document.getElementById("settings-close")?.addEventListener("click", () => {
-    document.getElementById("settings-modal")?.close();
-  });
-
-  document.getElementById("mode-standard")?.addEventListener("click", () => {
-    saveDisplayMode("standard");
-    document.getElementById("settings-modal")?.close();
-    renderSetupScreen();
-  });
-
-  document.getElementById("mode-lightweight")?.addEventListener("click", () => {
-    saveDisplayMode("lightweight");
-    document.getElementById("settings-modal")?.close();
-    renderSetupScreen();
-  });
-
-  document
-    .getElementById("supplements-toggle")
-    ?.addEventListener("change", (e) => {
-      saveSupplementsEnabled(e.target.checked);
-      window.location.reload();
+    document.getElementById("about-btn")?.addEventListener("click", () => {
+      navigate("/about");
     });
+
+    document.getElementById("settings-btn")?.addEventListener("click", () => {
+      document.getElementById("settings-modal")?.showModal();
+    });
+
+    document.getElementById("settings-close")?.addEventListener("click", () => {
+      document.getElementById("settings-modal")?.close();
+    });
+
+    document.getElementById("mode-standard")?.addEventListener("click", () => {
+      saveDisplayMode("standard");
+      document.getElementById("settings-modal")?.close();
+      renderSetupScreen();
+    });
+
+    document
+      .getElementById("mode-lightweight")
+      ?.addEventListener("click", () => {
+        saveDisplayMode("lightweight");
+        document.getElementById("settings-modal")?.close();
+        renderSetupScreen();
+      });
+
+    document
+      .getElementById("supplements-toggle")
+      ?.addEventListener("change", (e) => {
+        saveSupplementsEnabled(e.target.checked);
+        window.location.reload();
+      });
+  });
 }
 
 function renderUploadSection() {

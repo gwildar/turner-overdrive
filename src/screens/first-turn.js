@@ -3,57 +3,59 @@ import { PHASES, getAllSubPhases } from "../phases.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
 import { hasStartOfTurnContent } from "./game.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
 
 export function renderFirstTurnScreen(army) {
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      ${renderSetupHeader(army, "first-turn")}
-
-      <div class="max-w-2xl mx-auto w-full px-4 pt-3">
-        <button id="prev-btn" class="text-wh-muted hover:text-wh-text transition-colors text-sm">
-          &#8592; Back
-        </button>
-      </div>
-
-      <main class="flex-1 flex items-center justify-center p-4">
-        <div class="max-w-md w-full text-center">
-          <h2 class="text-2xl font-bold text-wh-text mb-2">Who goes first?</h2>
-          <p class="text-wh-muted text-sm mb-8">${army.name} — Round 1</p>
-          <div class="flex gap-4">
-            <button id="first-you-btn"
-              class="flex-1 py-4 rounded-lg font-bold text-lg bg-wh-accent text-wh-bg hover:bg-wh-accent-dim transition-colors">
-              You
-            </button>
-            <button id="first-opponent-btn"
-              class="flex-1 py-4 rounded-lg font-bold text-lg bg-wh-surface text-wh-text border border-wh-border hover:bg-wh-border transition-colors">
-              Opponent
-            </button>
-          </div>
+  renderScreen(() => {
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        ${renderSetupHeader(army, "first-turn")}
+  
+        <div class="max-w-2xl mx-auto w-full px-4 pt-3">
+          <button id="prev-btn" class="text-wh-muted hover:text-wh-text transition-colors text-sm">
+            &#8592; Back
+          </button>
         </div>
-      </main>
-    </div>
-  `;
+  
+        <main class="flex-1 flex items-center justify-center p-4">
+          <div class="max-w-md w-full text-center">
+            <h2 class="text-2xl font-bold text-wh-text mb-2">Who goes first?</h2>
+            <p class="text-wh-muted text-sm mb-8">${army.name} — Round 1</p>
+            <div class="flex gap-4">
+              <button id="first-you-btn"
+                class="flex-1 py-4 rounded-lg font-bold text-lg bg-wh-accent text-wh-bg hover:bg-wh-accent-dim transition-colors">
+                You
+              </button>
+              <button id="first-opponent-btn"
+                class="flex-1 py-4 rounded-lg font-bold text-lg bg-wh-surface text-wh-text border border-wh-border hover:bg-wh-border transition-colors">
+                Opponent
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    `;
 
-  document.getElementById("first-you-btn").addEventListener("click", () => {
-    saveFirstTurn("you");
-    const startIdx = hasStartOfTurnContent(army) ? 0 : 1;
-    const { phase, subPhase } = allSubPhases[startIdx];
-    navigate(`/game/1/${phase.id}/${subPhase.id}`);
-  });
-
-  document
-    .getElementById("first-opponent-btn")
-    .addEventListener("click", () => {
-      saveFirstTurn("opponent");
-      navigate(`/opponent/1/${PHASES[0].id}`);
+    document.getElementById("first-you-btn").addEventListener("click", () => {
+      saveFirstTurn("you");
+      const startIdx = hasStartOfTurnContent(army) ? 0 : 1;
+      const { phase, subPhase } = allSubPhases[startIdx];
+      navigate(`/game/1/${phase.id}/${subPhase.id}`);
     });
 
-  bindSetupHeaderEvents();
+    document
+      .getElementById("first-opponent-btn")
+      .addEventListener("click", () => {
+        saveFirstTurn("opponent");
+        navigate(`/opponent/1/${PHASES[0].id}`);
+      });
 
-  document.getElementById("prev-btn").addEventListener("click", () => {
-    navigate("/deployment");
+    bindSetupHeaderEvents();
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      navigate("/deployment");
+    });
   });
 }

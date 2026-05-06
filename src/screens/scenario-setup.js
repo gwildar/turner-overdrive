@@ -1,7 +1,7 @@
 import { saveScenarioOptions, getScenarioOptions } from "../state.js";
 import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
-import { getApp } from "./_app.js";
+import { getApp, renderScreen } from "./_app.js";
 
 const CONDITIONS = [
   {
@@ -76,85 +76,87 @@ function renderCard(condition, opts) {
 }
 
 export function renderScenarioSetupScreen(army) {
-  const opts = getScenarioOptions();
+  renderScreen(() => {
+    const opts = getScenarioOptions();
 
-  getApp().innerHTML = `
-    <div class="min-h-dvh flex flex-col">
-      ${renderSetupHeader(army, "scenario")}
-      <main class="flex-1 p-4 max-w-4xl mx-auto w-full">
-        <div class="mb-4">
-          <h2 class="text-2xl font-bold text-wh-text">Scenario Setup</h2>
-          <p class="text-sm text-wh-muted mt-1">Select any secondary objectives for this game.</p>
-        </div>
-        ${CONDITIONS.map((c) => renderCard(c, opts)).join("")}
-      </main>
-      <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
-        <div class="max-w-2xl mx-auto flex gap-3">
-          <button id="prev-btn"
-            class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors bg-wh-card text-wh-text hover:bg-wh-border">
-            &#8592; Back
-          </button>
-          <button id="next-btn"
-            class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
-            Next &#8594;
-          </button>
-        </div>
-      </footer>
-    </div>
-  `;
+    getApp().innerHTML = `
+      <div class="min-h-dvh flex flex-col">
+        ${renderSetupHeader(army, "scenario")}
+        <main class="flex-1 p-4 max-w-4xl mx-auto w-full">
+          <div class="mb-4">
+            <h2 class="text-2xl font-bold text-wh-text">Scenario Setup</h2>
+            <p class="text-sm text-wh-muted mt-1">Select any secondary objectives for this game.</p>
+          </div>
+          ${CONDITIONS.map((c) => renderCard(c, opts)).join("")}
+        </main>
+        <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
+          <div class="max-w-2xl mx-auto flex gap-3">
+            <button id="prev-btn"
+              class="flex-1 py-3 rounded-lg font-semibold text-lg transition-colors bg-wh-card text-wh-text hover:bg-wh-border">
+              &#8592; Back
+            </button>
+            <button id="next-btn"
+              class="flex-1 py-3 rounded-lg font-bold text-lg transition-colors bg-wh-accent text-wh-bg hover:bg-wh-accent-dim">
+              Next &#8594;
+            </button>
+          </div>
+        </footer>
+      </div>
+    `;
 
-  // Track current count in memory so count buttons work without re-rendering
-  let currentCount = opts.strategicLocations.count;
+    // Track current count in memory so count buttons work without re-rendering
+    let currentCount = opts.strategicLocations.count;
 
-  // Count picker buttons
-  document.querySelectorAll(".count-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      currentCount = parseInt(btn.dataset.count, 10);
-      document.querySelectorAll(".count-btn").forEach((b) => {
-        const active = parseInt(b.dataset.count, 10) === currentCount;
-        b.className = b.className
-          .replace(
-            /bg-wh-purple text-white border-wh-purple|bg-wh-surface text-wh-muted border-wh-border hover:border-wh-purple hover:text-wh-purple/g,
-            "",
-          )
-          .trim();
-        b.className += active
-          ? " bg-wh-purple text-white border-wh-purple"
-          : " bg-wh-surface text-wh-muted border-wh-border hover:border-wh-purple hover:text-wh-purple";
+    // Count picker buttons
+    document.querySelectorAll(".count-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentCount = parseInt(btn.dataset.count, 10);
+        document.querySelectorAll(".count-btn").forEach((b) => {
+          const active = parseInt(b.dataset.count, 10) === currentCount;
+          b.className = b.className
+            .replace(
+              /bg-wh-purple text-white border-wh-purple|bg-wh-surface text-wh-muted border-wh-border hover:border-wh-purple hover:text-wh-purple/g,
+              "",
+            )
+            .trim();
+          b.className += active
+            ? " bg-wh-purple text-white border-wh-purple"
+            : " bg-wh-surface text-wh-muted border-wh-border hover:border-wh-purple hover:text-wh-purple";
+        });
       });
     });
-  });
 
-  // Strategic locations toggle shows/hides count picker
-  document
-    .getElementById("toggle-strategicLocations")
-    ?.addEventListener("change", (e) => {
-      const picker = document.getElementById("count-picker");
-      if (picker) picker.classList.toggle("hidden", !e.target.checked);
+    // Strategic locations toggle shows/hides count picker
+    document
+      .getElementById("toggle-strategicLocations")
+      ?.addEventListener("change", (e) => {
+        const picker = document.getElementById("count-picker");
+        if (picker) picker.classList.toggle("hidden", !e.target.checked);
+      });
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      navigate("/unit-assignment");
     });
 
-  document.getElementById("prev-btn").addEventListener("click", () => {
-    navigate("/unit-assignment");
-  });
+    document.getElementById("next-btn").addEventListener("click", () => {
+      const newOpts = {
+        domination:
+          document.getElementById("toggle-domination")?.checked ?? false,
+        baggageTrains:
+          document.getElementById("toggle-baggageTrains")?.checked ?? false,
+        strategicLocations: {
+          enabled:
+            document.getElementById("toggle-strategicLocations")?.checked ??
+            false,
+          count: currentCount,
+        },
+        specialFeatures:
+          document.getElementById("toggle-specialFeatures")?.checked ?? false,
+      };
+      saveScenarioOptions(newOpts);
+      navigate("/deployment");
+    });
 
-  document.getElementById("next-btn").addEventListener("click", () => {
-    const newOpts = {
-      domination:
-        document.getElementById("toggle-domination")?.checked ?? false,
-      baggageTrains:
-        document.getElementById("toggle-baggageTrains")?.checked ?? false,
-      strategicLocations: {
-        enabled:
-          document.getElementById("toggle-strategicLocations")?.checked ??
-          false,
-        count: currentCount,
-      },
-      specialFeatures:
-        document.getElementById("toggle-specialFeatures")?.checked ?? false,
-    };
-    saveScenarioOptions(newOpts);
-    navigate("/deployment");
+    bindSetupHeaderEvents();
   });
-
-  bindSetupHeaderEvents();
 }

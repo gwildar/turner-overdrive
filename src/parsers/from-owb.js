@@ -27,6 +27,7 @@ import {
   ARMY_PHASE_CONFIG,
 } from "../data/army-compositions.js";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
+import { getSupplementsEnabled } from "../state.js";
 
 const MAGIC_ITEM_NAMES = new Set(MAGIC_ITEMS.map((i) => i.name.toLowerCase()));
 
@@ -313,8 +314,9 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     lores.push("solar-engine");
   }
 
-  // Remap lores for composition variants (e.g. ok-renegade uses great-maw-renegade)
-  if (armyComposition) {
+  // Remap lores for composition variants (e.g. ok-renegade uses great-maw-renegade).
+  // Only applied when supplements (Renegades rules) are enabled.
+  if (armyComposition && getSupplementsEnabled()) {
     const compConfig = ARMY_COMPOSITIONS[armyComposition] || {};
     const loreRemaps = compConfig.loreRemaps || {};
     for (let i = 0; i < lores.length; i++) {

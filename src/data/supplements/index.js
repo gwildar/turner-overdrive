@@ -8,6 +8,7 @@
 
 import deRenegade from "./de-renegade.js";
 import okRenegade from "./ok-renegade.js";
+import skRenegade from "./sk-renegade.js";
 
 function isEnabled() {
   try {
@@ -18,7 +19,7 @@ function isEnabled() {
   }
 }
 
-const supplements = isEnabled() ? [deRenegade, okRenegade] : [];
+const supplements = isEnabled() ? [deRenegade, okRenegade, skRenegade] : [];
 
 export const SUPPLEMENT_UNITS = Object.assign(
   {},

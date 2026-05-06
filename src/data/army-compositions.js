@@ -107,6 +107,11 @@ export const ARMY_COMPOSITIONS = {
     loreRemaps: { "great-maw": "great-maw-renegade" },
     rules: [],
   },
+  "sk-renegade": {
+    name: "Skaven Renegades",
+    loreRemaps: { "horned-rat": "horned-rat-renegade" },
+    rules: [],
+  },
   "the-chracian-warhost": {
     name: "The Chracian Warhost",
     deploymentCards: [

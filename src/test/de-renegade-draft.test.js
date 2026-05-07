@@ -1,4 +1,12 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import {
+  STABLE_SUPPLEMENT_RULES,
+  DRAFT_SUPPLEMENT_RULES,
+  STABLE_SUPPLEMENT_ITEMS,
+  DRAFT_SUPPLEMENT_ITEMS,
+  STABLE_SUPPLEMENT_UNITS,
+  DRAFT_SUPPLEMENT_UNITS,
+} from "../data/supplements/index.js";
 import { loadArmy, startGame } from "./helpers.js";
 import {
   hasStartOfTurnRules,
@@ -336,5 +344,38 @@ describe("Murderous rule version for de-renegade", () => {
     expect(murderous).toBeDefined();
     expect(murderous.id).toBe("murderous-v1.5");
     expect(murderous.description).toContain("first round of combat");
+  });
+});
+
+describe("supplement index stable/draft split", () => {
+  it("STABLE_SUPPLEMENT_RULES contains murderous-v1.5 but not murderous-renegade", () => {
+    const ids = STABLE_SUPPLEMENT_RULES.map((r) => r.id);
+    expect(ids).toContain("murderous-v1.5");
+    expect(ids).not.toContain("murderous-renegade");
+  });
+
+  it("DRAFT_SUPPLEMENT_RULES contains murderous-renegade but not murderous-v1.5", () => {
+    const ids = DRAFT_SUPPLEMENT_RULES.map((r) => r.id);
+    expect(ids).toContain("murderous-renegade");
+    expect(ids).not.toContain("murderous-v1.5");
+  });
+
+  it("STABLE_SUPPLEMENT_UNITS is empty (rlp-v1.5 has no unit overrides)", () => {
+    expect(Object.keys(STABLE_SUPPLEMENT_UNITS)).toHaveLength(0);
+  });
+
+  it("DRAFT_SUPPLEMENT_UNITS contains de-renegade overrides", () => {
+    expect(DRAFT_SUPPLEMENT_UNITS).toHaveProperty("war-hydra-renegade");
+    expect(DRAFT_SUPPLEMENT_UNITS).toHaveProperty("witch-elves-renegade");
+  });
+
+  it("STABLE_SUPPLEMENT_ITEMS is empty (rlp-v1.5 has no magic items)", () => {
+    expect(STABLE_SUPPLEMENT_ITEMS).toHaveLength(0);
+  });
+
+  it("DRAFT_SUPPLEMENT_ITEMS contains de-renegade items", () => {
+    const names = DRAFT_SUPPLEMENT_ITEMS.map((i) => i.name);
+    expect(names).toContain("Banner of Nagarythe");
+    expect(names).toContain("Whip of Agony");
   });
 });

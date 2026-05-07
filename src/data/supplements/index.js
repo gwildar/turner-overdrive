@@ -18,6 +18,29 @@ import skRenegade from "./sk-renegade.js";
 // Lore selection (v1.5 vs draft CVs) is controlled at import time in from-owb.js.
 const supplements = [rlpV15, deRenegade, okRenegade, skRenegade];
 
+// ── Stable / draft splits (for draft-toggle-aware resolution) ───────
+export const STABLE_SUPPLEMENT_RULES = rlpV15.specialRules || [];
+export const DRAFT_SUPPLEMENT_RULES = [
+  ...(deRenegade.specialRules || []),
+  ...(okRenegade.specialRules || []),
+  ...(skRenegade.specialRules || []),
+];
+
+export const STABLE_SUPPLEMENT_ITEMS = rlpV15.magicItems || [];
+export const DRAFT_SUPPLEMENT_ITEMS = [
+  ...(deRenegade.magicItems || []),
+  ...(okRenegade.magicItems || []),
+  ...(skRenegade.magicItems || []),
+];
+
+export const STABLE_SUPPLEMENT_UNITS = Object.assign({}, rlpV15.units || {});
+export const DRAFT_SUPPLEMENT_UNITS = Object.assign(
+  {},
+  deRenegade.units || {},
+  okRenegade.units || {},
+  skRenegade.units || {},
+);
+
 export const SUPPLEMENT_UNITS = Object.assign(
   {},
   ...supplements.map((s) => s.units || {}),

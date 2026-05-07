@@ -113,6 +113,17 @@ function injectUnitTroopTypeRules(unitRules, unit) {
 }
 
 function buildUnitRules(unit) {
+  // Resolved rule objects from the unit (already draft-toggle-aware)
+  const resolvedRules = new Map();
+  for (const rule of unit.specialRules || []) {
+    if (rule.id && rule.phases) {
+      resolvedRules.set(
+        normaliseRuleName(rule.displayName).toLowerCase(),
+        rule,
+      );
+    }
+  }
+
   const unitRules = [];
 
   for (const rule of unit.specialRules || []) {
@@ -141,7 +152,7 @@ function buildUnitRules(unit) {
   injectUnitTroopTypeRules(unitRules, unit);
   injectMountRules(unitRules, unit);
   injectTerrorFear(unitRules);
-  return unitRules;
+  return { unitRules, resolvedRules };
 }
 
 function renderRulesBlock(grouped, title) {
@@ -194,13 +205,43 @@ function renderRulesBlock(grouped, title) {
   `;
 }
 
+/**
+ * Find matching rule entries for a given rule name, preferring the unit's
+ * resolved rules (which are draft-toggle-aware) over the global RULES array.
+ * This prevents duplicate entries when core and draft supplements define the
+ * same rule id with different descriptions (e.g. Hekarti's Blessing).
+ */
+function findRulesForName(normName, resolvedRules) {
+  const resolved = resolvedRules.get(normName.toLowerCase());
+  if (resolved?.phases?.length) {
+    // Use the already-resolved rule (correct for current toggle state)
+    return [
+      {
+        ...resolved,
+        phases: resolved.phases.map((entry) =>
+          typeof entry === "string"
+            ? {
+                subPhaseId: entry,
+                description: resolved.description,
+                yourTurnOnly: resolved.yourTurnOnly,
+                opponentOnly: resolved.opponentOnly,
+                fromRound: resolved.fromRound,
+              }
+            : entry,
+        ),
+      },
+    ];
+  }
+  // Fall back to global RULES lookup for injected rules (weapons, troop types)
+  return RULES.filter((rule) => ruleMatches(rule, normName));
+}
+
 export function hasSpecialRulesForSubPhase(army, subPhaseId) {
   for (const unit of army.units) {
-    const unitRules = buildUnitRules(unit);
+    const { unitRules, resolvedRules } = buildUnitRules(unit);
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of RULES) {
-        if (!ruleMatches(rule, normName)) continue;
+      for (const rule of findRulesForName(normName, resolvedRules)) {
         if (rule.phases.some((p) => p.subPhaseId === subPhaseId)) return true;
       }
     }
@@ -210,11 +251,10 @@ export function hasSpecialRulesForSubPhase(army, subPhaseId) {
 
 export function hasStartOfTurnRules(army, round) {
   for (const unit of army.units) {
-    const unitRules = buildUnitRules(unit);
+    const { unitRules, resolvedRules } = buildUnitRules(unit);
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of RULES) {
-        if (!ruleMatches(rule, normName)) continue;
+      for (const rule of findRulesForName(normName, resolvedRules)) {
         for (const phase of rule.phases) {
           if (phase.subPhaseId !== "start-of-turn") continue;
           if (phase.fromRound && round < phase.fromRound) continue;
@@ -232,12 +272,11 @@ export function renderSpecialRulesContext(army, subPhase) {
   const matches = [];
 
   for (const unit of army.units) {
-    const unitRules = buildUnitRules(unit);
+    const { unitRules, resolvedRules } = buildUnitRules(unit);
 
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of RULES) {
-        if (!ruleMatches(rule, normName)) continue;
+      for (const rule of findRulesForName(normName, resolvedRules)) {
         for (const phase of rule.phases) {
           if (phase.subPhaseId !== subPhase.id) continue;
           if (phase.fromRound && round < phase.fromRound) continue;
@@ -276,12 +315,11 @@ export function renderSpecialRulesForPhase(army, phase) {
 
   for (const sub of phase.subPhases) {
     for (const unit of army.units) {
-      const unitRules = buildUnitRules(unit);
+      const { unitRules, resolvedRules } = buildUnitRules(unit);
 
       for (const ruleName of unitRules) {
         const normName = normaliseRuleName(ruleName);
-        for (const rule of RULES) {
-          if (!ruleMatches(rule, normName)) continue;
+        for (const rule of findRulesForName(normName, resolvedRules)) {
           for (const rulePhase of rule.phases) {
             if (rulePhase.subPhaseId !== sub.id) continue;
             if (rulePhase.fromRound && round < rulePhase.fromRound) continue;

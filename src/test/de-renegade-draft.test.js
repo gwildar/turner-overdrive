@@ -559,6 +559,32 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     expect(hydra.stomp).toBe("D3");
   });
 
+  it("toggle OFF: Hekarti's Blessing shows 'once per game' (not 'once per turn')", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    startGame(army);
+    saveRound(1);
+    const html = renderSpecialRulesContext(army, {
+      id: "conjuration",
+      label: "Conjuration",
+    });
+    expect(html).toContain("Once per game");
+    expect(html).not.toContain("Once per turn");
+  });
+
+  it("toggle ON: Hekarti's Blessing shows 'once per turn' (draft version)", () => {
+    saveSupplementsEnabled(true);
+    const army = loadArmy("de-renegade-draft");
+    startGame(army);
+    saveRound(1);
+    const html = renderSpecialRulesContext(army, {
+      id: "conjuration",
+      label: "Conjuration",
+    });
+    expect(html).toContain("Once per turn");
+    expect(html).not.toContain("Once per game");
+  });
+
   it("toggle OFF: caster has no naggaroth-renegade faction lore", () => {
     saveSupplementsEnabled(false);
     const army = loadArmy("de-renegade-draft");

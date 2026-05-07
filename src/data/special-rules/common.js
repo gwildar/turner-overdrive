@@ -1795,7 +1795,7 @@ export default [
     passive: true,
     description:
       "When making a Fear, Panic, or Terror test, roll an extra D6 and discard the highest result.",
-    phases: [],
+    phases: ["command", "rally", "choose-fight", "break-test"],
   },
   {
     id: "aquatic",
@@ -1803,7 +1803,7 @@ export default [
     passive: true,
     description:
       "No movement penalty in water terrain features (streams, rivers, lakes, swamps designated as water features).",
-    phases: [],
+    phases: ["remaining-moves"],
   },
   {
     id: "hold the line!",

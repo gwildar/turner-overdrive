@@ -159,6 +159,15 @@ function checkExilesMissingVow(rawJson) {
   return warnings;
 }
 
+function checkMountArmourSaveOverride(rawJson, army) {
+  return army.units
+    .filter((u) => u.armourSaveFromMount && u.mount?.as !== undefined)
+    .map((u) => ({
+      unitName: u.name,
+      message: `Armour save is ${u.armourSave} (from ${u.mount.name}'s natural save) — better than the rider's equipment alone. This is correct per the rules.`,
+    }));
+}
+
 const CHECKS = [
   checkShieldInMultipleArrays,
   checkBardingWithoutMount,
@@ -167,6 +176,7 @@ const CHECKS = [
   checkNoStatProfile,
   checkExilesMissingVow,
   checkPeasantBowmenSkirmishers,
+  checkMountArmourSaveOverride,
 ];
 
 export function validateArmy(rawJson, army) {

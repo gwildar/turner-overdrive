@@ -246,6 +246,13 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     specialRules,
     stats,
   );
+  // Flag when a ridden monster's natural AS overrides the rider's equipment AS.
+  // Used to generate an import warning so the player knows why their save looks unexpected.
+  const armourSaveFromMount =
+    mount?.as !== undefined &&
+    armourSave === `${Math.max(2, Math.min(6, mount.as))}+` &&
+    (armour.length > 0 ||
+      equipment.some((e) => e.toLowerCase().includes("armour")));
   const ward = computeWard(magicItems, specialRules);
   const regen = computeRegen(magicItems, specialRules);
   const magicResistance = computeMR(magicItems, specialRules, stats);
@@ -392,6 +399,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     specialRules,
     mount: mount || null,
     armourSave,
+    armourSaveFromMount: armourSaveFromMount || false,
     ward,
     regen,
     magicResistance,

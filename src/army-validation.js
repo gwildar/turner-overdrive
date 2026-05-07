@@ -164,7 +164,7 @@ function checkMountArmourSaveOverride(rawJson, army) {
     .filter((u) => u.armourSaveFromMount && u.mount?.as !== undefined)
     .map((u) => ({
       unitName: u.name,
-      message: `Armour save is ${u.armourSave} (from ${u.mount.name}'s natural save) — better than the rider's equipment alone. This is correct per the rules.`,
+      message: `Rider has mundane armour/shield equipped but ${u.mount.name} has a better natural armour save (${u.armourSave}) — is this correct?`,
     }));
 }
 

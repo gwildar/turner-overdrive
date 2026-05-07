@@ -322,6 +322,7 @@ export default {
       Name: "Scourgerunner Chariot",
       "Impact-Hits": "D6",
       as: 5,
+      rules: ["Swiftstride"],
     },
     {
       A: "1",

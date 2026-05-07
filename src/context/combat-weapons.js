@@ -29,7 +29,10 @@ function mergeStrength(baseS, weaponS) {
 const REDUNDANT_RULE_PATTERNS = [
   { pattern: /^Extra Attacks\s*\(/i, condition: (w) => w.attacks },
   { pattern: /^Magical Attacks/i },
-  { pattern: /^Poisoned Attacks/i, condition: (w) => w.reservedAttacks },
+  {
+    pattern: /^Poisoned Attacks/i,
+    condition: (w) => w.rules?.some((r) => /^Poisoned Attacks/i.test(r)),
+  },
 ];
 
 function stripRedundantRules(rules, w) {
@@ -173,11 +176,61 @@ function collectWeaponRows(r) {
     }
   }
 
-  // Crew
+  // Crew (with reserved/remaining A-budget split)
   for (const c of r.crew) {
     const weapons = c.weapons.length > 0 ? c.weapons : [HAND_WEAPON];
-    for (const w of weapons) {
-      rows.push(buildWeaponRow(c.i, c.ws, c.s, c.a, w, c.name, null, apMod));
+    const reserved = weapons.filter((w) => w.reservedAttacks);
+    const remaining = weapons.filter((w) => !w.reservedAttacks);
+    if (reserved.length === 0) {
+      for (const w of weapons) {
+        rows.push(
+          buildWeaponRow(
+            c.i,
+            c.ws,
+            c.s,
+            c.a,
+            w,
+            c.name,
+            weaponPoisonTags(w),
+            apMod,
+          ),
+        );
+      }
+    } else {
+      const totalA = parseInt(c.a) || 0;
+      const reservedCount = reserved.reduce(
+        (sum, w) => sum + w.reservedAttacks,
+        0,
+      );
+      const freeA = Math.max(totalA - reservedCount, 0);
+      for (const w of remaining) {
+        rows.push(
+          buildWeaponRow(
+            c.i,
+            c.ws,
+            c.s,
+            remaining.length === 1 ? freeA : "?",
+            w,
+            c.name,
+            weaponPoisonTags(w),
+            apMod,
+          ),
+        );
+      }
+      for (const w of reserved) {
+        rows.push(
+          buildWeaponRow(
+            c.i,
+            c.ws,
+            c.s,
+            w.reservedAttacks,
+            w,
+            c.name,
+            weaponPoisonTags(w),
+            apMod,
+          ),
+        );
+      }
     }
   }
 

@@ -699,8 +699,7 @@ export default {
       displayName: "Hekarti's Blessing",
       description:
         "Once per turn, a model with this special rule may re-roll a single failed Casting roll.",
-      phases: ["strategy"],
-      subPhases: ["conjuration"],
+      phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
       yourTurnOnly: true,
     },
     {

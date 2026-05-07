@@ -324,6 +324,14 @@ function collectCharWeaponRows(ch, apMod = 0) {
     );
   }
 
+  // Crew (ridden monsters/chariots with crew profiles)
+  for (const c of ch.crew || []) {
+    const weapons = c.weapons?.length > 0 ? c.weapons : [HAND_WEAPON];
+    for (const w of weapons) {
+      rows.push(buildWeaponRow(c.i, c.ws, c.s, c.a, w, c.name, null, apMod));
+    }
+  }
+
   return rows;
 }
 
@@ -433,6 +441,7 @@ export function renderCombatWeaponsContext(army) {
                       </div>
                       ${statRow(ch.t, ch.w, ch.as, ch.mr, ch.ward, ch.regen)}
                       ${renderWeaponTable(collectCharWeaponRows(ch, r.apMod))}
+                      ${ch.impactHits ? `<div class="text-xs text-wh-phase-combat mt-0.5">💥 Impact ${ch.impactHits}</div>` : ""}
                       ${renderCombatRulesHtml(ch.combatRules)}
                       ${ch.singleUseItems?.length > 0 ? `<div class="mt-1">${ch.singleUseItems.map((item) => `<div class="text-xs"><span class="text-wh-accent">\u{1F6E1} ${item.name}</span> <span class="text-wh-muted">(single use)</span></div>`).join("")}</div>` : ""}
                       ${ch.itemNames?.length > 0 ? `<div class="text-xs text-wh-muted mt-0.5">${ch.itemNames.join(", ")}</div>` : ""}

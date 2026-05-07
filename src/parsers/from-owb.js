@@ -348,10 +348,15 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   const regen = computeRegen(magicItems, specialRules);
   const magicResistance = computeMR(magicItems, specialRules, stats);
   const poisonedAttacks = computePoisonedAttacks(specialRules);
-  const stomp = computeStomp(mount, specialRules);
+  // stats[0].Stomps / stats[0]["Impact-Hits"] are authoritative for supplement overrides
+  // (e.g. war-hydra-renegade has D3+1 stomps vs legacy D3 in the OWB fixture text).
+  const stomp = stats?.[0]?.Stomps ?? computeStomp(mount, specialRules);
   const itemImpactHits =
     magicItems.find((item) => item.impactHits)?.impactHits ?? null;
-  const impactHits = computeImpactHits(mount, specialRules) ?? itemImpactHits;
+  const impactHits =
+    stats?.[0]?.["Impact-Hits"] ??
+    computeImpactHits(mount, specialRules) ??
+    itemImpactHits;
 
   // Command group flags
   const isGeneral =

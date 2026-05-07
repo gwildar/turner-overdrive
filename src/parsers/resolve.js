@@ -24,6 +24,8 @@ const MOUNT_KEY_OVERRIDES = {
   // Cauldron of Blood: use dedicated mount entry with bonus T/W and crew profiles
   "cauldron of blood": "cauldron-of-blood-mount",
   "cauldron of blood {renegade}": "cauldron-of-blood-mount",
+  // Scourgerunner Chariot: use dedicated mount entry with crew profiles
+  "scourgerunner chariot": "scourgerunner-chariot-mount",
 };
 
 const TROOP_STRENGTH_PER_MODEL = {

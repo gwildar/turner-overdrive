@@ -5,7 +5,7 @@ import {
   renderSpecialRulesContext,
 } from "../context/special-rules-context.js";
 import { buildCombatEntries } from "../context/combat-data.js";
-import { saveRound } from "../state.js";
+import { saveRound, saveCharacterAssignments } from "../state.js";
 
 describe("de-renegade-draft fixture", () => {
   let army;
@@ -46,6 +46,11 @@ describe("War Hydra draft rules", () => {
 
   it("hasStartOfTurnRules returns true for the draft army (Hydra rule)", () => {
     expect(hasStartOfTurnRules(army, 1)).toBe(true);
+  });
+
+  it("War Hydra stomp is D3+1 (renegade override, not legacy D3)", () => {
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    expect(hydra.stomp).toBe("D3+1");
   });
 });
 
@@ -197,5 +202,118 @@ describe("Death Hag on Cauldron of Blood", () => {
     const tags = combatEntry.riderTags;
     expect(tags.inline).not.toContain("☠️");
     expect(tags.sub).not.toContain("Poisoned Attacks");
+  });
+});
+
+describe("Death Hag assigned to Witch Elves", () => {
+  let army;
+  let witchElvesEntry;
+  let deathHagProfile;
+
+  beforeEach(() => {
+    saveCharacterAssignments({});
+    army = loadArmy("de-renegade-draft");
+    startGame(army);
+    saveRound(1);
+    const deathHag = army.units.find((u) => u.id.startsWith("death-hag"));
+    const witchElves = army.units.find((u) => u.id.startsWith("witch-elves"));
+    saveCharacterAssignments({ [deathHag.id]: witchElves.id });
+    witchElvesEntry = buildCombatEntries(army).find(
+      (e) => e.unitName === witchElves.name,
+    );
+    deathHagProfile = witchElvesEntry?.assignedCharProfiles?.find(
+      (p) => p.name === "Death Hag",
+    );
+  });
+
+  it("Death Hag appears as assigned char profile", () => {
+    expect(deathHagProfile).toBeDefined();
+  });
+
+  it("Death Hag shows T5 W7 from Cauldron when assigned", () => {
+    expect(deathHagProfile.t).toBe("5");
+    expect(deathHagProfile.w).toBe("7");
+  });
+
+  it("Death Hag assigned profile has Rune of Khaine in combatRules", () => {
+    expect(
+      deathHagProfile.combatRules.some((r) =>
+        r.toLowerCase().includes("rune of khaine"),
+      ),
+    ).toBe(true);
+  });
+
+  it("Death Hag assigned profile has crew from Cauldron", () => {
+    expect(deathHagProfile.crew.length).toBeGreaterThan(0);
+  });
+
+  it("Death Hag assigned profile has impactHits from Cauldron", () => {
+    expect(deathHagProfile.impactHits).toBe("D6+1");
+  });
+
+  it("Death Hag assigned profile shows A3+D3 (Rune of Khaine bonus)", () => {
+    expect(deathHagProfile.a).toBe("3+D3");
+  });
+});
+
+describe("High Beastmaster on Scourgerunner Chariot", () => {
+  let army;
+  let highBeastmaster;
+  let combatEntry;
+
+  beforeEach(() => {
+    army = loadArmy("de-renegade-draft");
+    highBeastmaster = army.units.find((u) =>
+      u.id.startsWith("high-beastmaster"),
+    );
+    combatEntry = buildCombatEntries(army).find(
+      (e) => e.unitName === "High Beastmaster",
+    );
+  });
+
+  it("High Beastmaster resolves Scourgerunner Chariot as mount", () => {
+    expect(highBeastmaster).toBeDefined();
+    expect(highBeastmaster.mount).toBeDefined();
+    expect(highBeastmaster.mount.name).toBe("Scourgerunner Chariot");
+  });
+
+  it("Scourgerunner Chariot mount has wBonus > 0 (isRiddenMonster)", () => {
+    expect(highBeastmaster.mount.wBonus).toBeGreaterThan(0);
+  });
+
+  it("High Beastmaster shows T4 W7 from Scourgerunner Chariot", () => {
+    expect(combatEntry).toBeDefined();
+    expect(combatEntry.t).toBe("4");
+    expect(combatEntry.w).toBe("7");
+  });
+
+  it("Scourgerunner Chariot has Beastmaster Crew in crew", () => {
+    const crew = combatEntry.crew;
+    const beastmasterCrew = crew.find(
+      (c) => c.name === "Beastmaster Crew (x2)",
+    );
+    expect(beastmasterCrew).toBeDefined();
+    expect(beastmasterCrew.a).toBe("1");
+  });
+
+  it("Scourgerunner Chariot has Dark Steed crew attacks", () => {
+    const crew = combatEntry.crew;
+    const darkSteed = crew.find((c) => c.name === "Dark Steed (x2)");
+    expect(darkSteed).toBeDefined();
+    expect(darkSteed.a).toBe("1");
+    expect(darkSteed.ws).toBe("3");
+  });
+
+  it("Beastmaster Crew has Cavalry Spear weapon", () => {
+    const crew = combatEntry.crew;
+    const beastmasterCrew = crew.find(
+      (c) => c.name === "Beastmaster Crew (x2)",
+    );
+    const weaponNames = beastmasterCrew.weapons.map((w) => w.name);
+    expect(weaponNames).toContain("Cavalry Spear");
+  });
+
+  it("High Beastmaster combat entry has D6 impact hits", () => {
+    expect(combatEntry.impactHits).toBe("D6");
   });
 });

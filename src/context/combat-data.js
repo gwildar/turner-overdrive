@@ -412,6 +412,18 @@ const COMBAT_RELEVANT_RULES = [
   "abyssal howl",
 ];
 
+// Rules that grant a variable bonus attacks count to show alongside base attacks.
+// Format: { ruleId -> attackBonus } where attackBonus is the string to append (e.g. "+D3").
+const EXTRA_ATTACK_RULES = { "rune of khaine": "+D3" };
+
+function extraAttackBonus(unit) {
+  for (const rule of unit.specialRules || []) {
+    const id = rule.id?.toLowerCase();
+    if (id && EXTRA_ATTACK_RULES[id]) return EXTRA_ATTACK_RULES[id];
+  }
+  return null;
+}
+
 // Rules that apply only to the controlling model (rider/handler), not beasts or mounts
 const RIDER_ONLY_RULES = new Set(["strike first", "elven reflexes"]);
 // Troop types where rider and mount are distinct models (Elven Reflexes applies to rider only)
@@ -691,18 +703,32 @@ export function buildCombatEntries(army) {
         matchRiderWeapons(char);
       const charMountWeapons = matchMountWeapons(char, charMatched);
       const charMount = char.mount ?? null;
+      const charIsRiddenMonster = charMount && charMount.wBonus > 0;
       let charMountA = null,
         charMountS = null,
         charMountI = null,
         charMountWS = null,
         charMountName = null;
-      if (charMount?.a) {
+      if (charMount?.a && charMount.a !== "-") {
         charMountA = charMount.a;
         charMountS = charMount.s;
         charMountI = charMount.i;
         charMountWS = charMount.ws;
         charMountName = charMount.name;
       }
+      const charBaseT = parseInt(cStats?.T) || 0;
+      const charBaseW = parseInt(cStats?.W) || 0;
+      const charCrew =
+        charIsRiddenMonster && charMount.crew
+          ? charMount.crew.map((c) => ({
+              name: c.name,
+              i: c.i,
+              ws: c.ws,
+              s: c.s,
+              a: c.a,
+              weapons: resolveCrewWeapons(c.equipment || []),
+            }))
+          : [];
       const { itemNames: charItemNames, singleUseItems: charSuItems } =
         buildFilteredItems(char);
       return {
@@ -711,9 +737,13 @@ export function buildCombatEntries(army) {
         i: cStats?.I || "?",
         ws: cStats?.WS || "?",
         s: cStats?.S || "?",
-        a: cStats?.A || "?",
-        t: cStats?.T || "?",
-        w: cStats?.W || "?",
+        a: cStats?.A ? `${cStats.A}${extraAttackBonus(char) ?? ""}` : "?",
+        t: charIsRiddenMonster
+          ? `${charBaseT + charMount.tBonus}`
+          : cStats?.T || "?",
+        w: charIsRiddenMonster
+          ? `${charBaseW + charMount.wBonus}`
+          : cStats?.W || "?",
         as: char.armourSave ?? null,
         mr: char.magicResistance ? parseInt(char.magicResistance) : null,
         ward: char.ward ?? null,
@@ -725,6 +755,8 @@ export function buildCombatEntries(army) {
         mountI: charMountI,
         mountWS: charMountWS,
         mountName: charMountName,
+        crew: charCrew,
+        impactHits: charIsRiddenMonster ? (charMount.impactHits ?? null) : null,
         tags: buildRiderTags(char, grantedRules),
         combatRules: extractCombatRules(char),
         itemNames: charItemNames,
@@ -966,7 +998,7 @@ export function buildCombatEntries(army) {
       regen: u.regen ?? null,
       iNum: Math.max(parseInt(riderI) || 0, mountI || 0),
       riderWeapons,
-      riderA: stats.A || "?",
+      riderA: stats.A ? `${stats.A}${extraAttackBonus(u) ?? ""}` : "?",
       mountWeapons,
       mountA,
       mountS,

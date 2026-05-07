@@ -1189,15 +1189,19 @@ describe("Combat phase — character assignment", () => {
 
   it("shows character T and W in the host unit card", () => {
     const { char, unit } = assignFirstCharToFirstUnit(army);
-    const charT = char.stats?.[0]?.T;
-    const charW = char.stats?.[0]?.W;
+    const rawT = parseInt(char.stats?.[0]?.T) || 0;
+    const rawW = parseInt(char.stats?.[0]?.W) || 0;
+    const mount = char.mount;
+    const isRiddenMonster = mount && mount.wBonus > 0;
+    const effectiveT = isRiddenMonster ? rawT + mount.tBonus : rawT;
+    const effectiveW = isRiddenMonster ? rawW + mount.wBonus : rawW;
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const hostCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find(
       (el) => el.textContent.includes(unit.name),
     );
-    if (charT) expect(hostCard.textContent).toContain(`T:${charT}`);
-    if (charW) expect(hostCard.textContent).toContain(`W:${charW}`);
+    if (effectiveT) expect(hostCard.textContent).toContain(`T:${effectiveT}`);
+    if (effectiveW) expect(hostCard.textContent).toContain(`W:${effectiveW}`);
   });
 
   it("does not show assigned character as a standalone combat card", () => {

@@ -822,6 +822,26 @@ export const COMBAT_WEAPONS = {
     ],
   },
   "wicked claws": { name: "Wicked Claws", s: "S", ap: "-2", rules: [] },
+  "cavernous maw": {
+    name: "Cavernous Maw",
+    s: "S",
+    ap: "-2",
+    rules: ["Armour Bane (1)", "Killing Blow"],
+    reservedAttacks: 1,
+  },
+  // Writhing Tentacles: DE variant (S, AP-2, Poisoned Attacks)
+  "writhing tentacles": {
+    name: "Writhing Tentacles",
+    s: "S",
+    ap: "-2",
+    rules: ["Poisoned Attacks"],
+  },
+  "writhing tentacles {dark elves}": {
+    name: "Writhing Tentacles",
+    s: "S",
+    ap: "-2",
+    rules: ["Poisoned Attacks"],
+  },
 
   // ─── Mount Weapons ───────────────────────────────────────────────────
   "serrated maw": {

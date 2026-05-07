@@ -832,6 +832,11 @@ export function buildCombatEntries(army) {
           const w = getWeapon(COMBAT_WEAPONS, wKey);
           if (w) crewWeaponNames.add(w.name);
         });
+      // Supplement units use stats.equipment (array of raw strings) instead of stats.weapons
+      if (!stats.weapons && stats.equipment)
+        resolveCrewWeapons(stats.equipment).forEach((w) =>
+          crewWeaponNames.add(w.name),
+        );
       for (const c of crew) {
         if (c.weapons)
           c.weapons.forEach((wKey) => {
@@ -849,7 +854,8 @@ export function buildCombatEntries(army) {
     }
 
     // Crewed units with weapons on stats[0] have no rider — mount is in crew array
-    if (stats.crewed && stats.weapons) riderWeapons.length = 0;
+    if (stats.crewed && (stats.weapons || stats.equipment))
+      riderWeapons.length = 0;
 
     // War machine bodies (A="-") do not fight — OWB may resolve default weapons onto
     // the unit but the machine itself has no melee attacks; only crew does.
@@ -858,7 +864,7 @@ export function buildCombatEntries(army) {
     // War machines (A="-") have no rider attacks — crew handles melee instead.
     if (
       riderWeapons.length === 0 &&
-      !(stats.crewed && stats.weapons) &&
+      !(stats.crewed && (stats.weapons || stats.equipment)) &&
       stats.A !== "-"
     )
       riderWeapons.push(HAND_WEAPON);
@@ -892,7 +898,13 @@ export function buildCombatEntries(army) {
       mountName = mount.name;
       mountStomp = mount.stomp;
       mountArmourBane = mount.armourBane || null;
-    } else if (stats.crewed && stats.A && stats.A !== "-" && !stats.weapons) {
+    } else if (
+      stats.crewed &&
+      stats.A &&
+      stats.A !== "-" &&
+      !stats.weapons &&
+      !stats.equipment
+    ) {
       // Crewed unit without explicit weapons: stats[0] is the mount/vehicle itself
       mountI = parseInt(stats.I) || null;
       mountWS = parseInt(stats.WS) || null;
@@ -962,7 +974,10 @@ export function buildCombatEntries(army) {
       riderTags: buildRiderTags(u),
       combatRules: extractCombatRules(u),
       crew: [
-        ...(stats.crewed && stats.weapons && stats.A && stats.A !== "-"
+        ...(stats.crewed &&
+        (stats.weapons || stats.equipment) &&
+        stats.A &&
+        stats.A !== "-"
           ? [
               {
                 name: stats.Name,
@@ -971,8 +986,10 @@ export function buildCombatEntries(army) {
                 s: stats.S,
                 a: stats.A,
                 weapons: stats.weapons
-                  .map((wKey) => getWeapon(COMBAT_WEAPONS, wKey))
-                  .filter(Boolean),
+                  ? stats.weapons
+                      .map((wKey) => getWeapon(COMBAT_WEAPONS, wKey))
+                      .filter(Boolean)
+                  : resolveCrewWeapons(stats.equipment || []),
               },
             ]
           : []),

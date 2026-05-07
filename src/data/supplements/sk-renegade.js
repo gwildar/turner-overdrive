@@ -5,6 +5,50 @@
 
 export default {
   units: {
+    // Night Runners: +Regimental Unit, +Vanguard
+    "night-runners-renegade": {
+      shared: {
+        rules: [
+          "Evasive",
+          "Fire & Flee",
+          "Regimental Unit",
+          "Scurry Away",
+          "Skirmishers",
+          "Vanguard",
+        ],
+        equipment: ["Hand weapons"],
+        troopType: ["RI"],
+        magic: [],
+        optionalRules: [],
+      },
+      stats: [
+        {
+          A: "1",
+          I: "5",
+          M: "6",
+          S: "3",
+          T: "3",
+          W: "1",
+          BS: "3",
+          Ld: "5",
+          WS: "3",
+          Name: "Night Runner",
+        },
+        {
+          A: "2",
+          I: "5",
+          M: "6",
+          S: "3",
+          T: "3",
+          W: "1",
+          BS: "3",
+          Ld: "5",
+          WS: "3",
+          Name: "Nightleader",
+        },
+      ],
+    },
+
     "clanrats-renegade": {
       shared: {
         rules: [

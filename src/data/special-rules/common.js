@@ -1014,9 +1014,9 @@ export default [
     id: "monster handlers",
     displayName: "Monster Handlers",
     passive: true,
-    phases: [],
+    phases: ["choose-fight"],
     description:
-      "Handlers add attacks to monster. Wounds allocated: 1-4 monster, 5+ handler. If monster dies, handlers die.",
+      "If the monster suffers an unsaved wound, roll a D6. On a roll of 1-4 the monster loses a Wound, but on a roll of 5+ one of the handlers is removed instead.",
   },
   {
     id: "howdah",

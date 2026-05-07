@@ -410,6 +410,7 @@ const COMBAT_RELEVANT_RULES = [
   "witchbrew",
   "sea dragon cloak",
   "abyssal howl",
+  "monster handlers",
 ];
 
 // Rules that grant a variable bonus attacks count to show alongside base attacks.
@@ -490,6 +491,23 @@ function getUnitLd(u) {
   return "?";
 }
 
+// For crewed units (beast + handlers), returns { primary, alt } where primary is the
+// handlers' Ld (used while alive) and alt is the beast's own Ld (fallback).
+// Returns null when there is only one distinct Ld value.
+function getCrewedLds(u) {
+  if (!u.stats || u.stats.length < 2 || !u.stats[0].crewed) return null;
+  const beastLd = u.stats[0].Ld && u.stats[0].Ld !== "-" ? u.stats[0].Ld : null;
+  let crewLd = null;
+  for (let i = 1; i < u.stats.length; i++) {
+    if (u.stats[i].Ld && u.stats[i].Ld !== "-") {
+      crewLd = u.stats[i].Ld;
+      break;
+    }
+  }
+  if (!beastLd || !crewLd || beastLd === crewLd) return null;
+  return { primary: crewLd, alt: beastLd };
+}
+
 export function buildCombatLeadershipData(army) {
   if (army.units.length === 0) {
     return {
@@ -524,16 +542,22 @@ export function buildCombatLeadershipData(army) {
     if (isCharacter(u) && assignedCharIds.has(u.id)) continue;
 
     const assignedChars = charsByUnitId[u.id] || [];
-    const allLds = [u, ...assignedChars]
-      .map((x) => parseInt(getUnitLd(x)) || 0)
-      .filter((x) => x > 0);
+    const crewedLds = getCrewedLds(u);
+    const allLds = [
+      ...(crewedLds
+        ? [parseInt(crewedLds.primary), parseInt(crewedLds.alt)]
+        : [parseInt(getUnitLd(u)) || 0]),
+      ...assignedChars.map((x) => parseInt(getUnitLd(x)) || 0),
+    ].filter((x) => x > 0);
     const maxLd = allLds.length > 0 ? String(Math.max(...allLds)) : "?";
+    const ldAlt = crewedLds && !assignedChars.length ? crewedLds.alt : null;
 
     const key = `${u.name}||${maxLd}`;
     if (!deduped[key])
       deduped[key] = {
         name: u.name,
         ld: maxLd,
+        ldAlt,
         ldNum: parseInt(maxLd) || 0,
         chars: assignedChars.map((c) => c.name),
       };

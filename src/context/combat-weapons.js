@@ -564,7 +564,7 @@ export function renderCombatLeadershipContext(army, title = "Break Test") {
             (r) => `
           <div class="p-2 rounded bg-wh-card flex justify-between items-center">
             <span class="text-wh-text text-sm">${r.name}${!r.merged && r.strength > 1 ? ` x${r.strength}` : ""}</span>
-            <span class="text-wh-muted font-mono text-xs">Ld${r.ld}</span>
+            <span class="text-wh-muted font-mono text-xs">Ld${r.ld}${r.ldAlt ? `<span class="text-wh-muted/60">/${r.ldAlt}</span>` : ""}</span>
           </div>
         `,
           )

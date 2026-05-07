@@ -21,6 +21,9 @@ const MOUNT_KEY_OVERRIDES = {
   griffon: "griffon-empire",
   manticore: "manticore-dark-elves",
   "skeletal steed": "skeletal-steed-vampire-counts",
+  // Cauldron of Blood: use dedicated mount entry with bonus T/W and crew profiles
+  "cauldron of blood": "cauldron-of-blood-mount",
+  "cauldron of blood {renegade}": "cauldron-of-blood-mount",
 };
 
 const TROOP_STRENGTH_PER_MODEL = {
@@ -143,6 +146,20 @@ export function findMount(name) {
     : null;
 
   const equipment = (profile.equipment ?? []).map((e) => e.toLowerCase());
+
+  // Crew profiles: subsequent stat lines with actual attacks (A != "-")
+  const crewProfiles = profiles
+    .slice(1)
+    .filter((p) => p.A && p.A !== "-" && p.Name)
+    .map((p) => ({
+      name: p.Name,
+      i: p.I,
+      ws: p.WS,
+      s: p.S,
+      a: p.A,
+      equipment: p.equipment || [],
+    }));
+
   return {
     name: profile.Name,
     m: parseInt(motiveProfile.M, 10),
@@ -154,8 +171,9 @@ export function findMount(name) {
     s: profile.S,
     i: profile.I,
     a: profile.A,
-    as: profile.as ?? null,
+    as: profile.as ?? (profile.AS ? parseInt(profile.AS, 10) : null),
     weapons: equipment,
+    crew: crewProfiles.length > 0 ? crewProfiles : null,
     swiftstride:
       profile.rules?.some((r) => r.toLowerCase() === "swiftstride") ?? false,
     troopType: profile.troopType?.[0] ?? null,

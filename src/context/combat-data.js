@@ -182,8 +182,11 @@ function buildRiderTags(unit, externalGrantedRules = null) {
     unconditionalStrengthMods,
     grantedRules: unitGrantedRules,
   } = detectItemBonuses([unit]);
+  // Poisoned Attacks from a special rule doesn't apply when a magic weapon replaces
+  // mundane attacks — only include unit.poisonedAttacks if no magic weapon is equipped.
+  const magicWeapon = findMagicWeapon(unit);
   const hasPoisoned =
-    (unit.poisonedAttacks ?? false) ||
+    ((unit.poisonedAttacks ?? false) && magicWeapon === null) ||
     unitGrantedRules.has("poisoned attacks") ||
     (externalGrantedRules?.has("poisoned attacks") ?? false);
   if (hasPoisoned) {
@@ -321,12 +324,21 @@ function getChampionWeapons(unit) {
 function resolveCrewWeapons(equipmentStrings) {
   const weapons = [];
   const seen = new Set();
+  // Sort keys longest-first so more specific keys (e.g. "two hand weapons") win over
+  // shorter substrings (e.g. "hand weapon") when both match the same equipment string.
+  const sortedKeys = Object.keys(COMBAT_WEAPONS).sort(
+    (a, b) => b.length - a.length,
+  );
   for (const equipStr of equipmentStrings) {
     const lower = equipStr.toLowerCase();
-    for (const [key, weapon] of Object.entries(COMBAT_WEAPONS)) {
-      if (lower.includes(key) && !seen.has(weapon.name)) {
-        seen.add(weapon.name);
-        weapons.push(weapon);
+    for (const key of sortedKeys) {
+      if (lower.includes(key)) {
+        const weapon = COMBAT_WEAPONS[key];
+        if (!seen.has(weapon.name)) {
+          seen.add(weapon.name);
+          weapons.push(weapon);
+        }
+        break; // longest match wins per equipment string
       }
     }
   }
@@ -1006,6 +1018,17 @@ export function buildCombatEntries(army) {
                   .filter(Boolean)
               : resolveCrewWeapons(c.equipment || []),
         })),
+        // Crew from a ridden monster mount (e.g. Death Hag on Cauldron of Blood)
+        ...(isRiddenMonster && mount.crew
+          ? mount.crew.map((c) => ({
+              name: c.name,
+              i: c.i,
+              ws: c.ws,
+              s: c.s,
+              a: c.a,
+              weapons: resolveCrewWeapons(c.equipment || []),
+            }))
+          : []),
       ],
       champions: champions.map((champion) => {
         const championWeapons = getChampionWeapons(u);

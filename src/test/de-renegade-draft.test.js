@@ -4,6 +4,7 @@ import {
   hasStartOfTurnRules,
   renderSpecialRulesContext,
 } from "../context/special-rules-context.js";
+import { buildCombatEntries } from "../context/combat-data.js";
 import { saveRound } from "../state.js";
 
 describe("de-renegade-draft fixture", () => {
@@ -123,5 +124,78 @@ describe("Behemoth troop type rule injection", () => {
       label: "Remaining Moves",
     });
     expect(html).toContain("Lumbering");
+  });
+});
+
+describe("Death Hag on Cauldron of Blood", () => {
+  let army;
+  let deathHag;
+  let combatEntry;
+
+  beforeEach(() => {
+    army = loadArmy("de-renegade-draft");
+    deathHag = army.units.find((u) => u.id.startsWith("death-hag"));
+    combatEntry = buildCombatEntries(army).find(
+      (e) => e.unitName === "Death Hag",
+    );
+  });
+
+  it("Death Hag resolves Cauldron of Blood as mount", () => {
+    expect(deathHag).toBeDefined();
+    expect(deathHag.mount).toBeDefined();
+    expect(deathHag.mount.name).toBe("Cauldron of Blood");
+  });
+
+  it("Cauldron mount has wBonus > 0 (isRiddenMonster)", () => {
+    expect(deathHag.mount.wBonus).toBeGreaterThan(0);
+  });
+
+  it("Death Hag combat entry shows T5 and W5 from Cauldron", () => {
+    expect(combatEntry).toBeDefined();
+    expect(combatEntry.t).toBe("5");
+    expect(combatEntry.w).toBe("5");
+  });
+
+  it("Death Hag combat entry shows Impact Hits D6+1", () => {
+    expect(combatEntry.impactHits).toBe("D6+1");
+  });
+
+  it("Death Hag has armour save 4+ from Cauldron", () => {
+    expect(deathHag.armourSave).toBe("4+");
+  });
+
+  it("Witch Elf Crew shown in combat entry crew", () => {
+    const crew = combatEntry.crew;
+    const witchElves = crew.find((c) => c.name === "Witch Elf Crew (x2)");
+    expect(witchElves).toBeDefined();
+    expect(witchElves.a).toBe("1");
+    expect(witchElves.i).toBe("5");
+  });
+
+  it("Witch Elf Crew has Additional Hand Weapon in combat entry (two hand weapons = extra attack)", () => {
+    const crew = combatEntry.crew;
+    const witchElves = crew.find((c) => c.name === "Witch Elf Crew (x2)");
+    const weaponNames = witchElves.weapons.map((w) => w.name);
+    expect(weaponNames).toContain("Additional Hand Weapon");
+  });
+
+  it("Rune of Khaine is in Death Hag specialRules", () => {
+    const ruleIds = deathHag.specialRules.map((r) => r.id);
+    expect(ruleIds).toContain("rune of khaine");
+  });
+
+  it("Rune of Khaine shows in combat rules (choose-fight)", () => {
+    const combatRules = combatEntry.combatRules;
+    expect(
+      combatRules.some((r) => r.toLowerCase().includes("rune of khaine")),
+    ).toBe(true);
+  });
+
+  it("Poisoned Attacks suppressed when Death Hag has Ogre Blade (magic weapon)", () => {
+    // Unit has Poisoned Attacks special rule but magic weapon replaces mundane — skull should not show
+    expect(deathHag.poisonedAttacks).toBe(true);
+    const tags = combatEntry.riderTags;
+    expect(tags.inline).not.toContain("☠️");
+    expect(tags.sub).not.toContain("Poisoned Attacks");
   });
 });

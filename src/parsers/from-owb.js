@@ -220,6 +220,40 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     }
   }
 
+  // Inject gift/attribute-type items as special rules (e.g. Rune of Khaine from Gifts of Khaine).
+  // These items don't appear in magic-items.js but are named special rules (e.g. phases: ["choose-fight"]).
+  const MAGIC_ITEM_TYPES = new Set([
+    "weapon",
+    "armour",
+    "talisman",
+    "enchanted-item",
+    "banner",
+    "standard",
+    "virtue",
+  ]);
+  if (Array.isArray(raw.items)) {
+    for (const slot of raw.items) {
+      for (const item of slot.selected || []) {
+        if (!MAGIC_ITEM_TYPES.has(item.type)) {
+          const resolved = resolveSpecialRules(item.name_en);
+          for (const r of resolved) {
+            if (
+              r.id &&
+              !specialRules.some(
+                (sr) =>
+                  sr.id === r.id ||
+                  sr.displayName?.toLowerCase() ===
+                    r.displayName?.toLowerCase(),
+              )
+            ) {
+              specialRules.push(r);
+            }
+          }
+        }
+      }
+    }
+  }
+
   // Inject rules granted by magic items (e.g. Alter Kindred aspects)
   for (const item of magicItems) {
     for (const ruleName of item.grantsRules || []) {

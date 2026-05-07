@@ -384,7 +384,10 @@ export function computeArmourSave(
 ) {
   let baseAS = null;
 
-  // Natural armour save from unit stat line (e.g. Thundertusk AS:5, Bastiladon AS:3)
+  // Natural armour save from the unit's stat line — the "Armour Value" field for
+  // vehicles, monsters, and crewed units (e.g. Thundertusk AS:"5", Bastiladon AS:"3").
+  // This is distinct from lowercase `as` which stores the equipment-derived save
+  // pre-computed by OWB (e.g. as:6 for light armour).
   if (stats && stats[0]?.AS) {
     baseAS = parseInt(stats[0].AS);
   }

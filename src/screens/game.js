@@ -253,33 +253,43 @@ export function hasStartOfTurnContent(army) {
   );
 }
 
+/**
+ * Whether a sub-phase should be skipped for this army (direction-independent).
+ * Shared between getVisibleSubPhases and nextVisibleIdx.
+ */
+function shouldSkipSubPhase(army, subPhaseId) {
+  if (subPhaseId === "reserve-moves" && !hasReserveMove(army)) return true;
+  if (subPhaseId === "command" && !hasCommandContent(army)) return true;
+  if ((army.skipPhases || []).includes(subPhaseId)) return true;
+  return false;
+}
+
 function getVisibleSubPhases(army) {
   return allSubPhases.filter(({ subPhase }) => {
-    const id = subPhase.id;
-    if (id === "start-of-turn" && !hasStartOfTurnContent(army)) return false;
-    if (id === "reserve-moves" && !hasReserveMove(army)) return false;
-    if (id === "command" && !hasCommandContent(army)) return false;
-    if ((army.skipPhases || []).includes(id)) return false;
-    return true;
+    if (subPhase.id === "start-of-turn" && !hasStartOfTurnContent(army))
+      return false;
+    return !shouldSkipSubPhase(army, subPhase.id);
   });
 }
 
 function nextVisibleIdx(army, from, direction) {
   let idx = from + direction;
   while (idx >= 0 && idx < allSubPhases.length) {
-    const subPhaseId = allSubPhases[idx].subPhase.id;
-    const skipStartOfTurn =
-      direction > 0 &&
-      subPhaseId === "start-of-turn" &&
-      !hasStartOfTurnContent(army);
+    const id = allSubPhases[idx].subPhase.id;
+    if (shouldSkipSubPhase(army, id)) {
+      idx += direction;
+      continue;
+    }
+    // Only skip start-of-turn when navigating forward (user can go back to it)
     if (
-      !skipStartOfTurn &&
-      (subPhaseId !== "reserve-moves" || hasReserveMove(army)) &&
-      (subPhaseId !== "command" || hasCommandContent(army)) &&
-      !(army.skipPhases || []).includes(subPhaseId)
-    )
-      return idx;
-    idx += direction;
+      direction > 0 &&
+      id === "start-of-turn" &&
+      !hasStartOfTurnContent(army)
+    ) {
+      idx += direction;
+      continue;
+    }
+    return idx;
   }
   return -1;
 }

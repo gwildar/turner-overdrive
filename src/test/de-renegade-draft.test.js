@@ -344,6 +344,14 @@ describe("High Beastmaster on Scourgerunner Chariot", () => {
     expect(names).toContain("Ravager Harpoon");
     expect(names).toContain("Repeater Crossbow");
   });
+
+  it("Chariot crew shooting weapons have crew BS4 and crew name", () => {
+    const harpoon = highBeastmaster.shootingWeapons.find(
+      (w) => w.name === "Ravager Harpoon",
+    );
+    expect(harpoon.crewBS).toBe("4");
+    expect(harpoon.crewName).toBe("Beastmaster Crew (x2)");
+  });
 });
 
 describe("Murderous rule version for de-renegade", () => {

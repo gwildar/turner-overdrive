@@ -100,14 +100,17 @@ export function renderShootingContext(army) {
             rangedWeapon = { name: weapon.name };
           }
           if (rangedWeapon) {
+            const weaponBS = weapon.crewBS || bs;
+            const weaponCrewName = weapon.crewName || null;
             entries.push({
               unitName: u.name,
               strength: u.strength,
-              bs,
+              bs: weaponBS,
               unitS,
-              championBS,
+              championBS: weaponCrewName ? null : championBS,
               hasArrowsOfIsha,
               weapon: rangedWeapon,
+              crewName: weaponCrewName,
             });
             matched = true;
 
@@ -119,11 +122,12 @@ export function renderShootingContext(army) {
                   entries.push({
                     unitName: u.name,
                     strength: u.strength,
-                    bs,
+                    bs: weaponBS,
                     unitS,
-                    championBS,
+                    championBS: weaponCrewName ? null : championBS,
                     hasArrowsOfIsha,
                     weapon: altWeapon,
+                    crewName: weaponCrewName,
                   });
                 }
               }
@@ -244,7 +248,7 @@ export function renderShootingContext(army) {
                   (r) => `
                 <div class="pl-2 border-l-2 border-wh-phase-shooting/20">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="text-wh-muted text-sm">${r.weapon.name}</span>
+                    <span class="text-wh-muted text-sm">${r.weapon.name}${r.crewName ? ` <span class="text-wh-muted/60 text-xs">(${r.crewName})</span>` : ""}</span>
                     ${r.bs && !r.weapon?.noBS ? `<span class="text-wh-phase-shooting font-mono text-xs">BS${r.bs}</span>` : ""}
                     <span class="text-wh-phase-shooting font-mono text-xs">${r.weapon.range}</span>
                     ${r.weapon.s ? `<span class="text-wh-muted font-mono text-xs">S${resolveStrength(r.weapon.s, r.unitS)}</span>` : ""}

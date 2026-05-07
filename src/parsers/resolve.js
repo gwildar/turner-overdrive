@@ -173,6 +173,7 @@ export function findMount(name) {
       name: p.Name,
       i: p.I,
       ws: p.WS,
+      bs: p.BS,
       s: p.S,
       a: p.A,
       equipment: p.equipment || [],

@@ -5,6 +5,7 @@
 
 import { LORE_NAME_TO_KEY } from "../data/spells.js";
 import { ARMY_PHASE_CONFIG } from "../data/army-compositions.js";
+import { getSupplementsEnabled } from "../state.js";
 import {
   resolveWeapons,
   resolveShootingWeapons,
@@ -215,11 +216,18 @@ function parseCanonicalUnit(selection, category) {
 
   const allRulesText = [...topLevelRules, ...rulesText].join(", ");
 
+  // Get draft state for resolve functions
+  const isDraft = getSupplementsEnabled();
+
   // Resolve all data
-  const weapons = resolveWeapons(equipment, magicItemNames);
+  const weapons = resolveWeapons(equipment, magicItemNames, undefined, isDraft);
   const shootingWeapons = resolveShootingWeapons(equipment);
-  const resolvedMagicItems = resolveMagicItems(magicItemNames);
-  const specialRules = resolveSpecialRules(allRulesText);
+  const resolvedMagicItems = resolveMagicItems(
+    magicItemNames,
+    undefined,
+    isDraft,
+  );
+  const specialRules = resolveSpecialRules(allRulesText, isDraft);
   const spellSelectionMode = deriveSpellSelectionMode(
     resolvedMagicItems,
     specialRules,
@@ -314,7 +322,7 @@ function parseCanonicalUnit(selection, category) {
   }
 
   // Look up stats from units.js to get troopType for unit strength calculation
-  const resolvedStats = resolveStats(id, unitName);
+  const resolvedStats = resolveStats(id, unitName, undefined, isDraft);
 
   // Build canonical unit
   const unit = {

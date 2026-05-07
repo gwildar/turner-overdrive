@@ -1,23 +1,4 @@
 export default {
-  "araloth,-lord-of-talsyn": [
-    {
-      A: "4",
-      I: "8",
-      M: "5",
-      S: "4",
-      T: "3",
-      W: "3",
-      BS: "7",
-      Ld: "10",
-      WS: "8",
-      Name: "Araloth, Lord of Talsyn",
-      rules: [],
-      equipment: [],
-      troopType: [],
-      magic: [],
-      optionalRules: [],
-    },
-  ],
   "bear-of-loren": [
     {
       A: "2",

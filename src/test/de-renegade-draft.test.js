@@ -107,3 +107,21 @@ describe("Black Dragon Terror injection", () => {
     expect(html).toContain("Terror");
   });
 });
+
+describe("Behemoth troop type rule injection", () => {
+  let army;
+
+  beforeEach(() => {
+    army = loadArmy("de-renegade-draft");
+    startGame(army);
+    saveRound(1);
+  });
+
+  it("War Hydra shows Lumbering in remaining-moves context", () => {
+    const html = renderSpecialRulesContext(army, {
+      id: "remaining-moves",
+      label: "Remaining Moves",
+    });
+    expect(html).toContain("Lumbering");
+  });
+});

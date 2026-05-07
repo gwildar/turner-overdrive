@@ -35,7 +35,8 @@ export function renderMovementStatsContext(army) {
       const mountData = u.mount ?? null;
       const chars = (charsByUnitId[u.id] || []).map((c) => c.name);
 
-      // War machines: use crew M stat, no march allowed
+      // Crewed units: use crew M stat; war machines (WM) cannot march, others can
+      const isWM = u.stats?.[0]?.troopType?.includes("WM");
       const crewProfile =
         u.stats?.[0]?.crewed === true
           ? u.stats.find((s) => s.Ld && s.Ld !== "-")
@@ -43,7 +44,8 @@ export function renderMovementStatsContext(army) {
       if (crewProfile) {
         const baseMv =
           crewProfile.M && crewProfile.M !== "-" ? Number(crewProfile.M) : null;
-        return { u, baseMv, march: null, flyMv: null, chars };
+        const crewMarch = isWM ? null : baseMv != null ? baseMv * 2 : null;
+        return { u, baseMv, march: crewMarch, flyMv: null, chars };
       }
 
       const mv = resolveMovement(u);

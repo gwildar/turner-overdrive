@@ -127,8 +127,15 @@ export function findMount(name) {
   const entry = UNIT_STATS[key];
   if (!entry) return null;
 
-  const profile = resolveUnitEntry(entry)[0];
+  const profiles = resolveUnitEntry(entry);
+  const profile = profiles[0];
   if (!profile) return null;
+
+  // For crewed units (chariots), the first profile is the vehicle body (M: "-").
+  // Find the motive power profile — the first profile with a valid M value.
+  const motiveProfile =
+    profiles.find((p) => p.M && p.M !== "-" && !isNaN(parseInt(p.M, 10))) ??
+    profile;
 
   const armourBaneRule = profile.rules?.find((r) => /^Armour Bane/i.test(r));
   const armourBane = armourBaneRule
@@ -138,7 +145,7 @@ export function findMount(name) {
   const equipment = (profile.equipment ?? []).map((e) => e.toLowerCase());
   return {
     name: profile.Name,
-    m: parseInt(profile.M, 10),
+    m: parseInt(motiveProfile.M, 10),
     stomp: profile.Stomps ?? null,
     impactHits: profile["Impact-Hits"] ?? null,
     tBonus: parseBonusInt(profile.T),

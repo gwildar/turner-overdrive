@@ -380,12 +380,24 @@ export const RANGED_WEAPONS = {
     ap: "—",
     rules: ["Breath Weapon. No armour saves. -1 WS on wounded models."],
   },
+  // Lizardmen Salamander — fixed template, auto-hit (no BS roll)
   "fiery breath": {
     name: "Fiery Breath",
     range: "Template",
     s: "—",
     ap: "—",
+    noBS: true,
     rules: ["Breath Weapon", "Flaming Attacks"],
+  },
+  // Dark Elves War Hydra — S equals remaining Wounds; {dark elves} annotation in OWB
+  // export ensures this longer key takes priority over the plain "fiery breath" entry
+  "fiery breath {dark elves}": {
+    name: "Fiery Breath (Dark Elves)",
+    range: "Template",
+    s: "W",
+    ap: "—",
+    noBS: true,
+    rules: ["Breath Weapon", "Flaming Attacks", "S = remaining Wounds"],
   },
   "dragon fire": {
     name: "Dragon Fire",

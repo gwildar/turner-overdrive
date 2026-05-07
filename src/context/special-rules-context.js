@@ -97,6 +97,21 @@ function injectTerrorFear(unitRules) {
   }
 }
 
+function injectUnitTroopTypeRules(unitRules, unit) {
+  const troopType = unit.stats?.[0]?.troopType?.[0];
+  if (!troopType) return;
+  const rules = TROOP_TYPE_RULES[troopType] || [];
+  for (const rule of rules) {
+    if (
+      !unitRules.some(
+        (r) => normaliseRuleName(r).toLowerCase() === rule.toLowerCase(),
+      )
+    ) {
+      unitRules.push(rule);
+    }
+  }
+}
+
 function buildUnitRules(unit) {
   const unitRules = [];
 
@@ -123,6 +138,7 @@ function buildUnitRules(unit) {
     }
   }
 
+  injectUnitTroopTypeRules(unitRules, unit);
   injectMountRules(unitRules, unit);
   injectTerrorFear(unitRules);
   return unitRules;

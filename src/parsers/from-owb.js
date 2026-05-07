@@ -205,7 +205,15 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     for (const ruleName of stats[0].rules) {
       const resolved = resolveSpecialRules(ruleName);
       for (const r of resolved) {
-        if (r.id && !specialRules.some((sr) => sr.id === r.id)) {
+        if (
+          r.id &&
+          !specialRules.some(
+            (sr) =>
+              sr.id === r.id ||
+              (sr.displayName &&
+                sr.displayName.toLowerCase() === r.displayName?.toLowerCase()),
+          )
+        ) {
           specialRules.push(r);
         }
       }

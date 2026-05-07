@@ -338,6 +338,12 @@ describe("High Beastmaster on Scourgerunner Chariot", () => {
   it("High Beastmaster combat entry has D6 impact hits", () => {
     expect(combatEntry.impactHits).toBe("D6");
   });
+
+  it("High Beastmaster has Ravager Harpoon and Repeater Crossbow shooting weapons from chariot crew", () => {
+    const names = highBeastmaster.shootingWeapons.map((w) => w.name);
+    expect(names).toContain("Ravager Harpoon");
+    expect(names).toContain("Repeater Crossbow");
+  });
 });
 
 describe("Murderous rule version for de-renegade", () => {

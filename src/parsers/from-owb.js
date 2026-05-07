@@ -303,6 +303,20 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   }
   const mount = resolveMount(mountName);
 
+  // Append mount crew shooting weapons (e.g. Scourgerunner Chariot's Ravager Harpoon
+  // and Repeater Crossbows are on the crew, not the character's equipment list).
+  if (mount?.crew) {
+    const crewEquip = mount.crew.flatMap((c) => c.equipment || []);
+    if (crewEquip.length > 0) {
+      const crewShooting = resolveShootingWeapons(crewEquip);
+      for (const sw of crewShooting) {
+        if (!shootingWeapons.some((w) => w.name === sw.name)) {
+          shootingWeapons.push(sw);
+        }
+      }
+    }
+  }
+
   // Compute saves
   const armourSave = computeArmourSave(
     equipment,

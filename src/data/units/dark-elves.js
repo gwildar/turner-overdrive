@@ -335,7 +335,12 @@ export default {
       Ld: "8",
       WS: "4",
       Name: "Beastmaster Crew (x2)",
-      equipment: ["cavalry spears", "Hand weapons"],
+      equipment: [
+        "Ravager harpoon",
+        "Hand weapons",
+        "cavalry spears",
+        "repeater crossbows",
+      ],
     },
     {
       A: "1",

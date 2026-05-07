@@ -1218,4 +1218,28 @@ export default {
       },
     ],
   },
+  "storm-weaver": [
+    {
+      A: "2",
+      I: "4",
+      M: "5",
+      S: "3",
+      T: "3",
+      W: "2",
+      BS: "4",
+      Ld: "9",
+      WS: "4",
+      Name: "Storm Weaver",
+      rules: [
+        "Elven Reflexes",
+        "Ithilmar Weapons",
+        "Lore of Saphery",
+        "Valour of Ages",
+      ],
+      equipment: ["Hand weapon"],
+      troopType: ["RI", "Ch"],
+      magic: ["dark magic", "elementalism", "illusion"],
+      optionalRules: [],
+    },
+  ],
 };

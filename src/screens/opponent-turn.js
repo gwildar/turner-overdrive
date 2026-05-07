@@ -107,6 +107,9 @@ function renderOpponentPhaseContext(army, phase) {
   html += renderMagicItemsContext(army, phase.id, null);
   html += renderVirtuesContext(army, phase.id, null);
   html += renderSpecialRulesForPhase(army, phase);
+  // Miscast table shown on opponent's turn only — your caster can miscast a dispel
+  // attempt, or the opponent's caster can miscast. Not shown on your own turn since
+  // the conjuration sub-phase already has the miscast reference.
   if (phase.id !== "scoring") html += renderMiscastPanel();
 
   return html;

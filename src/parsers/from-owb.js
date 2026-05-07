@@ -181,19 +181,20 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   }
 
   // Look up stats from units.js (source of truth)
-  const stats = resolveStats(id, raw.name_en);
+  const stats = resolveStats(id, raw.name_en, armyComposition);
 
-  // Resolve weapons and items
-  const weapons = resolveWeapons(equipment, magicItemNames);
+  // Resolve weapons and items (composition-aware for supplement overrides)
+  const weapons = resolveWeapons(equipment, magicItemNames, armyComposition);
   const shootingWeapons = resolveShootingWeapons([
     ...equipment,
     specialRulesText || "",
     raw.name_en || "",
   ]);
-  const magicItems = resolveMagicItems(magicItemNames).map((item) =>
-    commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
-      ? { ...item, championOnly: true }
-      : item,
+  const magicItems = resolveMagicItems(magicItemNames, armyComposition).map(
+    (item) =>
+      commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
+        ? { ...item, championOnly: true }
+        : item,
   );
   let specialRules = resolveSpecialRules(specialRulesText);
 
@@ -369,8 +370,8 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Parse detachments (e.g. beasts in a Wood Elf Beast Pack)
   const detachments = (raw.detachments || []).map((det) => {
     const detEquipment = collectActive(det.equipment);
-    const detStats = resolveStats(det.id, det.name_en);
-    const detWeapons = resolveWeapons(detEquipment, []);
+    const detStats = resolveStats(det.id, det.name_en, armyComposition);
+    const detWeapons = resolveWeapons(detEquipment, [], armyComposition);
     const detSpecialRules = resolveSpecialRules(
       det.specialRules?.name_en || "",
     );

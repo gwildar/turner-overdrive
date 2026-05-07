@@ -1,5 +1,6 @@
 import { COMBAT_WEAPONS, RANGED_WEAPONS } from "../data/weapons.js";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
+import { SUPPLEMENT_ITEMS } from "../data/supplements/index.js";
 import { SPECIAL_RULES } from "../data/special-rules.js";
 import { UNIT_STATS } from "../data/units.js";
 
@@ -89,7 +90,7 @@ export function resolveUnitEntry(entry) {
     : entry.stats.map((s) => ({ ...entry.shared, ...s }));
 }
 
-export function resolveStats(id, name) {
+export function resolveStats(id, name, composition) {
   const baseId = (id || "").split(".")[0];
   const slug = name?.replace(/[{}]/g, "").toLowerCase().replace(/\s+/g, "-");
   const keys = [
@@ -99,6 +100,13 @@ export function resolveStats(id, name) {
     slug,
     slug?.replace(/s$/, ""),
   ];
+  // For renegade compositions, try -renegade suffixed keys first
+  if (composition?.includes("renegade")) {
+    for (const key of keys) {
+      const rk = key ? key + "-renegade" : null;
+      if (rk && UNIT_STATS[rk]) return resolveUnitEntry(UNIT_STATS[rk]);
+    }
+  }
   for (const key of keys) {
     if (key && UNIT_STATS[key]) return resolveUnitEntry(UNIT_STATS[key]);
   }
@@ -173,7 +181,9 @@ function normaliseItemName(name) {
 }
 
 /**
- * Build a lookup map from magic item names (lowercase) → item data
+ * Build a lookup map from magic item names (lowercase) → item data.
+ * Uses first-write-wins so core items are preserved when supplement items
+ * share the same name (e.g. Weeping Blade at different points costs).
  */
 function buildMagicItemMap() {
   const map = {};
@@ -182,12 +192,30 @@ function buildMagicItemMap() {
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
-    map[key] = item;
+    if (!map[key]) map[key] = item;
   }
   return map;
 }
 
 const MAGIC_ITEM_MAP = buildMagicItemMap();
+
+// Supplement items in a separate map, checked only for renegade compositions.
+const SUPPLEMENT_ITEM_MAP = {};
+for (const item of SUPPLEMENT_ITEMS) {
+  const key = item.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  SUPPLEMENT_ITEM_MAP[key] = item;
+}
+
+function lookupItem(name, composition) {
+  const key = normaliseItemName(name);
+  if (composition?.includes("renegade") && SUPPLEMENT_ITEM_MAP[key]) {
+    return SUPPLEMENT_ITEM_MAP[key];
+  }
+  return MAGIC_ITEM_MAP[key] ?? null;
+}
 
 const WARD_RULES = new Map([
   ["the grail vow", "6+ (5+ > S5)"],
@@ -199,17 +227,17 @@ const WARD_RULES = new Map([
  * Resolve combat weapons from equipment strings
  * @param {string[]} equipmentStrings - e.g. ["Hand weapon", "Lance", "Shield"]
  * @param {string[]} magicItemNames - magic item names that may include weapons
+ * @param {string} [composition] - army composition for supplement-aware lookup
  * @returns {object[]} - array of resolved weapon objects
  */
-export function resolveWeapons(equipmentStrings, magicItemNames) {
+export function resolveWeapons(equipmentStrings, magicItemNames, composition) {
   const weapons = [];
   const seen = new Set();
 
   // Check for magic weapons first (skip champion-only items)
   for (const itemName of magicItemNames) {
     if (itemName.toLowerCase().includes("(champion)")) continue;
-    const cleanName = normaliseItemName(itemName);
-    const mi = MAGIC_ITEM_MAP[cleanName];
+    const mi = lookupItem(itemName, composition);
     if (mi?.type === "weapon" && mi.s && mi.phases?.includes("combat")) {
       const weapon = {
         name: mi.name,
@@ -304,14 +332,14 @@ export function resolveShootingWeapons(equipmentStrings) {
 /**
  * Resolve magic items by name
  * @param {string[]} itemNames - magic item names
+ * @param {string} [composition] - army composition for supplement-aware lookup
  * @returns {object[]} - array of full magic item objects
  */
-export function resolveMagicItems(itemNames) {
+export function resolveMagicItems(itemNames, composition) {
   const items = [];
 
   for (const name of itemNames) {
-    const cleanName = normaliseItemName(name);
-    const mi = MAGIC_ITEM_MAP[cleanName];
+    const mi = lookupItem(name, composition);
     if (mi) {
       items.push(mi);
     }

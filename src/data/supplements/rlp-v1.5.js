@@ -40,6 +40,7 @@ export default {
     {
       id: "murderous-v1.5",
       displayName: "Murderous",
+      aliases: ["Murderous {renegade}"],
       passive: true,
       description:
         "In the first round of combat, a model with this special rule may re-roll any rolls To Wound of a natural 1. Only applies to non-magical weapons. Does not apply to a model's mount. (Renegade Legacy Pack v1.5)",

@@ -317,3 +317,24 @@ describe("High Beastmaster on Scourgerunner Chariot", () => {
     expect(combatEntry.impactHits).toBe("D6");
   });
 });
+
+describe("Murderous rule version for de-renegade", () => {
+  let army;
+
+  beforeEach(() => {
+    army = loadArmy("de-renegade-draft");
+  });
+
+  it("units with Murderous {renegade} resolve to v1.5 rule (first round only), not draft (all rounds)", () => {
+    // OWB exports "Murderous {renegade}" for DE renegade units.
+    // Should resolve to murderous-v1.5, NOT murderous-renegade (draft).
+    const witchElves = army.units.find((u) => u.id.startsWith("witch-elves"));
+    expect(witchElves).toBeDefined();
+    const murderous = witchElves.specialRules.find(
+      (r) => r.displayName === "Murderous",
+    );
+    expect(murderous).toBeDefined();
+    expect(murderous.id).toBe("murderous-v1.5");
+    expect(murderous.description).toContain("first round of combat");
+  });
+});

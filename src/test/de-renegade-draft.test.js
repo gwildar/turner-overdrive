@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   STABLE_SUPPLEMENT_RULES,
   DRAFT_SUPPLEMENT_RULES,
@@ -18,7 +18,11 @@ import {
   renderSpecialRulesContext,
 } from "../context/special-rules-context.js";
 import { buildCombatEntries } from "../context/combat-data.js";
-import { saveRound, saveCharacterAssignments } from "../state.js";
+import {
+  saveRound,
+  saveCharacterAssignments,
+  saveSupplementsEnabled,
+} from "../state.js";
 
 describe("de-renegade-draft fixture", () => {
   let army;
@@ -37,20 +41,22 @@ describe("War Hydra draft rules", () => {
   let army;
 
   beforeEach(() => {
+    saveSupplementsEnabled(true);
     army = loadArmy("de-renegade-draft");
   });
 
-  // Skipped: loadArmy doesn't yet pass isDraft to resolveSpecialRules.
-  // Will be un-skipped in Task 5 when isDraft is threaded through from-owb.js.
-  it.skip("War Hydra has 'if one head is severed' special rule", () => {
+  afterEach(() => {
+    saveSupplementsEnabled(false);
+  });
+
+  it("War Hydra has 'if one head is severed' special rule", () => {
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra).toBeDefined();
     const ruleIds = hydra.specialRules.map((r) => r.id);
     expect(ruleIds).toContain("if one head is severed");
   });
 
-  // Skipped: depends on isDraft being threaded through from-owb.js (Task 5).
-  it.skip("War Hydra 'if one head is severed' shows in start-of-turn context", () => {
+  it("War Hydra 'if one head is severed' shows in start-of-turn context", () => {
     startGame(army);
     saveRound(1);
     const html = renderSpecialRulesContext(army, {
@@ -64,9 +70,7 @@ describe("War Hydra draft rules", () => {
     expect(hasStartOfTurnRules(army, 1)).toBe(true);
   });
 
-  // Skipped: loadArmy doesn't yet pass isDraft to resolveStats.
-  // Will be un-skipped in Task 5 when isDraft is threaded through from-owb.js.
-  it.skip("War Hydra stomp is D3+1 (renegade override, not legacy D3)", () => {
+  it("War Hydra stomp is D3+1 (renegade override, not legacy D3)", () => {
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stomp).toBe("D3+1");
   });
@@ -494,5 +498,58 @@ describe("resolveSpecialRules draft awareness", () => {
     const draft = resolveSpecialRules("Killing Blow", true);
     expect(stable[0].id).toBe("killing blow");
     expect(draft[0].id).toBe("killing blow");
+  });
+});
+
+describe("draft toggle integration — from-owb parse pipeline", () => {
+  afterEach(() => {
+    saveSupplementsEnabled(false);
+  });
+
+  it("toggle OFF: War Hydra uses core stats (AS 5, not renegade AS 4)", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    expect(hydra.stats[0].AS).toBe("5");
+  });
+
+  it("toggle ON: War Hydra uses renegade variant (AS 4)", () => {
+    saveSupplementsEnabled(true);
+    const army = loadArmy("de-renegade-draft");
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    expect(hydra.stats[0].AS).toBe("4");
+  });
+
+  it("toggle OFF: War Hydra does not have 'if one head is severed' rule", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    const ruleIds = hydra.specialRules.map((r) => r.id);
+    expect(ruleIds).not.toContain("if one head is severed");
+  });
+
+  it("toggle ON: War Hydra has 'if one head is severed' rule", () => {
+    saveSupplementsEnabled(true);
+    const army = loadArmy("de-renegade-draft");
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    const ruleIds = hydra.specialRules.map((r) => r.id);
+    expect(ruleIds).toContain("if one head is severed");
+  });
+
+  it("toggle OFF: Witch Elves Murderous is still v1.5 (stable alias)", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    const we = army.units.find((u) => u.id.startsWith("witch-elves"));
+    const murderous = we.specialRules.find(
+      (r) => r.displayName === "Murderous",
+    );
+    expect(murderous?.id).toBe("murderous-v1.5");
+  });
+
+  it("toggle OFF: War Hydra stomp is D3 (core, not renegade D3+1)", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
+    expect(hydra.stomp).toBe("D3");
   });
 });

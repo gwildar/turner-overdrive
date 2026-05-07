@@ -118,6 +118,7 @@ function calculateUnitPoints(raw) {
  * Parse a single unit from OWB export format to canonical unit
  */
 function parseCanonicalUnit(raw, category, armyComposition = "") {
+  const isDraft = getSupplementsEnabled();
   // Core identity
   const id = raw.id || "unknown";
   const strength = raw.strength || 1;
@@ -181,29 +182,37 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   }
 
   // Look up stats from units.js (source of truth)
-  const stats = resolveStats(id, raw.name_en, armyComposition);
+  const stats = resolveStats(id, raw.name_en, armyComposition, isDraft);
 
   // Resolve weapons and items (composition-aware for supplement overrides)
-  const weapons = resolveWeapons(equipment, magicItemNames, armyComposition);
+  const weapons = resolveWeapons(
+    equipment,
+    magicItemNames,
+    armyComposition,
+    isDraft,
+  );
   const shootingWeapons = resolveShootingWeapons([
     ...equipment,
     specialRulesText || "",
     raw.name_en || "",
   ]);
-  const magicItems = resolveMagicItems(magicItemNames, armyComposition).map(
-    (item) =>
-      commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
-        ? { ...item, championOnly: true }
-        : item,
+  const magicItems = resolveMagicItems(
+    magicItemNames,
+    armyComposition,
+    isDraft,
+  ).map((item) =>
+    commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
+      ? { ...item, championOnly: true }
+      : item,
   );
-  let specialRules = resolveSpecialRules(specialRulesText);
+  let specialRules = resolveSpecialRules(specialRulesText, isDraft);
 
   // Inject rules from supplement unit definition that aren't in the OWB text.
   // Renegade supplement variants (e.g. war-hydra-renegade) may add draft rules
   // (e.g. "If One Head is Severed") that the OWB export doesn't include.
-  if (armyComposition?.includes("renegade") && stats[0]?.rules) {
+  if (isDraft && armyComposition?.includes("renegade") && stats[0]?.rules) {
     for (const ruleName of stats[0].rules) {
-      const resolved = resolveSpecialRules(ruleName);
+      const resolved = resolveSpecialRules(ruleName, isDraft);
       for (const r of resolved) {
         if (
           r.id &&
@@ -235,7 +244,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     for (const slot of raw.items) {
       for (const item of slot.selected || []) {
         if (!MAGIC_ITEM_TYPES.has(item.type)) {
-          const resolved = resolveSpecialRules(item.name_en);
+          const resolved = resolveSpecialRules(item.name_en, isDraft);
           for (const r of resolved) {
             if (
               r.id &&
@@ -258,7 +267,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   for (const item of magicItems) {
     for (const ruleName of item.grantsRules || []) {
       if (!specialRules.some((r) => r.id === ruleName)) {
-        const resolved = resolveSpecialRules(ruleName);
+        const resolved = resolveSpecialRules(ruleName, isDraft);
         specialRules.push(...resolved);
       }
     }
@@ -268,7 +277,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   for (const rule of [...specialRules]) {
     for (const ruleName of rule.grantsRules || []) {
       if (!specialRules.some((r) => r.id === ruleName)) {
-        const resolved = resolveSpecialRules(ruleName);
+        const resolved = resolveSpecialRules(ruleName, isDraft);
         specialRules.push(...resolved);
       }
     }
@@ -422,7 +431,6 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Toggle ON  → draft v1.5.2.2 lore (draftLoreRemaps), falling back to v1.5
   if (armyComposition) {
     const compConfig = ARMY_COMPOSITIONS[armyComposition] || {};
-    const isDraft = getSupplementsEnabled();
     const loreRemaps = isDraft
       ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
       : compConfig.loreRemaps || {};
@@ -465,10 +473,21 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Parse detachments (e.g. beasts in a Wood Elf Beast Pack)
   const detachments = (raw.detachments || []).map((det) => {
     const detEquipment = collectActive(det.equipment);
-    const detStats = resolveStats(det.id, det.name_en, armyComposition);
-    const detWeapons = resolveWeapons(detEquipment, [], armyComposition);
+    const detStats = resolveStats(
+      det.id,
+      det.name_en,
+      armyComposition,
+      isDraft,
+    );
+    const detWeapons = resolveWeapons(
+      detEquipment,
+      [],
+      armyComposition,
+      isDraft,
+    );
     const detSpecialRules = resolveSpecialRules(
       det.specialRules?.name_en || "",
+      isDraft,
     );
     return {
       id: det.id,

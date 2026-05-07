@@ -1,19 +1,34 @@
 import { COMBAT_WEAPONS, RANGED_WEAPONS } from "../data/weapons.js";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
 import { SUPPLEMENT_ITEMS } from "../data/supplements/index.js";
-import { SPECIAL_RULES } from "../data/special-rules.js";
+import { CORE_RULES } from "../data/special-rules.js";
+import {
+  STABLE_SUPPLEMENT_RULES,
+  DRAFT_SUPPLEMENT_RULES,
+} from "../data/supplements/index.js";
 import { UNIT_STATS } from "../data/units.js";
 
 // Index: lowercased id/alias → rule object. O(1) lookup in resolveSpecialRules.
-const RULE_INDEX = new Map();
-for (const rule of SPECIAL_RULES) {
-  RULE_INDEX.set(rule.id.toLowerCase(), rule);
-  if (rule.aliases) {
-    for (const alias of rule.aliases) {
-      RULE_INDEX.set(alias.toLowerCase(), rule);
+function buildRuleIndex(rules) {
+  const map = new Map();
+  for (const rule of rules) {
+    map.set(rule.id.toLowerCase(), rule);
+    if (rule.aliases) {
+      for (const alias of rule.aliases) map.set(alias.toLowerCase(), rule);
     }
   }
+  return map;
 }
+
+const STABLE_RULE_INDEX = buildRuleIndex([
+  ...CORE_RULES,
+  ...STABLE_SUPPLEMENT_RULES,
+]);
+const ALL_RULE_INDEX = buildRuleIndex([
+  ...CORE_RULES,
+  ...STABLE_SUPPLEMENT_RULES,
+  ...DRAFT_SUPPLEMENT_RULES,
+]);
 
 // Maps canonical mount name (lowercase) → units.js key.
 // Used for mounts whose slug doesn't directly match a units.js key.
@@ -381,9 +396,10 @@ export function resolveMagicItems(itemNames, composition) {
  * @param {string} rulesString - e.g. "Killing Blow, Hatred (Elves), Armoured Hide (1)"
  * @returns {object[]} - array of resolved rule objects
  */
-export function resolveSpecialRules(rulesString) {
+export function resolveSpecialRules(rulesString, isDraft = false) {
   if (!rulesString || !rulesString.trim()) return [];
 
+  const index = isDraft ? ALL_RULE_INDEX : STABLE_RULE_INDEX;
   const rules = [];
   const parts = rulesString.split(",").map((s) => s.trim());
 
@@ -393,12 +409,12 @@ export function resolveSpecialRules(rulesString) {
     // Strip {annotation} (e.g. "{renegade}", "{dark elves}") for fallback lookup
     const cleanPart = part.replace(/\s*\{[^}]*\}/g, "").trim();
 
-    // Look up in RULE_INDEX. Check annotated form first (so variant-specific
+    // Look up in rule index. Check annotated form first (so variant-specific
     // aliases like "Murderous {renegade}" resolve before falling back to the standard
     // "Murderous" entry), then clean form.
     const found =
-      RULE_INDEX.get(part.toLowerCase()) ||
-      (cleanPart !== part ? RULE_INDEX.get(cleanPart.toLowerCase()) : null) ||
+      index.get(part.toLowerCase()) ||
+      (cleanPart !== part ? index.get(cleanPart.toLowerCase()) : null) ||
       null;
 
     if (found) {

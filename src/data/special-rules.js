@@ -16,7 +16,7 @@ import VAMPIRE_COUNTS from "./special-rules/vampire-counts.js";
 import TOMB_KINGS from "./special-rules/tomb-kings.js";
 import GRAND_CATHAY from "./special-rules/grand-cathay.js";
 
-export const SPECIAL_RULES = [
+export const CORE_RULES = [
   ...COMMON,
   ...UNDEAD,
   ...BEASTMEN,
@@ -27,8 +27,9 @@ export const SPECIAL_RULES = [
   ...VAMPIRE_COUNTS,
   ...TOMB_KINGS,
   ...GRAND_CATHAY,
-  ...SUPPLEMENT_RULES,
 ];
+
+export const SPECIAL_RULES = [...CORE_RULES, ...SUPPLEMENT_RULES];
 
 /**
  * Lore Familiar (Arcane Item, 30 pts)

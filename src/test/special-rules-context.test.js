@@ -83,6 +83,7 @@ const ALL_TEST_RULES = [
 // Mock SPECIAL_RULES so the rendering code finds our test rules
 vi.mock("../data/special-rules.js", () => ({
   SPECIAL_RULES: ALL_TEST_RULES,
+  CORE_RULES: ALL_TEST_RULES,
 }));
 
 // Import after mock is set up

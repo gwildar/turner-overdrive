@@ -103,7 +103,7 @@ function renderOpponentPhaseContext(army, phase) {
   if (!lightweight && phase.id === "combat")
     html += renderCombatWeaponsContext(army);
   if (phase.id === "combat") html += renderCasterContext(army, ["assailment"]);
-  if (phase.id === "scoring") html += renderScoringUI();
+  if (phase.id === "scoring") html += renderScoringUI(army);
   html += renderMagicItemsContext(army, phase.id, null);
   html += renderVirtuesContext(army, phase.id, null);
   html += renderSpecialRulesForPhase(army, phase);

@@ -247,13 +247,46 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     specialRules,
     stats,
   );
-  // Flag when a ridden monster's natural AS overrides the rider's equipment AS.
-  // Used to generate an import warning so the player knows why their save looks unexpected.
-  const armourSaveFromMount =
-    mount?.as !== undefined &&
-    armourSave === `${Math.max(2, Math.min(6, mount.as))}+` &&
-    (armour.length > 0 ||
-      equipment.some((e) => e.toLowerCase().includes("armour")));
+  // Flag when a ridden monster's natural AS is strictly better than the rider's
+  // equipment save. Used to generate an import warning.
+  let armourSaveFromMount = false;
+  if (mount?.as !== undefined && armourSave) {
+    const mountSave = Math.max(2, Math.min(6, mount.as));
+    const riderSave = parseInt(armourSave);
+    armourSaveFromMount =
+      riderSave === mountSave &&
+      (armour.length > 0 ||
+        equipment.some((e) => e.toLowerCase().includes("armour")));
+    // Only flag if rider's equipment alone would be worse — avoid false positives
+    // when rider's own save already equals the mount's (e.g. heavy armour + shield = 4+, mount 4+)
+    if (armourSaveFromMount) {
+      let riderBase = null;
+      for (const a of armour.map((s) => s.toLowerCase())) {
+        if (a.includes("full plate") || a.includes("chaos armour")) {
+          riderBase = 4;
+          break;
+        }
+        if (a.includes("heavy")) {
+          riderBase = 5;
+          break;
+        }
+        if (a.includes("light")) {
+          riderBase = 6;
+          break;
+        }
+      }
+      if (riderBase !== null) {
+        let mod = 0;
+        const hasShield =
+          equipment.some((e) => e.toLowerCase().includes("shield")) ||
+          armour.some((a) => a.toLowerCase().includes("shield"));
+        if (hasShield) mod -= 1;
+        const riderFinal = riderBase + mod;
+        // Only flag if rider's save is strictly worse than mount
+        armourSaveFromMount = riderFinal > mountSave;
+      }
+    }
+  }
   const ward = computeWard(magicItems, specialRules);
   const regen = computeRegen(magicItems, specialRules);
   const magicResistance = computeMR(magicItems, specialRules, stats);

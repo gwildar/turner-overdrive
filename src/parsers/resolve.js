@@ -1,10 +1,11 @@
 import { COMBAT_WEAPONS, RANGED_WEAPONS } from "../data/weapons.js";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
-import { SUPPLEMENT_ITEMS } from "../data/supplements/index.js";
 import { CORE_RULES } from "../data/special-rules.js";
 import {
   STABLE_SUPPLEMENT_RULES,
   DRAFT_SUPPLEMENT_RULES,
+  STABLE_SUPPLEMENT_ITEMS,
+  DRAFT_SUPPLEMENT_ITEMS,
 } from "../data/supplements/index.js";
 import { UNIT_STATS } from "../data/units.js";
 
@@ -242,20 +243,31 @@ function buildMagicItemMap() {
 
 const MAGIC_ITEM_MAP = buildMagicItemMap();
 
-// Supplement items in a separate map, checked only for renegade compositions.
-const SUPPLEMENT_ITEM_MAP = {};
-for (const item of SUPPLEMENT_ITEMS) {
-  const key = item.name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-  SUPPLEMENT_ITEM_MAP[key] = item;
+function buildSupplementItemMap(items) {
+  const map = {};
+  for (const item of items) {
+    const key = item.name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    map[key] = item;
+  }
+  return map;
 }
 
-function lookupItem(name, composition) {
+const STABLE_SUPPLEMENT_ITEM_MAP = buildSupplementItemMap(
+  STABLE_SUPPLEMENT_ITEMS,
+);
+const DRAFT_SUPPLEMENT_ITEM_MAP = buildSupplementItemMap(
+  DRAFT_SUPPLEMENT_ITEMS,
+);
+
+function lookupItem(name, composition, isDraft = false) {
   const key = normaliseItemName(name);
-  if (composition?.includes("renegade") && SUPPLEMENT_ITEM_MAP[key]) {
-    return SUPPLEMENT_ITEM_MAP[key];
+  if (composition?.includes("renegade")) {
+    if (isDraft && DRAFT_SUPPLEMENT_ITEM_MAP[key])
+      return DRAFT_SUPPLEMENT_ITEM_MAP[key];
+    if (STABLE_SUPPLEMENT_ITEM_MAP[key]) return STABLE_SUPPLEMENT_ITEM_MAP[key];
   }
   return MAGIC_ITEM_MAP[key] ?? null;
 }
@@ -273,14 +285,19 @@ const WARD_RULES = new Map([
  * @param {string} [composition] - army composition for supplement-aware lookup
  * @returns {object[]} - array of resolved weapon objects
  */
-export function resolveWeapons(equipmentStrings, magicItemNames, composition) {
+export function resolveWeapons(
+  equipmentStrings,
+  magicItemNames,
+  composition,
+  isDraft = false,
+) {
   const weapons = [];
   const seen = new Set();
 
   // Check for magic weapons first (skip champion-only items)
   for (const itemName of magicItemNames) {
     if (itemName.toLowerCase().includes("(champion)")) continue;
-    const mi = lookupItem(itemName, composition);
+    const mi = lookupItem(itemName, composition, isDraft);
     if (mi?.type === "weapon" && mi.s && mi.phases?.includes("combat")) {
       const weapon = {
         name: mi.name,
@@ -378,11 +395,11 @@ export function resolveShootingWeapons(equipmentStrings) {
  * @param {string} [composition] - army composition for supplement-aware lookup
  * @returns {object[]} - array of full magic item objects
  */
-export function resolveMagicItems(itemNames, composition) {
+export function resolveMagicItems(itemNames, composition, isDraft = false) {
   const items = [];
 
   for (const name of itemNames) {
-    const mi = lookupItem(name, composition);
+    const mi = lookupItem(name, composition, isDraft);
     if (mi) {
       items.push(mi);
     }

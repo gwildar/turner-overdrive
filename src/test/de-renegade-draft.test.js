@@ -8,7 +8,11 @@ import {
   DRAFT_SUPPLEMENT_UNITS,
 } from "../data/supplements/index.js";
 import { loadArmy, startGame } from "./helpers.js";
-import { resolveSpecialRules, resolveStats } from "../parsers/resolve.js";
+import {
+  resolveSpecialRules,
+  resolveStats,
+  resolveMagicItems,
+} from "../parsers/resolve.js";
 import {
   hasStartOfTurnRules,
   renderSpecialRulesContext,
@@ -407,6 +411,53 @@ describe("resolveStats draft awareness", () => {
   it("non-renegade composition ignores isDraft entirely", () => {
     const stats = resolveStats("war-hydra", "War Hydra", "dark-elves", true);
     expect(stats[0]?.AS).toBe("5");
+  });
+});
+
+describe("resolveMagicItems draft awareness", () => {
+  // Banner of Nagarythe exists in both core (65 pts) and de-renegade supplement (50 pts).
+  // With isDraft=false + renegade composition, the supplement map is not consulted,
+  // so the core version (65 pts) is returned.
+  it("with isDraft=false and renegade composition, core version of Banner of Nagarythe is returned (65 pts)", () => {
+    const result = resolveMagicItems(
+      ["Banner of Nagarythe"],
+      "de-renegade",
+      false,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe("Banner of Nagarythe");
+    expect(result[0].points).toBe(65);
+  });
+
+  it("with isDraft=true and renegade composition, supplement version of Banner of Nagarythe resolves (50 pts)", () => {
+    const result = resolveMagicItems(
+      ["Banner of Nagarythe"],
+      "de-renegade",
+      true,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe("Banner of Nagarythe");
+    expect(result[0].type).toBe("banner");
+    expect(result[0].points).toBe(50);
+  });
+
+  it("core magic items resolve regardless of isDraft", () => {
+    const stable = resolveMagicItems(["Ogre Blade"], "de-renegade", false);
+    const draft = resolveMagicItems(["Ogre Blade"], "de-renegade", true);
+    expect(stable).toHaveLength(1);
+    expect(draft).toHaveLength(1);
+    expect(stable[0].name).toBe("Ogre Blade");
+  });
+
+  it("without renegade composition, supplement version is not consulted — core version returned", () => {
+    const result = resolveMagicItems(
+      ["Banner of Nagarythe"],
+      "dark-elves",
+      true,
+    );
+    expect(result).toHaveLength(1);
+    // Core version: 65 pts (not the renegade supplement's 50 pts)
+    expect(result[0].points).toBe(65);
   });
 });
 

@@ -48,13 +48,14 @@ export function renderSetupScreen() {
             </h1>
             <div class="flex items-center gap-2">
               <button id="about-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">About</button>
-              <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-base text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">&#9881;</button>
+              <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors flex items-center gap-1.5">&#9881; Settings</button>
             </div>
           </div>
         </header>
   
         <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
           ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved game data was cleared due to an error. Please re-upload your army.</p>` : ""}
+          ${renderWhatsNew()}
           ${army ? renderArmySummary(army, currentWarnings) : renderUploadSection()}
         </main>
       </div>
@@ -126,6 +127,32 @@ export function renderSetupScreen() {
         renderSetupScreen();
       });
   });
+}
+
+function renderWhatsNew() {
+  return `
+    <details class="mb-4 group">
+      <summary class="flex items-center justify-between cursor-pointer list-none py-2 px-3 rounded-lg border border-wh-border bg-wh-surface hover:border-wh-accent transition-colors">
+        <span class="text-sm font-semibold text-wh-accent">&#9733; What's New — v4.0</span>
+        <span class="text-wh-muted text-xs group-open:hidden">Show</span>
+        <span class="text-wh-muted text-xs hidden group-open:inline">Hide</span>
+      </summary>
+      <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
+        <div class="pt-3">
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Legacy Pack — Draft Support</p>
+          <p class="text-xs">Community draft rules (v1.5.2.2) now supported for <span class="text-wh-text">Dark Elves</span>, <span class="text-wh-text">Ogre Kingdoms</span>, and <span class="text-wh-text">Skaven</span> renegade compositions. Enable via Settings to use the draft rules — stable v1.5 is the default.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">New Recruit Import</p>
+          <p class="text-xs">Undead armies (Vampire Counts, Tomb Kings) now correctly skip Rally and Break Test phases when imported from New Recruit.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Army Validation</p>
+          <p class="text-xs">New warning when a character's mundane armour is redundant due to a mount with an equal or better natural armour save.</p>
+        </div>
+      </div>
+    </details>
+  `;
 }
 
 function renderUploadSection() {

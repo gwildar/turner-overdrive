@@ -443,14 +443,14 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Remap lores for composition variants.
   // Toggle OFF → v1.5 stable lore (loreRemaps)
   // Toggle ON  → draft v1.5.2.2 lore (draftLoreRemaps), falling back to v1.5
-  if (armyComposition) {
-    const compConfig = ARMY_COMPOSITIONS[armyComposition] || {};
-    const loreRemaps = isDraft
-      ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
-      : compConfig.loreRemaps || {};
-    for (let i = 0; i < lores.length; i++) {
-      if (loreRemaps[lores[i]]) lores[i] = loreRemaps[lores[i]];
-    }
+  const compConfig = armyComposition
+    ? ARMY_COMPOSITIONS[armyComposition] || {}
+    : {};
+  const loreRemaps = isDraft
+    ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
+    : compConfig.loreRemaps || {};
+  for (let i = 0; i < lores.length; i++) {
+    if (loreRemaps[lores[i]]) lores[i] = loreRemaps[lores[i]];
   }
 
   const isCaster = lores.length > 0;
@@ -471,6 +471,13 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
       ) {
         factionLores.push(LORE_NAME_TO_KEY[cleaned]);
       }
+    }
+  }
+  // Apply same lore remap to faction lores (LORE_NAME_TO_KEY may resolve to
+  // draft lore keys like "naggaroth-renegade" regardless of toggle state).
+  for (let i = 0; i < factionLores.length; i++) {
+    if (loreRemaps[factionLores[i]]) {
+      factionLores[i] = loreRemaps[factionLores[i]];
     }
   }
 

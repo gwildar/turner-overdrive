@@ -1079,10 +1079,17 @@ export const LORES = {
   ...SUPPLEMENT_SPELLS,
 };
 
-// Map from lore display name (lowercase) → lore key
+// Map from lore display name (lowercase) → lore key.
+// First-write-wins: core lore keys take priority over supplement variants
+// (e.g. "lore of naggaroth" → "naggaroth", not "naggaroth-renegade").
+// The lore remap system in from-owb.js then converts base keys to the correct
+// supplement variant based on the draft toggle.
 export const LORE_NAME_TO_KEY = {};
 for (const [key, lore] of Object.entries(LORES)) {
-  LORE_NAME_TO_KEY[lore.name.toLowerCase()] = key;
+  const name = lore.name.toLowerCase();
+  if (!LORE_NAME_TO_KEY[name]) {
+    LORE_NAME_TO_KEY[name] = key;
+  }
 }
 
 export function getSpellTypeLabel(type) {

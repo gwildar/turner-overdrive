@@ -558,4 +558,29 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stomp).toBe("D3");
   });
+
+  it("toggle OFF: caster has no naggaroth-renegade faction lore", () => {
+    saveSupplementsEnabled(false);
+    const army = loadArmy("de-renegade-draft");
+    const casters = army.units.filter(
+      (u) => u.factionLores && u.factionLores.length > 0,
+    );
+    expect(casters.length).toBeGreaterThan(0);
+    for (const c of casters) {
+      expect(c.factionLores).not.toContain("naggaroth-renegade");
+    }
+  });
+
+  it("toggle ON: caster has naggaroth-renegade faction lore (Power of Darkness)", () => {
+    saveSupplementsEnabled(true);
+    const army = loadArmy("de-renegade-draft");
+    const casters = army.units.filter(
+      (u) => u.factionLores && u.factionLores.length > 0,
+    );
+    expect(casters.length).toBeGreaterThan(0);
+    const hasRenegade = casters.some((c) =>
+      c.factionLores.includes("naggaroth-renegade"),
+    );
+    expect(hasRenegade).toBe(true);
+  });
 });

@@ -25,7 +25,7 @@ const entries = [];
 let current = null;
 
 for (const line of body.split("\n")) {
-  const m = line.match(/^  "?([a-zA-Z0-9_-]+)"?\s*[:=]/);
+  const m = line.match(/^ {2}"?([a-zA-Z0-9_-]+)"?\s*[:=]/);
   if (m) {
     if (current) entries.push(current);
     current = { key: m[1], lines: [line] };

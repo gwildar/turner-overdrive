@@ -48,7 +48,7 @@ export function renderSetupScreen() {
             </h1>
             <div class="flex items-center gap-2">
               <button id="about-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors">About</button>
-              <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors flex items-center gap-1.5">&#9881; Settings</button>
+              <button id="settings-btn" class="px-3 py-1.5 rounded-lg border border-wh-border text-sm text-wh-muted hover:border-wh-accent hover:text-wh-accent transition-colors flex items-center gap-1.5">&#9881;</button>
             </div>
           </div>
         </header>

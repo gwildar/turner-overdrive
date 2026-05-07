@@ -4,6 +4,7 @@
  */
 
 import { LORE_NAME_TO_KEY } from "../data/spells.js";
+import { ARMY_PHASE_CONFIG } from "../data/army-compositions.js";
 import {
   resolveWeapons,
   resolveShootingWeapons,
@@ -416,14 +417,35 @@ export function fromNewRecruit(json) {
   const armyName = json.roster?.name || "Unknown Army";
   const totalPoints = json.roster?.costs?.[0]?.value || 0;
 
+  // Infer army slug from unit rules (NR format has no explicit army metadata).
+  // Only needed for armies with phase config (Undead skip Rally/Break Test).
+  const SLUG_RULES = {
+    "necromantic undead": "vampire-counts",
+    "nehekharan undead": "tomb-kings-of-khemri",
+  };
+  let armySlug = "";
+  for (const unit of units) {
+    for (const rule of unit.specialRules) {
+      const id = rule.id?.toLowerCase();
+      if (id && SLUG_RULES[id]) {
+        armySlug = SLUG_RULES[id];
+        break;
+      }
+    }
+    if (armySlug) break;
+  }
+
+  const phaseConfig = ARMY_PHASE_CONFIG[armySlug] || {};
+
   // Build canonical army
   const army = {
     name: armyName,
-    armySlug: "", // New Recruit format doesn't include this
-    faction: "", // We'd need to infer this from unit names or metadata
+    armySlug,
+    faction: "",
     points: totalPoints,
     composition: null,
     units,
+    skipPhases: phaseConfig.skipPhases || [],
   };
 
   return army;

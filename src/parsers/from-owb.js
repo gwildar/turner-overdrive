@@ -282,8 +282,9 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
           armour.some((a) => a.toLowerCase().includes("shield"));
         if (hasShield) mod -= 1;
         const riderFinal = riderBase + mod;
-        // Only flag if rider's save is strictly worse than mount
-        armourSaveFromMount = riderFinal > mountSave;
+        // Flag if rider's save is worse OR equal — equal means the mundane
+        // armour is wasted points since the mount's natural save is the same.
+        armourSaveFromMount = riderFinal >= mountSave;
       }
     }
   }

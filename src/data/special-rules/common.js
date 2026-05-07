@@ -831,7 +831,8 @@ export default [
     phases: [
       {
         subPhaseId: "combat-result",
-        description: "+1 combat result bonus when in Close Order formation.",
+        description:
+          "+1 combat result bonus when in Close Order formation and unit strength >= 10",
       },
     ],
     description:

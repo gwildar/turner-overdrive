@@ -76,10 +76,9 @@ function gatherSelectionsData(selections) {
   const armour = [];
   const magicItemNames = [];
   const rulesText = [];
-  const mountName = null;
 
   if (!Array.isArray(selections))
-    return { equipment, armour, magicItemNames, rulesText, mountName };
+    return { equipment, armour, magicItemNames, rulesText };
 
   for (const selection of selections) {
     if (!selection.profiles) continue;
@@ -130,7 +129,7 @@ function gatherSelectionsData(selections) {
     }
   }
 
-  return { equipment, armour, magicItemNames, rulesText, mountName };
+  return { equipment, armour, magicItemNames, rulesText };
 }
 
 /**
@@ -237,7 +236,11 @@ function parseCanonicalUnit(selection, category) {
   );
   const ward = computeWard(resolvedMagicItems, specialRules);
   const regen = computeRegen(resolvedMagicItems, specialRules);
-  const magicResistance = computeMR(resolvedMagicItems, specialRules);
+  const magicResistance = computeMR(
+    resolvedMagicItems,
+    specialRules,
+    modelProfiles,
+  );
   const poisonedAttacks = computePoisonedAttacks(specialRules);
   const stomp = computeStomp(resolvedMount, specialRules);
   const impactHits = computeImpactHits(resolvedMount, specialRules);

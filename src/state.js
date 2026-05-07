@@ -115,7 +115,7 @@ export function saveFirstTurn(value) {
   save(KEYS.firstTurn, value);
 }
 
-// Scores: { [round]: { you: N, opponent: N } }
+// Scores: { [round]: { you: { you: N, opponent: N }, opponent: { you: N, opponent: N } } }
 export function getScores() {
   return load(KEYS.scores, {});
 }

@@ -514,7 +514,7 @@ export function computeRegen(magicItems, specialRules) {
 
   // Check special rules
   for (const rule of specialRules) {
-    const match = rule.displayName.match(/Regeneration\s*\((\d\+)\)/i);
+    const match = rule.displayName?.match(/Regeneration\s*\((\d\+)\)/i);
     if (match) return match[1];
   }
 

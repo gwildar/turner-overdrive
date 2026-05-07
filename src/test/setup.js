@@ -13,25 +13,7 @@ if (typeof HTMLDialogElement !== "undefined") {
   }
 }
 
-// Register no-op screens so navigate() calls don't throw during binding
-// (Only if registerScreen exists, as navigate.js may have been refactored)
-try {
-  const { registerScreen } = await import("../navigate.js");
-  const noop = () => {};
-  registerScreen("render", noop);
-  registerScreen("setupScreen", noop);
-  registerScreen("gameScreen", noop);
-  registerScreen("firstTurnScreen", noop);
-  registerScreen("unitAssignmentScreen", noop);
-  registerScreen("opponentTurnScreen", noop);
-  registerScreen("aboutScreen", noop);
-  registerScreen("gameOverScreen", noop);
-} catch {
-  // registerScreen no longer exists, skip setup
-}
-
 // Create the #app div before any screen modules are imported
-// (they grab document.getElementById('app') at module level)
 if (!document.getElementById("app")) {
   const app = document.createElement("div");
   app.id = "app";

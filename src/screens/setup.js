@@ -353,7 +353,7 @@ function handleFile(file, errorEl) {
 }
 
 function bindArmyActions() {
-  document.getElementById("start-game-btn").addEventListener("click", () => {
+  document.getElementById("start-game-btn")?.addEventListener("click", () => {
     const firstTurn = getFirstTurn();
     if (!firstTurn) {
       const army = getArmy();
@@ -367,7 +367,7 @@ function bindArmyActions() {
     }
   });
 
-  document.getElementById("replace-army-btn").addEventListener("click", () => {
+  document.getElementById("replace-army-btn")?.addEventListener("click", () => {
     clearArmy();
     currentWarnings = [];
     renderSetupScreen();

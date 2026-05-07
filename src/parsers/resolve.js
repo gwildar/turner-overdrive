@@ -42,6 +42,9 @@ const MOUNT_KEY_OVERRIDES = {
   "cauldron of blood {renegade}": "cauldron-of-blood-mount",
   // Scourgerunner Chariot: use dedicated mount entry with crew profiles
   "scourgerunner chariot": "scourgerunner-chariot-mount",
+  // Stegadons with Howdah: chariot split profile when ridden by a character
+  stegadon: "stegadon-mount",
+  "ancient stegadon": "ancient-stegadon-mount",
 };
 
 const TROOP_STRENGTH_PER_MODEL = {

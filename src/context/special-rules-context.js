@@ -80,6 +80,12 @@ function injectMountRules(unitRules, unit) {
   ) {
     unitRules.push("Counter Charge");
   }
+  if (
+    mount.terror &&
+    !unitRules.some((r) => normaliseRuleName(r).toLowerCase() === "terror")
+  ) {
+    unitRules.push("Terror");
+  }
 }
 
 function injectTerrorFear(unitRules) {

@@ -894,10 +894,18 @@ export default [
   {
     id: "immune to psychology",
     displayName: "Immune to Psychology",
-    passive: true,
-    phases: [],
-    description:
-      "Auto-passes Fear, Panic, Terror tests (if majority). Cannot choose Flee as a charge reaction.",
+    phases: [
+      {
+        subPhaseId: "combat-result",
+        description:
+          "Auto-passes Fear, Panic, Terror tests (if majority). Cannot choose Flee as a charge reaction.",
+      },
+      {
+        subPhaseId: "break-test",
+        description:
+          "Auto-passes Panic and Fear tests (if majority). Still required to take a Break test if combat is lost.",
+      },
+    ],
   },
   {
     id: "magic resistance",

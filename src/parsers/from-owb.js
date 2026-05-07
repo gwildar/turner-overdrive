@@ -198,6 +198,20 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   );
   let specialRules = resolveSpecialRules(specialRulesText);
 
+  // Inject rules from supplement unit definition that aren't in the OWB text.
+  // Renegade supplement variants (e.g. war-hydra-renegade) may add draft rules
+  // (e.g. "If One Head is Severed") that the OWB export doesn't include.
+  if (armyComposition?.includes("renegade") && stats[0]?.rules) {
+    for (const ruleName of stats[0].rules) {
+      const resolved = resolveSpecialRules(ruleName);
+      for (const r of resolved) {
+        if (r.id && !specialRules.some((sr) => sr.id === r.id)) {
+          specialRules.push(r);
+        }
+      }
+    }
+  }
+
   // Inject rules granted by magic items (e.g. Alter Kindred aspects)
   for (const item of magicItems) {
     for (const ruleName of item.grantsRules || []) {

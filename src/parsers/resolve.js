@@ -165,6 +165,7 @@ export function findMount(name) {
       profile.rules?.some((r) => r.toLowerCase() === "strike first") ?? false,
     largeTarget:
       profile.rules?.some((r) => r.toLowerCase() === "large target") ?? false,
+    terror: profile.rules?.some((r) => r.toLowerCase() === "terror") ?? false,
   };
 }
 

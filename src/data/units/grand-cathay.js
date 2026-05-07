@@ -637,6 +637,41 @@ export default {
       },
     ],
   },
+  "peasant-levy": {
+    shared: {
+      rules: ["Close Order", "Horde", "Warband"],
+      equipment: ["Hand weapons"],
+      troopType: ["RI"],
+      magic: [],
+      optionalRules: ["Long Spears", "Skirmishers", "Ambushers"],
+    },
+    stats: [
+      {
+        A: "1",
+        I: "3",
+        M: "4",
+        S: "3",
+        T: "3",
+        W: "1",
+        BS: "3",
+        Ld: "5",
+        WS: "2",
+        Name: "Peasant Soldier",
+      },
+      {
+        A: "2",
+        I: "3",
+        M: "4",
+        S: "3",
+        T: "3",
+        W: "1",
+        BS: "4",
+        Ld: "6",
+        WS: "2",
+        Name: "Peasant Elder",
+      },
+    ],
+  },
   astromancer: [
     {
       A: "1",

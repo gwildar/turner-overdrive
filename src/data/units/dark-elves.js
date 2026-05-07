@@ -275,8 +275,8 @@ export default {
       },
     ],
   },
-  // Mount-only entry for Death Hag on Cauldron: T/W as bonuses relative to Death Hag T3/W2,
-  // so isRiddenMonster triggers. The Witch Elf Crew is captured as crew profiles.
+  // Mount-only entry for Death Hag on Cauldron: T replaces character T (bonus = cauldron T - char T3),
+  // W adds to character W (chariot W5 + character W2 = W7 total).
   "cauldron-of-blood-mount": [
     {
       A: "-",
@@ -284,7 +284,7 @@ export default {
       M: "2",
       S: "5",
       T: "(+2)",
-      W: "(+3)",
+      W: "(+5)",
       BS: "-",
       Ld: "-",
       WS: "-",

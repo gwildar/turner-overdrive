@@ -150,10 +150,10 @@ describe("Death Hag on Cauldron of Blood", () => {
     expect(deathHag.mount.wBonus).toBeGreaterThan(0);
   });
 
-  it("Death Hag combat entry shows T5 and W5 from Cauldron", () => {
+  it("Death Hag combat entry shows T5 from Cauldron and W7 (cauldron W5 + character W2)", () => {
     expect(combatEntry).toBeDefined();
     expect(combatEntry.t).toBe("5");
-    expect(combatEntry.w).toBe("5");
+    expect(combatEntry.w).toBe("7");
   });
 
   it("Death Hag combat entry shows Impact Hits D6+1", () => {

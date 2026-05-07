@@ -110,7 +110,7 @@ export function resolveUnitEntry(entry) {
     : entry.stats.map((s) => ({ ...entry.shared, ...s }));
 }
 
-export function resolveStats(id, name, composition) {
+export function resolveStats(id, name, composition, isDraft = false) {
   const baseId = (id || "").split(".")[0];
   const slug = name?.replace(/[{}]/g, "").toLowerCase().replace(/\s+/g, "-");
   const keys = [
@@ -121,7 +121,7 @@ export function resolveStats(id, name, composition) {
     slug?.replace(/s$/, ""),
   ];
   // For renegade compositions, try -renegade suffixed keys first
-  if (composition?.includes("renegade")) {
+  if (isDraft && composition?.includes("renegade")) {
     for (const key of keys) {
       const rk = key ? key + "-renegade" : null;
       if (rk && UNIT_STATS[rk]) return resolveUnitEntry(UNIT_STATS[rk]);

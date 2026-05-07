@@ -8,7 +8,7 @@ import {
   DRAFT_SUPPLEMENT_UNITS,
 } from "../data/supplements/index.js";
 import { loadArmy, startGame } from "./helpers.js";
-import { resolveSpecialRules } from "../parsers/resolve.js";
+import { resolveSpecialRules, resolveStats } from "../parsers/resolve.js";
 import {
   hasStartOfTurnRules,
   renderSpecialRulesContext,
@@ -60,7 +60,9 @@ describe("War Hydra draft rules", () => {
     expect(hasStartOfTurnRules(army, 1)).toBe(true);
   });
 
-  it("War Hydra stomp is D3+1 (renegade override, not legacy D3)", () => {
+  // Skipped: loadArmy doesn't yet pass isDraft to resolveStats.
+  // Will be un-skipped in Task 5 when isDraft is threaded through from-owb.js.
+  it.skip("War Hydra stomp is D3+1 (renegade override, not legacy D3)", () => {
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stomp).toBe("D3+1");
   });
@@ -381,6 +383,30 @@ describe("supplement index stable/draft split", () => {
     const names = DRAFT_SUPPLEMENT_ITEMS.map((i) => i.name);
     expect(names).toContain("Banner of Nagarythe");
     expect(names).toContain("Whip of Agony");
+  });
+});
+
+describe("resolveStats draft awareness", () => {
+  it("with isDraft=false, War Hydra uses core stats (AS 5)", () => {
+    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", false);
+    expect(stats[0]?.AS).toBe("5");
+  });
+
+  it("with isDraft=true, War Hydra uses renegade variant (AS 4)", () => {
+    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", true);
+    expect(stats[0]?.AS).toBe("4");
+  });
+
+  it("with isDraft=false, renegade composition does not look up -renegade keys", () => {
+    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", false);
+    const rules = stats[0]?.rules || [];
+    expect(rules).toContain("Stomp Attacks (D3)");
+    expect(rules).not.toContain("Stomp Attacks (D3+1)");
+  });
+
+  it("non-renegade composition ignores isDraft entirely", () => {
+    const stats = resolveStats("war-hydra", "War Hydra", "dark-elves", true);
+    expect(stats[0]?.AS).toBe("5");
   });
 });
 

@@ -473,7 +473,7 @@ export default [
     displayName: "Hekarti's Blessing",
     passive: true,
     description: "Once per game, may re-roll a single failed Casting roll.",
-    phases: ["conjuration", "remaining-moves", "shoot"],
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
   },
   {
     id: "hidden (dark elves)",

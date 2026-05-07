@@ -1352,6 +1352,53 @@ export default {
       },
     ],
   },
+  "royal-clan-warriors": {
+    shared: {
+      rules: [
+        "Close Order",
+        "Gromril Armour",
+        "Gromril Weapons",
+        "Hatred (Orcs & Goblins)",
+        "Magic Resistance (-1)",
+        "Resolute",
+        "Shieldwall",
+      ],
+      equipment: ["Hand weapons", "shields", "heavy armour"],
+      troopType: ["HI"],
+      magic: [],
+      optionalRules: ["Gromril Great Axe", "Drilled", "Stubborn", "Veteran"],
+    },
+    stats: [
+      {
+        A: "1",
+        I: "2",
+        M: "3",
+        S: "3",
+        T: "4",
+        W: "1",
+        BS: "3",
+        Ld: "9",
+        WS: "4",
+        Name: "Royal Clan Warrior",
+        as: 3,
+        "Magic-Res": "-1",
+      },
+      {
+        A: "2",
+        I: "2",
+        M: "3",
+        S: "3",
+        T: "4",
+        W: "1",
+        BS: "3",
+        Ld: "9",
+        WS: "4",
+        Name: "Royal Clan Veteran",
+        as: 3,
+        "Magic-Res": "-1",
+      },
+    ],
+  },
   thunderers: {
     shared: {
       rules: [

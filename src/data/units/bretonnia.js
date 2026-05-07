@@ -431,6 +431,35 @@ export default {
       optionalRules: [],
     },
   ],
+  "royal-pegasus": [
+    {
+      A: "3",
+      I: "5",
+      M: "8",
+      S: "5",
+      T: "(+1)",
+      W: "(+1)",
+      BS: "-",
+      Ld: "-",
+      WS: "4",
+      Name: "Royal Pegasus",
+      Stomps: "2",
+      Fly: "10",
+      armourMod: 1,
+      rules: [
+        "Armour Bane (1, Royal Pegasus only)",
+        "Counter Charge",
+        "First Charge",
+        "Fly (10)",
+        "Stomp Attacks (2)",
+        "Swiftstride",
+      ],
+      equipment: ["hand weapon", "barding"],
+      troopType: ["MCr"],
+      magic: [],
+      optionalRules: [],
+    },
+  ],
   "grail-knights": {
     shared: {
       rules: [

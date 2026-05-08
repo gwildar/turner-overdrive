@@ -6,6 +6,7 @@ import {
   DRAFT_SUPPLEMENT_RULES,
   STABLE_SUPPLEMENT_ITEMS,
   DRAFT_SUPPLEMENT_ITEMS,
+  SUPPLEMENT_WEAPONS,
 } from "../data/supplements/index.js";
 import { UNIT_STATS } from "../data/units.js";
 
@@ -356,9 +357,13 @@ export function resolveWeapons(
 /**
  * Resolve shooting weapons from equipment strings
  * @param {string[]} equipmentStrings
+ * @param {boolean} [isDraft] - when true, supplement weapon overrides apply
  * @returns {object[]} - array of resolved ranged weapon objects
  */
-export function resolveShootingWeapons(equipmentStrings) {
+export function resolveShootingWeapons(equipmentStrings, isDraft = false) {
+  const weaponMap = isDraft
+    ? { ...RANGED_WEAPONS, ...SUPPLEMENT_WEAPONS }
+    : RANGED_WEAPONS;
   const weapons = [];
   const seen = new Set();
 
@@ -369,7 +374,7 @@ export function resolveShootingWeapons(equipmentStrings) {
       // e.g. "repeater crossbow" must not also match "crossbow"
       let bestKey = null;
       let bestWeapon = null;
-      for (const [key, weapon] of Object.entries(RANGED_WEAPONS)) {
+      for (const [key, weapon] of Object.entries(weaponMap)) {
         if (part.includes(key) && (!bestKey || key.length > bestKey.length)) {
           bestKey = key;
           bestWeapon = weapon;
@@ -378,9 +383,7 @@ export function resolveShootingWeapons(equipmentStrings) {
       if (bestWeapon && !seen.has(bestWeapon.name)) {
         seen.add(bestWeapon.name);
         weapons.push({
-          name: bestWeapon.name,
-          range: bestWeapon.range,
-          s: bestWeapon.s,
+          ...bestWeapon,
           ap: bestWeapon.ap || "—",
           rules: bestWeapon.rules || [],
           magical: false,

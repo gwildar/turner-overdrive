@@ -191,11 +191,10 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     armyComposition,
     isDraft,
   );
-  const shootingWeapons = resolveShootingWeapons([
-    ...equipment,
-    specialRulesText || "",
-    raw.name_en || "",
-  ]);
+  const shootingWeapons = resolveShootingWeapons(
+    [...equipment, specialRulesText || "", raw.name_en || ""],
+    isDraft,
+  );
   const magicItems = resolveMagicItems(
     magicItemNames,
     armyComposition,
@@ -308,7 +307,10 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Tag with crew BS and name so the shooting display uses crew stats, not character's.
   if (mount?.crew) {
     for (const crew of mount.crew) {
-      const crewShooting = resolveShootingWeapons(crew.equipment || []);
+      const crewShooting = resolveShootingWeapons(
+        crew.equipment || [],
+        isDraft,
+      );
       for (const sw of crewShooting) {
         if (!shootingWeapons.some((w) => w.name === sw.name)) {
           sw.crewBS = crew.bs && crew.bs !== "-" ? crew.bs : null;

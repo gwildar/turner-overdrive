@@ -798,4 +798,13 @@ export default {
       combatResBonus: 1,
     },
   ],
+  weapons: {
+    "ravager harpoon": {
+      name: "Ravager Harpoon",
+      range: '24"',
+      s: "6",
+      ap: "-3",
+      rules: ["Cumbersome", "Multiple Wounds (D3)"],
+    },
+  },
 };

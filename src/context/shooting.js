@@ -1,5 +1,7 @@
 import { getShootingUnits } from "../army.js";
 import { RANGED_WEAPONS, MISFIRE_TABLES, getWeapon } from "../data/weapons.js";
+import { SUPPLEMENT_WEAPONS } from "../data/supplements/index.js";
+import { getSupplementsEnabled } from "../state.js";
 import { displayUnitName } from "../utils/unit-name.js";
 
 function getBS(unit) {
@@ -84,15 +86,23 @@ export function renderShootingContext(army) {
 
     // In canonical schema, shootingWeapons are already resolved
     if (Array.isArray(u.shootingWeapons) && u.shootingWeapons.length > 0) {
+      const isDraft = getSupplementsEnabled();
       for (const weapon of u.shootingWeapons) {
         if (weapon && !matchedWeapons.has(weapon.name)) {
           matchedWeapons.add(weapon.name);
-          // Find corresponding RANGED_WEAPONS entry
-          let rangedWeapon = null;
-          for (const rw of Object.values(RANGED_WEAPONS)) {
-            if (rw.name === weapon.name) {
-              rangedWeapon = rw;
-              break;
+          // Use the already-resolved weapon object (which includes supplement
+          // overrides from parsing). Only fall back to RANGED_WEAPONS lookup
+          // when the resolved object is missing profile data.
+          let rangedWeapon = weapon.range ? weapon : null;
+          if (!rangedWeapon) {
+            const weaponMap = isDraft
+              ? { ...RANGED_WEAPONS, ...SUPPLEMENT_WEAPONS }
+              : RANGED_WEAPONS;
+            for (const rw of Object.values(weaponMap)) {
+              if (rw.name === weapon.name) {
+                rangedWeapon = rw;
+                break;
+              }
             }
           }
           if (!rangedWeapon && weapon.name) {

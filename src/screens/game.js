@@ -168,6 +168,10 @@ function renderPhaseContext(army, phase, subPhase) {
     html += renderer(army);
   }
 
+  if (subPhase.id !== "reserve-moves" && subPhase.id !== "scoring") {
+    html += renderMagicItemsContext(army, phase.id, subPhase.id);
+  }
+
   if (!lightweight && subPhase.showShooting)
     html += renderShootingContext(army);
 
@@ -187,9 +191,9 @@ function renderPhaseContext(army, phase, subPhase) {
   }
 
   if (subPhase.id !== "reserve-moves" && subPhase.id !== "scoring") {
-    html += renderMagicItemsContext(army, phase.id, subPhase.id);
     html += renderVirtuesContext(army, phase.id, subPhase.id);
   }
+
   if (subPhase.id === "scoring") {
     html += renderScoringUI(army);
   }

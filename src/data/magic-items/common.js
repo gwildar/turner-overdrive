@@ -471,7 +471,7 @@ export default [
     type: "enchanted-item",
     points: 35,
     effect:
-      "The wielder can cast the Fireball spell from the Lore of Battle Magic as a Bound spell, with a Power Level of 1.",
+      'The wielder can cast the Fireball spell from the Lore of Battle Magic as a Bound spell, with a Power Level of 1. Fireball, Casting Value: 8+, Range 24"',
     phases: ["shooting"],
     yourTurnOnly: true,
   },

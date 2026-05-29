@@ -290,6 +290,7 @@ export default [
     effect:
       "The unit gains +1 Strength on a turn in which it charged. The unit also gains Impetuous.",
     phases: ["combat"],
+    grantsRules: ["Impetuous"],
     label: "+1S on charge",
   },
   {
@@ -404,6 +405,7 @@ export default [
     effect:
       'Gains Impetuous. Increases maximum charge range by 3" and may apply +D3 modifier to Charge roll.',
     phases: ["movement"],
+    grantsRules: ["Impetuous"],
     chargeMod: { range: 3, tag: "Virtue", color: "orange", order: 5 },
   },
   {

@@ -5,12 +5,23 @@
 
 export default {
   units: {
-    "cauldron-of-blood-renegade": {
-      shared: {
-        crewed: true,
+    "cauldron-of-blood-mount": [
+      {
+        A: "-",
+        I: "-",
+        M: "5",
+        S: "5",
+        T: "(+2)",
+        W: "(+5)",
+        BS: "-",
+        Ld: "-",
+        WS: "-",
+        Name: "Cauldron of Blood",
+        "Impact-Hits": "D6+1",
+        AS: "4",
         rules: [
           "Altar of Khaine",
-          "Blessings of Khaine",
+          "blessings of khaine-renegade",
           "Close Order",
           "Elven Reflexes",
           "Frenzy",
@@ -21,44 +32,22 @@ export default {
           "Terror",
           "Will of the Gods",
         ],
-        troopType: ["HCh"],
-        magic: [],
-        optionalRules: [],
       },
-      stats: [
-        {
-          A: "-",
-          I: "-",
-          M: "5",
-          S: "5",
-          T: "5",
-          W: "5",
-          BS: "-",
-          Ld: "-",
-          WS: "-",
-          Name: "Cauldron of Blood",
-          "Magic-Res": "-1",
-          "Impact-Hits": "D6+1",
-          AS: "4",
-          equipment: [],
-        },
-        {
-          A: "1",
-          I: "5",
-          M: "-",
-          S: "3",
-          T: "-",
-          W: "-",
-          BS: "4",
-          Ld: "8",
-          WS: "4",
-          Name: "Witch Elf Crew (x2)",
-          "Magic-Res": "-1",
-          rules: ["Murderous", "Poisoned Attacks", "Strike First"],
-          equipment: ["Two hand weapons"],
-        },
-      ],
-    },
+      {
+        A: "1",
+        I: "5",
+        M: "-",
+        S: "3",
+        T: "-",
+        W: "-",
+        BS: "4",
+        Ld: "8",
+        WS: "4",
+        Name: "Witch Elf Crew (x2)",
+        rules: ["Murderous", "Poisoned Attacks", "Strike First"],
+        equipment: ["Two hand weapons"],
+      },
+    ],
 
     "bloodwrack-shrine-renegade": {
       shared: {
@@ -666,10 +655,36 @@ export default {
     {
       id: "altar of khaine",
       displayName: "Altar of Khaine",
-      passive: true,
       description:
         "This model has a 5+ Ward save against any wounds suffered. Any unit joined by this model gains a 6+ Ward save against any wounds suffered.",
-      phases: [],
+      phases: ["choose-fight", "shooting"],
+      ward: "5+",
+    },
+    {
+      id: "blessings of khaine-renegade",
+      displayName: "Blessings of Khaine",
+      phases: [
+        {
+          subPhaseId: "command",
+          description:
+            "During the Command sub‑phase, the model may make a Leadership test (using its own unmodified Leadership). If successful, until the next Start‑of‑Turn, the model and one friendly Death Hag, Khainite Assassin, Witch Elf unit, or Har Ganeth Executioner unit within its Command range each gain one of the following benefits.",
+          table: [
+            {
+              Blessing: "Fury of Khaine",
+              Effect: "The Extra Attacks (1) special rule",
+            },
+            {
+              Blessing: "Strength of Khaine",
+              Effect: "the Cleaving Blow special rule",
+            },
+            {
+              Blessing: "Bloodshield of Khaine",
+              Effect: "a 5+ Ward save against any wounds suffered",
+            },
+          ],
+        },
+      ],
+      yourTurnOnly: true,
     },
     {
       id: "murderous-renegade",
@@ -681,7 +696,6 @@ export default {
     {
       id: "will of the gods",
       displayName: "Will of the Gods",
-      passive: true,
       description:
         "This model (Heavy Chariot) may join an Infantry unit with Unit Strength 10+. When it does, it must be placed in the centre of the front rank and loses the Lumbering rule. Only one such model may join each unit.",
       phases: [],
@@ -716,7 +730,7 @@ export default {
       aliases: ["If One Head is Severed\u2026Another Takes Its Place"],
       description:
         "In your Command sub-phase, roll a D6 for each wound this model has lost. On a 4+ the model immediately recovers that wound.",
-      phases: ["start-of-turn"],
+      phases: ["command"],
       yourTurnOnly: true,
     },
   ],

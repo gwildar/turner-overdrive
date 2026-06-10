@@ -60,8 +60,8 @@ describe("War Hydra draft rules", () => {
     startGame(army);
     saveRound(1);
     const html = renderSpecialRulesContext(army, {
-      id: "start-of-turn",
-      label: "Start of Turn",
+      id: "command",
+      label: "Command",
     });
     expect(html).toContain("If One Head is Severed");
   });
@@ -122,7 +122,7 @@ describe("Black Dragon Terror injection", () => {
     const dreadlord = army.units.find((u) =>
       u.id.startsWith("dark-elf-dreadlord"),
     );
-    expect(dreadlord.mount.terror).toBe(true);
+    expect(dreadlord.mount.rules).toContain("Terror");
   });
 
   it("Dreadlord on Black Dragon shows Terror in declare-charges context", () => {

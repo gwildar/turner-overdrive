@@ -197,23 +197,11 @@ export function findMount(name) {
     as: profile.as ?? (profile.AS ? parseInt(profile.AS, 10) : null),
     weapons: equipment,
     crew: crewProfiles.length > 0 ? crewProfiles : null,
-    swiftstride:
-      profile.rules?.some((r) => r.toLowerCase() === "swiftstride") ?? false,
     troopType: profile.troopType?.[0] ?? null,
     armourBane,
     f: profile.Fly ? parseInt(profile.Fly, 10) : null,
     breath: equipment.find((e) => RANGED_WEAPONS[e]) ?? null,
-    firstCharge:
-      profile.rules?.some((r) => r.toLowerCase() === "first charge") ?? false,
-    furiousCharge:
-      profile.rules?.some((r) => r.toLowerCase() === "furious charge") ?? false,
-    counterCharge:
-      profile.rules?.some((r) => r.toLowerCase() === "counter charge") ?? false,
-    strikeFirst:
-      profile.rules?.some((r) => r.toLowerCase() === "strike first") ?? false,
-    largeTarget:
-      profile.rules?.some((r) => r.toLowerCase() === "large target") ?? false,
-    terror: profile.rules?.some((r) => r.toLowerCase() === "terror") ?? false,
+    rules: profile.rules,
   };
 }
 
@@ -276,12 +264,6 @@ function lookupItem(name, composition, isDraft = false) {
   }
   return MAGIC_ITEM_MAP[key] ?? null;
 }
-
-const WARD_RULES = new Map([
-  ["the grail vow", "6+ (5+ > S5)"],
-  ["daughters of eternity", "4+"],
-  ["dark runes", "5+ (non-magical shooting)"],
-]);
 
 /**
  * Resolve combat weapons from equipment strings
@@ -585,21 +567,45 @@ export function computeArmourSave(
   return `${finalAS}+`;
 }
 
+// Helper to extract a number from a rule string like "Magic Resistance (-1)"
+const extractNumber = (str) => {
+  if (str === null) return;
+  const match = str.match(/\(([-+]?\d+(?:\.\d+)?)\)/);
+  return match ? parseInt(match[1], 10) : null;
+};
+
 /**
  * Compute ward save from magic items and special rules
  */
 export function computeWard(magicItems, specialRules) {
   // Check magic items
+  let itemWard = null;
+  let ruleWard = null;
   for (const item of magicItems) {
-    if (item.ward) return item.ward;
+    if (item.ward) {
+      itemWard = item.ward;
+    }
   }
 
-  // Check special rules — Blessings of the Lady and The Grail Vow both grant 6+
   for (const rule of specialRules) {
-    if (WARD_RULES.has(rule.id)) return WARD_RULES.get(rule.id);
+    if (rule.ward) {
+      ruleWard = rule.ward;
+    }
   }
 
-  return null;
+  if (itemWard === null) {
+    return ruleWard;
+  }
+
+  if (ruleWard === null) {
+    return itemWard;
+  }
+
+  if (extractNumber(itemWard) < extractNumber(ruleWard)) {
+    return itemWard;
+  }
+
+  return ruleWard;
 }
 
 /**
@@ -621,20 +627,58 @@ export function computeRegen(magicItems, specialRules) {
 }
 
 /**
- * Compute magic resistance from stats, magic items, and special rules
- */
-export function computeMR(magicItems, specialRules, stats) {
-  let total = 0;
-
-  // Direct lookup from units.js stat profile
-  if (stats?.[0]?.["Magic-Res"]) total += parseInt(stats[0]["Magic-Res"]);
-
-  // Check magic items
-  for (const item of magicItems) {
-    if (item.mr) total += parseInt(item.mr);
+ * Compute magic resistance from stats, magic items, special rules, and mount.
+ *
+ * @param {Array}  magicItems   - List of resolved magic item objects.
+ * @param {Array}  specialRules - List of resolved special rule objects.
+ * @param {Object} mount        - Resolved mount object (may have .rules array).
+ * @
+ **/
+export function computeMR(magicItems, specialRules, mount) {
+  // 1. From mount rules (if a mount is present)
+  let mountMR = null;
+  if (mount && Array.isArray(mount.rules)) {
+    for (const rule of mount.rules) {
+      if (
+        rule &&
+        typeof rule === "string" &&
+        rule.includes("Magic Resistance")
+      ) {
+        const val = extractNumber(rule);
+        if (val !== null) mountMR = Math.max(mountMR ?? val, val);
+      }
+    }
   }
 
-  return total !== 0 ? `${total}` : null;
+  // 2. From special rules
+  let specialMR = null;
+  if (Array.isArray(specialRules)) {
+    for (const rule of specialRules) {
+      const name = rule.displayName || rule.id || "";
+      if (name.includes("Magic Resistance")) {
+        const val = extractNumber(name);
+        if (val !== null) specialMR = Math.max(specialMR ?? val, val);
+      }
+    }
+  }
+
+  // 3. From magic items
+  let itemsMR = null;
+  if (Array.isArray(magicItems)) {
+    for (const item of magicItems) {
+      if (item && item.mr) {
+        const val = parseInt(item.mr, 10);
+        if (!isNaN(val)) itemsMR = Math.max(itemsMR ?? val, val);
+      }
+    }
+  }
+  // Determine the highest of the three sources
+  const maxMR = Math.max(
+    mountMR ?? -Infinity,
+    specialMR ?? -Infinity,
+    itemsMR ?? -Infinity,
+  );
+  return maxMR === -Infinity ? null : `${maxMR}`;
 }
 
 const RANGED_WEAPON_NAMES = [

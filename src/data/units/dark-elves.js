@@ -237,6 +237,17 @@ export default {
       Name: "Cauldron of Blood",
       "Impact-Hits": "D6+1",
       as: 4,
+      "Magic-Res": "-1",
+      rules: [
+        "Altar of Khaine",
+        "Blessings of Khaine",
+        "Hatred (High Elves)",
+        "Impact Hits (D6+1)",
+        "Large Target",
+        "Magic Resistance (-1)",
+        "Terror",
+        "Will of the Gods",
+      ],
     },
     {
       A: "1",

@@ -22,7 +22,6 @@ export default [
   {
     id: "vanguard",
     displayName: "Vanguard",
-    passive: true,
     description:
       "After deployment, make a Vanguard move (basic movement, no march). Cannot declare charges on first turn.",
     phases: [],
@@ -367,6 +366,7 @@ export default [
     description:
       "5+ Ward save against any wound caused by a non-magical attack.",
     phases: [],
+    ward: "5+ (non-magical shooting)",
   },
   {
     id: "eternal hatred",
@@ -401,10 +401,9 @@ export default [
   {
     id: "blessings of khaine",
     displayName: "Blessings of Khaine",
-    passive: true,
     description:
       "Bound spell (9+). Until next Start of Turn, caster and friendly Death Hags, Witch Elves, and Sisters of Slaughter within Command range gain one of: Fury of Khaine (Furious Charge), Strength of Khaine (Cleaving Blow), or Bloodshield of Khaine (5+ Ward save).",
-    phases: [],
+    phases: ["conjuration"],
   },
   {
     id: "cry of war",
@@ -471,7 +470,6 @@ export default [
   {
     id: "hekarti's blessing",
     displayName: "Hekarti's Blessing",
-    passive: true,
     description: "Once per game, may re-roll a single failed Casting roll.",
     phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
   },
@@ -748,6 +746,7 @@ export default [
     description:
       "Immune to Psychology, Magical Attacks, Stubborn. Cannot refuse challenges.",
     phases: ["choose-fight"],
+    ward: "6+ (5+ > S5)",
   },
   {
     id: "the questing vow",
@@ -770,6 +769,14 @@ export default [
     description:
       "Within 6\" of a non-fleeing Knight's/Questing/Grail Vow model, may use that model's Ld. Standard cannot be taken as a trophy.",
     phases: ["command", "rally", "break-test"],
+  },
+  {
+    id: "blessed knight",
+    displayName: "Blessed Knight",
+    phases: [],
+    description:
+      "The Green Knight has a 5+ Ward save against any wounds suffered.",
+    ward: "+5",
   },
   {
     id: "guardian of the sacred sites",
@@ -1576,6 +1583,7 @@ export default [
     passive: true,
     description: "4+ Ward save.",
     phases: [],
+    ward: "4+",
   },
   {
     id: "aspect of the hound",

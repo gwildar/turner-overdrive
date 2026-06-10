@@ -25,66 +25,8 @@ const TROOP_TYPE_RULES = {
 function injectMountRules(unitRules, unit) {
   if (!unit.mount) return;
   const mount = unit.mount;
-
-  if (
-    mount.swiftstride &&
-    !unitRules.some((r) => normaliseRuleName(r).toLowerCase() === "swiftstride")
-  ) {
-    unitRules.push("Swiftstride");
-  }
-  const troopRules = TROOP_TYPE_RULES[mount.troopType] || [];
-  for (const rule of troopRules) {
-    if (
-      !unitRules.some(
-        (r) => normaliseRuleName(r).toLowerCase() === rule.toLowerCase(),
-      )
-    ) {
-      unitRules.push(rule);
-    }
-  }
-  if (
-    mount.stomp &&
-    !unitRules.some(
-      (r) => normaliseRuleName(r).toLowerCase() === "stomp attacks",
-    )
-  ) {
-    unitRules.push(`Stomp Attacks (${mount.stomp})`);
-  }
-  if (
-    mount.impactHits &&
-    !unitRules.some((r) => normaliseRuleName(r).toLowerCase() === "impact hits")
-  ) {
-    unitRules.push(`Impact Hits (${mount.impactHits})`);
-  }
-  if (
-    mount.firstCharge &&
-    !unitRules.some(
-      (r) => normaliseRuleName(r).toLowerCase() === "first charge",
-    )
-  ) {
-    unitRules.push("First Charge");
-  }
-  if (
-    mount.furiousCharge &&
-    !unitRules.some(
-      (r) => normaliseRuleName(r).toLowerCase() === "furious charge",
-    )
-  ) {
-    unitRules.push("Furious Charge");
-  }
-  if (
-    mount.counterCharge &&
-    !unitRules.some(
-      (r) => normaliseRuleName(r).toLowerCase() === "counter charge",
-    )
-  ) {
-    unitRules.push("Counter Charge");
-  }
-  if (
-    mount.terror &&
-    !unitRules.some((r) => normaliseRuleName(r).toLowerCase() === "terror")
-  ) {
-    unitRules.push("Terror");
+  for (const rule of mount.rules) {
+    unitRules.push(rule);
   }
 }
 
@@ -171,28 +113,32 @@ function renderRulesBlock(grouped, title) {
     ${
       g.table
         ? `
-    <table class="w-full text-xs mt-2">
+      <table class="w-full text-xs mt-2 border border-wh-border">
       <thead>
-        <tr class="text-left text-wh-muted">
-          <th class="pb-1 pr-2 font-medium w-8">D6</th>
-          <th class="pb-1 pr-2 font-medium">Result</th>
-          <th class="pb-1 font-medium">Effect</th>
+        <tr class="text-left text-wh">
+          ${Object.keys(g.table[0] || {})
+            .map((key) => `<th class="p-2 border border-wh-border">${key}</th>`)
+            .join("")}
         </tr>
       </thead>
       <tbody>
         ${g.table
           .map(
-            (r) => `
-        <tr>
-          <td class="py-0.5 pr-2 font-mono text-wh-accent align-top">${r.roll}</td>
-          <td class="py-0.5 pr-2 font-semibold text-wh-text align-top whitespace-nowrap">${r.result}</td>
-          <td class="py-0.5 text-wh-muted">${r.effect}</td>
-        </tr>
-        `,
+            (row) => `
+            <tr>
+              ${Object.values(row)
+                .map(
+                  (val) =>
+                    `<td class="p-2 text-wh-muted align-top border border-wh-border">${val}</td>`,
+                )
+                .join("")}
+            </tr>
+          `,
           )
           .join("")}
       </tbody>
-    </table>`
+    </table>
+  `
         : ""
     }
     <p class="text-wh-text text-xs mt-1">${g.units.join(", ")}</p>

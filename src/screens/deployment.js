@@ -12,6 +12,7 @@ const DEPLOYMENT_RULE_IDS = new Set([
   "scouts",
   "vanguard",
   "ambushers",
+  "from the mists",
   "ambush", // alias for ambushers in special-rules.js
 ]);
 

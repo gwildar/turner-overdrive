@@ -79,7 +79,7 @@ describe("findMount", () => {
     expect(mount.tBonus).toBe(3);
     expect(mount.wBonus).toBe(6);
     expect(mount.stomp).toBe("D6");
-    expect(mount.swiftstride).toBe(true);
+    expect(mount.rules).toContain("Swiftstride");
     expect(mount.troopType).toBe("Be");
     expect(mount.armourBane).toBeNull();
     expect(mount.f).toBe(10);
@@ -96,7 +96,7 @@ describe("findMount", () => {
     expect(mount.m).toBe(7);
     expect(mount.tBonus).toBe(1);
     expect(mount.armourBane).toBe(1);
-    expect(mount.swiftstride).toBe(true);
+    expect(mount.rules).toContain("Swiftstride");
   });
 
   it("uses MOUNT_KEY_OVERRIDES for faction-variant mounts — Griffon", () => {
@@ -105,7 +105,7 @@ describe("findMount", () => {
     expect(mount.name).toBe("Griffon");
     expect(mount.m).toBe(6);
     expect(mount.tBonus).toBe(1);
-    expect(mount.swiftstride).toBe(true);
+    expect(mount.rules).toContain("Swiftstride");
     expect(mount.troopType).toBe("MCr");
   });
 
@@ -120,7 +120,7 @@ describe("findMount", () => {
     expect(mount).not.toBeNull();
     expect(mount.m).toBe(6);
     expect(mount.tBonus).toBe(0);
-    expect(mount.swiftstride).toBe(false);
+    expect(mount.rules).not.toContain("Swiftstride");
     expect(mount.armourBane).toBe(2);
   });
 });

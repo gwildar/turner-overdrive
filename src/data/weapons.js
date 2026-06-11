@@ -843,12 +843,23 @@ export const COMBAT_WEAPONS = {
     rules: ["Poisoned Attacks"],
   },
 
+  "serrated maws": {
+    name: "Serrated Maws",
+    s: "S",
+    ap: "—",
+    rules: [
+      "Armour Bane (1)",
+      "Multiple Wounds (2)",
+      "extra attacks +remaining Wounds",
+    ],
+  },
+
   // ─── Mount Weapons ───────────────────────────────────────────────────
   "serrated maw": {
     name: "Serrated Maw",
     s: "S",
     ap: "—",
-    rules: ["Armour Bane (2)", "Multiple Wounds (2)."],
+    rules: ["Armour Bane (2)", "Multiple Wounds (2)"],
     reservedAttacks: 1,
   },
   "mighty antlers": {

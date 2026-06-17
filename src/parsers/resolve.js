@@ -6,7 +6,8 @@ import {
   DRAFT_SUPPLEMENT_RULES,
   STABLE_SUPPLEMENT_ITEMS,
   DRAFT_SUPPLEMENT_ITEMS,
-  SUPPLEMENT_WEAPONS,
+  SUPPLEMENT_RANGED_WEAPONS,
+  SUPPLEMENT_COMBAT_WEAPONS,
 } from "../data/supplements/index.js";
 import { UNIT_STATS } from "../data/units.js";
 
@@ -278,6 +279,9 @@ export function resolveWeapons(
   composition,
   isDraft = false,
 ) {
+  const weaponMap = isDraft
+    ? { ...COMBAT_WEAPONS, ...SUPPLEMENT_COMBAT_WEAPONS }
+    : COMBAT_WEAPONS;
   const weapons = [];
   const seen = new Set();
 
@@ -304,7 +308,7 @@ export function resolveWeapons(
   // Then check equipment strings for mundane weapons
   for (const equipStr of equipmentStrings) {
     const lower = equipStr.toLowerCase();
-    for (const [key, weapon] of Object.entries(COMBAT_WEAPONS)) {
+    for (const [key, weapon] of Object.entries(weaponMap)) {
       if (lower.includes(key) && !seen.has(weapon.name)) {
         seen.add(weapon.name);
         weapons.push({
@@ -344,7 +348,7 @@ export function resolveWeapons(
  */
 export function resolveShootingWeapons(equipmentStrings, isDraft = false) {
   const weaponMap = isDraft
-    ? { ...RANGED_WEAPONS, ...SUPPLEMENT_WEAPONS }
+    ? { ...RANGED_WEAPONS, ...SUPPLEMENT_RANGED_WEAPONS }
     : RANGED_WEAPONS;
   const weapons = [];
   const seen = new Set();

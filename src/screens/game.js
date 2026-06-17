@@ -21,6 +21,54 @@ import {
   renderCombatResultContext,
   renderCombatLeadershipContext,
 } from "../context/combat-weapons.js";
+
+// -----------------------------------------------------------------------------
+// Priority rule definitions – displayed prominently at the top of each phase.
+// Extensible: add new entries keyed by subPhase.id.
+// -----------------------------------------------------------------------------
+const PRIORITY_RULES = {
+  "declare-charges": [
+    {
+      text: "Terror tests!",
+      // additional data could be added (e.g., tooltip, icon) in future.
+    },
+  ],
+  conjuration: [
+    {
+      text: "Dispel remains in play",
+    },
+  ],
+};
+
+/**
+ * Render the priority rules for a given sub‑phase.
+ * Returns an empty string if none are defined.
+ */
+// Determine if any unit in the army causes Terror (directly or via mount)
+function hasTerrorUnits(army) {
+  if (!army?.units) return false;
+  return army.units.some((unit) => {
+    const unitRules = unit.rules ?? [];
+    const mountRules = unit.mount?.rules ?? [];
+    return unitRules.includes("Terror") || mountRules.includes("Terror");
+  });
+}
+function renderPriorityRules(subPhase, army) {
+  let rules = PRIORITY_RULES[subPhase.id] || [];
+  // If this is charge declaration and no unit causes Terror, remove it
+  if (subPhase.id === "declare-charges") {
+    const hasTerror = hasTerrorUnits(army);
+    if (!hasTerror) {
+      rules = rules.filter((r) => r.text !== "Terror");
+    }
+  }
+  if (rules.length === 0) return "";
+  // Visual style: dark background, white bold text, slight shadow.
+  return `<div class="bg-wh-phase-combat text-wh-bg font-bold py-2 px-4 rounded-lg shadow-md mb-4">
+    ${rules[0].text}
+  </div>`;
+}
+
 import { renderChargeContext } from "../context/charge.js";
 import { renderMovementStatsContext } from "../context/movement.js";
 import { renderRandomMoverContext } from "../context/random-mover.js";
@@ -68,6 +116,7 @@ export function renderGameScreen(army) {
               <h2 class="text-2xl font-bold text-wh-text">${subPhase.name}</h2>
               <span class="text-xs text-wh-muted">Step ${visibleStep} of ${visibleTotal}</span>
             </div>
+            ${renderPriorityRules(subPhase, army)}
   
             <!-- Rules -->
             <details class="mb-4">
@@ -168,10 +217,6 @@ function renderPhaseContext(army, phase, subPhase) {
     html += renderer(army);
   }
 
-  if (subPhase.id !== "reserve-moves" && subPhase.id !== "scoring") {
-    html += renderMagicItemsContext(army, phase.id, subPhase.id);
-  }
-
   if (!lightweight && subPhase.showShooting)
     html += renderShootingContext(army);
 
@@ -189,7 +234,9 @@ function renderPhaseContext(army, phase, subPhase) {
       html += renderer(army);
     }
   }
-
+  if (subPhase.id !== "reserve-moves" && subPhase.id !== "scoring") {
+    html += renderMagicItemsContext(army, phase.id, subPhase.id);
+  }
   if (subPhase.id !== "reserve-moves" && subPhase.id !== "scoring") {
     html += renderVirtuesContext(army, phase.id, subPhase.id);
   }

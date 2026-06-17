@@ -812,13 +812,21 @@ export default {
       combatResBonus: 1,
     },
   ],
-  weapons: {
+  ranged_weapons: {
     "ravager harpoon": {
       name: "Ravager Harpoon",
       range: '24"',
       s: "6",
       ap: "-3",
       rules: ["Cumbersome", "Multiple Wounds (D3)"],
+    },
+  },
+  combat_weapons: {
+    "har ganeth greatsword": {
+      name: "Har Ganeth Greatsword",
+      s: "S+2",
+      ap: "-2",
+      rules: ["Cleaving Blow", "Requires Two Hands"],
     },
   },
 };

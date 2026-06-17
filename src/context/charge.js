@@ -35,7 +35,7 @@ function detectChargeMods(unit, mountData) {
   }
 
   // From mount
-  if (mountData?.swiftstride && !seen.has("Swift")) {
+  if (mountData?.rules.includes("Swiftstride")) {
     const mod = CHARGE_MOD_RULES.get("swiftstride");
     if (mod) {
       seen.add(mod.tag);
@@ -87,7 +87,7 @@ export function renderChargeContext(army) {
     const rawMv = resolveMovement(u);
     const mountData = u.mount ?? null;
 
-    const flyMv = extractFlyMovement(u, mountData);
+    const flyMv = extractFlyMovement(u);
     const hasFly = flyMv != null;
 
     const chargeMods = detectChargeMods(u, mountData);
@@ -105,12 +105,10 @@ export function renderChargeContext(army) {
     chargeMods.sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 
     const rangeBonus = chargeMods.reduce((sum, m) => sum + m.range, 0);
-
     const baseMv = resolveBaseMv(mountData, rawMv);
     const groundCharge = baseMv != null ? baseMv + 6 + rangeBonus : null;
     const flyCharge = hasFly ? flyMv + 6 + rangeBonus : null;
     const maxCharge = Math.max(groundCharge || 0, flyCharge || 0);
-
     const assignedChars = charsByUnitId.get(u.id) || [];
     return {
       u,

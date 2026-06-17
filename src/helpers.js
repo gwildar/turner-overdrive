@@ -58,12 +58,19 @@ export function ruleMatches(rule, normName) {
  * Extract fly movement value from a unit's specialRules or mount data.
  * Returns the numeric fly distance, or null if the unit cannot fly.
  */
-export function extractFlyMovement(unit, mountData) {
+export function extractFlyMovement(unit) {
+  if (unit.mount) {
+    const flyRuleStr = (unit.mount.rules || [])
+      .map((r) => r || "")
+      .find((d) => /^fly\s*\(/i.test(d.trim()));
+    const flyMatch = flyRuleStr ? flyRuleStr.match(/\((\d+)\)/) : null;
+    return flyMatch ? Number(flyMatch[1]) : null;
+  }
   const flyRuleStr = (unit.specialRules || [])
     .map((r) => r.displayName || "")
     .find((d) => /^fly\s*\(/i.test(d.trim()));
   const flyMatch = flyRuleStr ? flyRuleStr.match(/\((\d+)\)/) : null;
-  return flyMatch ? Number(flyMatch[1]) : (mountData?.f ?? null);
+  return flyMatch ? Number(flyMatch[1]) : null;
 }
 
 /**

@@ -57,7 +57,12 @@ export const SUPPLEMENT_SPELLS = Object.assign(
   ...supplements.map((s) => s.spells || {}),
 );
 
-export const SUPPLEMENT_WEAPONS = Object.assign(
+export const SUPPLEMENT_RANGED_WEAPONS = Object.assign(
   {},
-  ...supplements.map((s) => s.weapons || {}),
+  ...supplements.map((s) => s.ranged_weapons || {}),
+);
+
+export const SUPPLEMENT_COMBAT_WEAPONS = Object.assign(
+  {},
+  ...supplements.map((s) => s.combat_weapons || {}),
 );

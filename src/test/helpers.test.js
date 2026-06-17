@@ -7,11 +7,6 @@ describe("extractFlyMovement", () => {
     expect(extractFlyMovement(unit, null)).toBe(9);
   });
 
-  it("falls back to mount.f when no fly rule", () => {
-    const unit = { specialRules: [] };
-    expect(extractFlyMovement(unit, { f: 12 })).toBe(12);
-  });
-
   it("returns null when no fly at all", () => {
     const unit = { specialRules: [] };
     expect(extractFlyMovement(unit, null)).toBeNull();

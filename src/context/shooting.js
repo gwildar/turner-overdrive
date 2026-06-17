@@ -1,6 +1,6 @@
 import { getShootingUnits } from "../army.js";
 import { RANGED_WEAPONS, MISFIRE_TABLES, getWeapon } from "../data/weapons.js";
-import { SUPPLEMENT_WEAPONS } from "../data/supplements/index.js";
+import { SUPPLEMENT_RANGED_WEAPONS } from "../data/supplements/index.js";
 import { getSupplementsEnabled } from "../state.js";
 import { displayUnitName } from "../utils/unit-name.js";
 
@@ -96,7 +96,7 @@ export function renderShootingContext(army) {
           let rangedWeapon = weapon.range ? weapon : null;
           if (!rangedWeapon) {
             const weaponMap = isDraft
-              ? { ...RANGED_WEAPONS, ...SUPPLEMENT_WEAPONS }
+              ? { ...RANGED_WEAPONS, ...SUPPLEMENT_RANGED_WEAPONS }
               : RANGED_WEAPONS;
             for (const rw of Object.values(weaponMap)) {
               if (rw.name === weapon.name) {

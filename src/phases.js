@@ -68,17 +68,6 @@ export const PHASES = [
         showMovement: true,
       },
       {
-        id: "charge-moves",
-        name: "Charge Moves",
-        rules: [
-          "Move charging units in an order of your choosing.",
-          "Charge range = 2d6 (pick the highest unless charging into dangerous or difficult terrain then pick the lowest) + Movement characteristic + swiftstride d6 (if applicable).",
-          "Failed charges: unit moves forward a reduced distance.",
-          "Align charging unit with the target on contact.",
-        ],
-        showMovement: true,
-      },
-      {
         id: "compulsory-moves",
         name: "Compulsory Moves",
         pinnedRule:

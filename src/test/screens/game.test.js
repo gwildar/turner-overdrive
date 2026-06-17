@@ -93,13 +93,13 @@ describe("Game Screen", () => {
   describe("shooting phase", () => {
     it("shows shooting units for armies with ranged weapons", () => {
       // Navigate to Choose Target sub-phase (shooting)
-      savePhaseIndex(8); // shoot
+      savePhaseIndex(7); // shoot
       renderGameScreen(army);
       expect(getApp().textContent).toContain("Shooting");
     });
 
     it("shows Repeater Crossbow without also matching Crossbow", () => {
-      savePhaseIndex(8);
+      savePhaseIndex(7);
       renderGameScreen(army);
       const panel = getApp().querySelector(".border-wh-phase-shooting\\/30");
       expect(panel.textContent).toContain("Repeater Crossbow");
@@ -115,19 +115,19 @@ describe("Game Screen", () => {
 
   describe("combat phase", () => {
     it("shows combat phase heading", () => {
-      savePhaseIndex(10); // choose-fight
+      savePhaseIndex(9); // choose-fight
       renderGameScreen(army);
       expect(getApp().textContent).toContain("Combat");
     });
 
     it("shows unit points on combat card", () => {
-      savePhaseIndex(10); // choose-fight
+      savePhaseIndex(9); // choose-fight
       renderGameScreen(army);
       expect(getApp().textContent).toMatch(/\d+pts/);
     });
 
     it("shows Close Order in Special Rules on combat-result step", () => {
-      savePhaseIndex(11); // combat-result
+      savePhaseIndex(10); // combat-result
       renderGameScreen(army);
       const specialRulesPanel = getApp().querySelector(
         ".border-wh-accent\\/20",
@@ -139,7 +139,7 @@ describe("Game Screen", () => {
 
   describe("last step", () => {
     it("shows End Turn on last step", () => {
-      savePhaseIndex(14); // last step (Scoring)
+      savePhaseIndex(13); // last step (Scoring)
       renderGameScreen(army);
       expect(getApp().querySelector("#next-btn").textContent).toContain(
         "End Turn",
@@ -192,7 +192,7 @@ describe("Shooting phase with Lizardmen", () => {
   beforeEach(() => {
     army = loadArmy("lizardmen");
     startGame(army);
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
   });
 
   it("shows Solar Engine in spells", () => {
@@ -235,7 +235,7 @@ describe("Shooting phase with Bretonnia charge army", () => {
   beforeEach(() => {
     army = loadArmy("bretonnia-charge");
     startGame(army);
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
   });
 
   it("shows merged squires with BS from rules-index", () => {
@@ -260,7 +260,7 @@ describe("Combat phase with Bretonnia charge army", () => {
   beforeEach(() => {
     army = loadArmy("bretonnia-charge");
     startGame(army);
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
   });
 
   it("shows combat units with stats ordered by initiative", () => {
@@ -334,7 +334,7 @@ describe("Combat phase with Dark Elves", () => {
   beforeEach(() => {
     army = loadArmy("dark-elves");
     startGame(army);
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
   });
 
   it("shows champion magic weapon replacing mundane weapon", () => {
@@ -426,7 +426,7 @@ describe("Combat phase with Bretonnian Exiles", () => {
   beforeEach(() => {
     army = loadArmy("bretonnian-exiles");
     startGame(army);
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
   });
 
   it("shows Frontier Axe on Baron combat card", () => {
@@ -477,7 +477,7 @@ describe("Armour saves with barding from mount (Aliénor de Parravon)", () => {
   beforeEach(() => {
     army = loadArmy("aliénor-de-parravon-");
     startGame(army);
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
   });
 
   it("Baron on Barded Pegasus gets AS:3+ (heavy armour + shield + barding from mount)", () => {
@@ -540,7 +540,7 @@ describe("Vampire Counts army", () => {
   });
 
   it("shows Blood Knights with embedded Nightmare mount attacks", () => {
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
     renderGameScreen(army);
     const text = getApp().textContent;
     expect(text).toContain("Nightmare");
@@ -548,7 +548,7 @@ describe("Vampire Counts army", () => {
   });
 
   it("shows Wailing Dirge in shooting phase", () => {
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
     renderGameScreen(army);
     const text = getApp().textContent;
     expect(text).toContain("Wailing Dirge");
@@ -571,7 +571,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Ironguts with AS:5+ from innate heavy armour", () => {
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const irongutCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find(
@@ -582,7 +582,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Thundertusk Riders with AS:5+ from frozen pelt", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ttCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find((el) =>
@@ -593,7 +593,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Cackling Blade extra attacks on Tyrant card", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const tyrantCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find(
@@ -605,7 +605,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Cannibal Totem in combat phase magic items", () => {
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
     renderGameScreen(army);
     const text = getApp().textContent;
     expect(text).toContain("Cannibal Totem");
@@ -613,7 +613,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Regen on Ironguts from Cannibal Totem", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const irongutCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find(
@@ -624,7 +624,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Ironblaster Rhinox with Monstrous Tusks exactly once", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ironblasterCard = [
@@ -636,7 +636,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Thundertusk Great Tusks exactly once", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ttCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find((el) =>
@@ -648,7 +648,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Stonehorn Horns of Stone exactly once", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const shCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find((el) =>
@@ -660,7 +660,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows Ironblaster Leadbelcher crew with Hand Weapon", () => {
-    savePhaseIndex(10);
+    savePhaseIndex(9);
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ironblasterCard = [
@@ -672,7 +672,7 @@ describe("Ogre Kingdoms army", () => {
   });
 
   it("shows crew Ld for Ironblaster on break test", () => {
-    savePhaseIndex(12); // break-test
+    savePhaseIndex(11); // break-test
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ironblasterCard = [
@@ -693,7 +693,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows scoring section with Turn Times title when no objectives", () => {
-    savePhaseIndex(14); // Scoring
+    savePhaseIndex(13); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
   });
@@ -705,7 +705,7 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(14); // Scoring
+    savePhaseIndex(13); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Strategic Objectives");
     expect(getApp().querySelector("#score-you")).toBeTruthy();
@@ -719,13 +719,13 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(14); // Scoring
+    savePhaseIndex(13); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Total");
   });
 
   it("hides magic items in scoring sub-phase", () => {
-    savePhaseIndex(14); // Scoring
+    savePhaseIndex(13); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
     // Should NOT contain any magic items (e.g. Spelleater Axe)
@@ -733,7 +733,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows Time column header in scoring table", () => {
-    savePhaseIndex(14);
+    savePhaseIndex(13);
     renderGameScreen(army);
     const header = getApp().querySelector("thead");
     expect(header.textContent).toContain("Time");
@@ -741,28 +741,28 @@ describe("Scoring UI", () => {
 
   it("shows deployment row when deploymentTime is set", () => {
     saveDeploymentTime(1200000); // 20 minutes
-    savePhaseIndex(14);
+    savePhaseIndex(13);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Deploy");
     expect(getApp().textContent).toContain("20:00");
   });
 
   it("does not show deployment row when deploymentTime is null", () => {
-    savePhaseIndex(14);
+    savePhaseIndex(13);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Deploy");
   });
 
   it("shows turn time in table when timings are set", () => {
     saveTimings({ 1: { you: { 0: 900000 } } }); // 15 minutes total
-    savePhaseIndex(14);
+    savePhaseIndex(13);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("15:00");
   });
 
   it("does not show the Turn Timings details section", () => {
     saveTimings({ 1: { you: { 0: 900000 } } });
-    savePhaseIndex(14);
+    savePhaseIndex(13);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Turn Timings");
   });
@@ -777,7 +777,7 @@ describe("Movement phase", () => {
   });
 
   it("shows movement stats table with march values on remaining-moves", () => {
-    savePhaseIndex(7); // remaining-moves
+    savePhaseIndex(6); // remaining-moves
     renderGameScreen(army);
     const panel = getApp().querySelector(".border-wh-phase-movement\\/30");
     expect(panel).toBeTruthy();
@@ -786,7 +786,7 @@ describe("Movement phase", () => {
   });
 
   it("does not show random movers panel when army has no random movers", () => {
-    savePhaseIndex(6); // compulsory-moves
+    savePhaseIndex(5); // compulsory-moves
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Random Movers");
   });
@@ -798,7 +798,7 @@ describe("Shooting phase with Bretonnian Exiles (war machines)", () => {
   beforeEach(() => {
     army = loadArmy("bretonnian-exiles");
     startGame(army);
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
   });
 
   it("shows Bombard in shooting units", () => {
@@ -823,7 +823,7 @@ describe("Shooting phase with exiles-correct (war machines without weapon in equ
   beforeEach(() => {
     army = loadArmy("exiles-correct");
     startGame(army);
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
   });
 
   it("shows Bombard in shooting units", () => {
@@ -1001,7 +1001,7 @@ describe("Combat screen with assigned characters", () => {
     saveArmy(army);
     saveCharacterAssignments({ "char.001": "knights.002" });
     startGame(army);
-    savePhaseIndex(10); // choose-fight (combat phase)
+    savePhaseIndex(9); // choose-fight (combat phase)
   });
 
   it("assigned character does not appear as a standalone combat card", () => {
@@ -1130,7 +1130,7 @@ describe("Errantry Banner conditional strength display", () => {
     saveArmy(army);
     saveCharacterAssignments({});
     startGame(army);
-    savePhaseIndex(10); // choose-fight (combat phase)
+    savePhaseIndex(9); // choose-fight (combat phase)
   });
 
   it("shows conditional strength asterisk on Lance weapon line", () => {
@@ -1155,7 +1155,7 @@ describe("Combat phase — character assignment", () => {
     saveCharacterAssignments({});
     army = loadArmy("bretonnia");
     startGame(army);
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
   });
 
   function assignFirstCharToFirstUnit(a) {
@@ -1408,7 +1408,7 @@ describe("Lothern Skycutter (Pooch Express) combat stats", () => {
     saveCharacterAssignments({});
     army = loadArmy("santas-jolly-elves");
     startGame(army);
-    savePhaseIndex(10); // choose-fight (combat phase)
+    savePhaseIndex(9); // choose-fight (combat phase)
   });
 
   it("shows chariot body toughness T4 not crew toughness", () => {
@@ -1559,7 +1559,7 @@ describe("Combat card special rules per section", () => {
     const army = buildRulesArmy();
     saveArmy(army);
     startGame(army);
-    savePhaseIndex(10); // choose-fight (combat phase)
+    savePhaseIndex(9); // choose-fight (combat phase)
   });
 
   it("shows unit combat rules on the unit card when no characters assigned", () => {
@@ -1683,7 +1683,7 @@ describe("Skeleton Horde army — Casket of Souls", () => {
   });
 
   it("Light of Death appears in shoot sub-phase", () => {
-    savePhaseIndex(8); // shoot
+    savePhaseIndex(7); // shoot
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Light of Death");
   });

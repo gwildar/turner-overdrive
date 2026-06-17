@@ -143,13 +143,8 @@ export default [
       {
         subPhaseId: "declare-charges",
         yourTurnOnly: true,
-        description: 'Max declarable charge range is M+6+3" (instead of M+6").',
-      },
-      {
-        subPhaseId: "charge-moves",
-        yourTurnOnly: true,
         description:
-          '+3" max charge range. May add +D6 to Charge, Flee, or Pursuit rolls.',
+          'Max declarable charge range is M+6+3" (instead of M+6"). May add +D6 to Charge, Flee, or Pursuit rolls.',
       },
       {
         subPhaseId: "pursuit",
@@ -165,13 +160,7 @@ export default [
         subPhaseId: "remaining-moves",
         yourTurnOnly: true,
         description:
-          'Move using Fly (X) characteristic, passing freely over models/terrain. Can march within 8" of enemy without Ld test. Must start and end on ground. Cannot join units without Fly.',
-      },
-      {
-        subPhaseId: "charge-moves",
-        yourTurnOnly: true,
-        description:
-          "May charge using Fly movement, passing over intervening models and terrain.",
+          'Move using Fly (X) characteristic, passing freely over models/terrain. Can march within 8" of enemy without Ld test. Must start and end on ground. Cannot join units without Fly. May charge using Fly movement, passing over intervening models and terrain.',
       },
     ],
   },
@@ -687,7 +676,7 @@ export default [
     displayName: "Finest Warhorses",
     phases: [
       {
-        subPhaseId: "charge-moves",
+        subPhaseId: "declare-charges",
         yourTurnOnly: true,
         description:
           "Re-roll any natural 1s on Charge, Flee, or Pursuit rolls (before discarding dice).",
@@ -709,12 +698,6 @@ export default [
         yourTurnOnly: true,
         description:
           '+1" to maximum charge range and +1 to Charge roll result. Also gains Impetuous.',
-      },
-      {
-        subPhaseId: "charge-moves",
-        yourTurnOnly: true,
-        description:
-          '+1" to maximum charge range and +1 to Charge roll result.',
       },
     ],
   },

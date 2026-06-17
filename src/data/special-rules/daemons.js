@@ -45,13 +45,7 @@ export default [
         subPhaseId: "declare-charges",
         yourTurnOnly: true,
         description:
-          'Hatred (Daemons of Khorne). +1" maximum charge range and +1 to Charge/Pursuit roll result.',
-      },
-      {
-        subPhaseId: "charge-moves",
-        yourTurnOnly: true,
-        description:
-          '+1" maximum charge range and +1 to Charge/Pursuit roll result.',
+          'Hatred (Daemons of Khorne). +1" maximum charge range and +1 to Charge/Pursuit roll result.+1" maximum charge range and +1 to Charge/Pursuit roll result.',
       },
       {
         subPhaseId: "pursuit",

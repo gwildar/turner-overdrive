@@ -6,14 +6,14 @@ describe("subPhaseToIndex", () => {
     expect(subPhaseToIndex("strategy", "start-of-turn")).toBe(0);
   });
 
-  it("returns 10 for combat/choose-fight", () => {
+  it("returns 9 for combat/choose-fight", () => {
     // strategy: 4 subs (0-3), movement: 4 subs (4-7), shooting: 2 subs (8-9)
     // combat/choose-fight is index 10
-    expect(subPhaseToIndex("combat", "choose-fight")).toBe(10);
+    expect(subPhaseToIndex("combat", "choose-fight")).toBe(9);
   });
 
-  it("returns 14 for scoring/scoring (last subphase)", () => {
-    expect(subPhaseToIndex("scoring", "scoring")).toBe(14);
+  it("returns 13 for scoring/scoring (last subphase)", () => {
+    expect(subPhaseToIndex("scoring", "scoring")).toBe(13);
   });
 
   it("returns -1 for unknown phase/subphase combination", () => {

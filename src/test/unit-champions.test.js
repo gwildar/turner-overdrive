@@ -12,7 +12,7 @@ describe("Unit Champions", () => {
   });
 
   it("shows both Warden and Grail Monk for Yeomen Guard in combat phase", () => {
-    savePhaseIndex(10); // choose-fight
+    savePhaseIndex(9); // choose-fight
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const yeomenCard = [...combatPanel.querySelectorAll(".bg-wh-card")].find(

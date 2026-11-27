@@ -1382,7 +1382,7 @@ const RULES = [
   {
     id: "pick up and",
     displayName: "Pick Up And...",
-    aliases: ["pick up and..."],
+    aliases: ["pick up and...", "pick up and…"],
     description:
       "Instead of normal attacks vs infantry/heavy infantry: target makes Initiative test. Fail = one model removed as casualty. Then roll D6: 4+ = repeat. 1-3 = stop.",
     phases: ["choose-fight"],
@@ -1841,6 +1841,551 @@ const RULES = [
     description:
       "When engaged with an enemy unit's flank or rear arc, may re-roll failed To Hit rolls against that unit.",
     phases: ["choose-fight"],
+  },
+  {
+    id: "ensorcelled weapons",
+    displayName: "Ensorcelled Weapons",
+    description:
+      "A single non-magical hand weapon has Magical Attacks and AP -1. Not with two hand weapons or other weapons; not the mount.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "chaos armour",
+    displayName: "Chaos Armour",
+    description:
+      "Ward save shown in brackets (Daemons of Chaos: 4+). A Wizard with this rule may wear armour without penalty.",
+    passive: true,
+    phases: [],
+    ward: "4+",
+  },
+  {
+    id: "obsidian blades",
+    displayName: "Obsidian Blades",
+    description:
+      "A single non-magical hand weapon has AP -1. Not with two hand weapons or other weapons; not the mount.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "tree spirit",
+    displayName: "Tree Spirit",
+    description:
+      "Characters with this rule can only join units with it, and those units can only be joined by (or use the Leadership of) such characters — but may use the Leadership of a non-fleeing friendly Tree Spirit character within Command range.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "tree whack",
+    displayName: "Tree Whack",
+    description:
+      "Once per turn, use one Attack for a Tree Whack: nominate a model in an engaged enemy unit; it takes an Initiative test. Fail = D3 hits at this model's Strength, no armour save (Ward/Regeneration allowed).",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "talismanic tattoos",
+    displayName: "Talismanic Tattoos",
+    description: "6+ Ward save against any wounds suffered.",
+    passive: true,
+    phases: [],
+    ward: "6+",
+  },
+  {
+    id: "the knights vow",
+    displayName: "The Knight's Vow",
+    aliases: ["the knight's vow"],
+    description:
+      'No Panic test when a friendly Peasantry unit is destroyed within 6", or flees through this unit. Cannot be joined by (or join) Peasantry characters/units.',
+    phases: ["shoot", "compulsory-moves", "break-test"],
+  },
+  {
+    id: "aura of the lady",
+    displayName: "Aura of the Lady",
+    description: "Any unit this character has joined gains Magical Attacks.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "shield of the lady",
+    displayName: "Shield of the Lady",
+    description:
+      "In a joined unit of US 10+ with a Chivalrous Vow, may retire to the rear at any time: cannot attack or be attacked, but still confers Leadership and rules and may cast as if in the fighting rank.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "dispersed formation",
+    displayName: "Dispersed Formation",
+    aliases: ["dispersed formation,"],
+    description:
+      'Skirmish coherency is 3" (not 1"). Unlike other Skirmishers, has a 90° front vision arc, not 360°.',
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "grinding wheels",
+    displayName: "Grinding Wheels",
+    description:
+      "Stomp Attacks have AP -2 (not against Behemoths). Treats low linear obstacles as open terrain.",
+    phases: ["remaining-moves", "choose-fight"],
+  },
+  {
+    id: "immovable object",
+    displayName: "Immovable Object",
+    description:
+      "Cannot be moved by its crew in Remaining Moves once deployed. May still pivot freely and make follow-up moves.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "master of battle",
+    displayName: "Master of Battle",
+    description:
+      "A joined unit of Empire Knights, Inner Circle Knights or Demigryph Knights gains Immune to Psychology (lost if this model leaves).",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "feel no pain",
+    displayName: "Feel No Pain",
+    description:
+      "6+ Ward save against wounds from non-magical enemy attacks; 5+ against those of Strength 5 or higher.",
+    passive: true,
+    phases: [],
+    ward: "6+ (5+ vs non-magical S5+)",
+  },
+  {
+    id: "parry",
+    displayName: "Parry",
+    aliases: ["parry (wood elves)"],
+    description:
+      "When fighting with a hand weapon and shield, or Asrai spear and shield, improves its armour value by 1.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "arcane vassal",
+    displayName: "Arcane Vassal",
+    description:
+      'Once per turn (not fleeing or in combat), a friendly Slann within 12" may channel a spell through this model: range, targeting, line of sight and effects measured from this model. Not Self spells.',
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "beast handlers",
+    displayName: "Beast Handlers",
+    description:
+      "Enemy shooting at the Pack: roll D6 per hit — 1-4 hits a Salamander/Razordon, 5+ a Skink Handler. In combat, enemies must attack models in base contact (or the closest in the fighting rank).",
+    phases: ["shoot", "choose-fight"],
+    opponentOnly: true,
+  },
+  {
+    id: "grail reliquae",
+    displayName: "Grail Reliquae",
+    description:
+      'Counts as six models (2 in each of the first three ranks), and as standard bearer and musician. Cannot lose Wounds while Battle Pilgrims remain. Within 12" of a non-fleeing friendly Grail Vow model, the unit is Immune to Psychology and Unbreakable.',
+    phases: ["break-test"],
+  },
+  {
+    id: "retinue of the saints",
+    displayName: "Retinue of the Saints",
+    description:
+      "Army may include one Grail Reliquae per character or unit with the Grail Vow.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "blackshard armour",
+    displayName: "Blackshard Armour",
+    description:
+      "5+ Ward save against wounds from Flaming Attacks. A Wizard with this rule may wear armour without penalty.",
+    passive: true,
+    phases: [],
+    ward: "5+ (Flaming Attacks)",
+  },
+  {
+    id: "infernal engineer",
+    displayName: "Infernal Engineer",
+    description:
+      "Unless fleeing or in combat, once per turn a friendly war machine within Command range may re-roll one Scatter or Artillery dice.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "sorcerers curse",
+    displayName: "Sorcerer's Curse",
+    aliases: ["sorcerer's curse"],
+    description:
+      "On a miscast, take a Toughness test. Fail = lose 1 Wound and gain +1 Toughness instead of rolling on the Miscast table. Pass = roll on the Miscast table as normal.",
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "quell panic",
+    displayName: "Quell Panic",
+    description:
+      'Unless this unit is fleeing, friendly Levies units within 6" may re-roll failed Panic tests.',
+    phases: ["shoot", "compulsory-moves", "break-test"],
+  },
+  {
+    id: "blazing body",
+    displayName: "Blazing Body",
+    description:
+      "Before challenges, every model (friend or foe) in base contact without this rule suffers a S4 AP -1 Flaming hit.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "carriage hauler",
+    displayName: "Carriage Hauler",
+    description:
+      'Up to two friendly war machines with Steam Carriage, completely within its rear arc and within 8" at the start of the phase, may move when it moves, finishing in the same area. They count as not having moved unless it used Lumbering Destruction or charged.',
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "lumbering destruction",
+    displayName: "Lumbering Destruction",
+    description:
+      "Cannot march. Instead may roll D6 and add it to Movement — on a natural 1 it halts immediately and cannot move again this turn.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "caged fury",
+    displayName: "Caged Fury",
+    description:
+      "Take a Leadership test. If failed, roll immediately on the Hellcannon Misfire table.",
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "holy fervour",
+    displayName: "Holy Fervour",
+    description:
+      'Unless this unit is fleeing, friendly units within 6" automatically pass Fear tests and may re-roll failed Panic tests.',
+    phases: ["choose-fight", "shoot", "compulsory-moves", "break-test"],
+  },
+  {
+    id: "symbol of might",
+    displayName: "Symbol of Might",
+    description:
+      'A Lector of Sigmar on the War Altar has a 12" Command range (18" if General).',
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "witch bane",
+    displayName: "Witch Bane",
+    description:
+      "All Wizards (friend or foe) within this model's Command range suffer -2 to Casting rolls.",
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+  },
+  {
+    id: "suffer not",
+    displayName: "Suffer Not...",
+    aliases: ["suffer not...", "suffer not…"],
+    description:
+      "Specialism chosen at list building (tell your opponent at deployment). The Witch Hunter and any unit it joins gain: The Witch — Hatred (enemy Wizards), Magic Resistance (-2); The Revenant — Hatred (Undead), Flaming Attacks; The Mutant — Hatred (Warriors & Beasts of Chaos), Magic Resistance (-1); The Daemon — Hatred (Daemonic models), Magical Attacks.",
+    phases: ["deployment", "choose-fight"],
+  },
+  {
+    id: "clouds of soot & smoke",
+    displayName: "Clouds of Soot & Smoke",
+    aliases: ["clouds of soot and smoke"],
+    description:
+      'Unless mounted, counts as behind full cover whilst within 3" of a friendly war machine unit.',
+    phases: ["shoot"],
+    opponentOnly: true,
+  },
+  {
+    id: "master of ballistics",
+    displayName: "Master of Ballistics",
+    description:
+      "Unless fleeing or in combat, once per turn a friendly Empire war machine within Command range may use this model's BS or re-roll one Artillery dice.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "crushing weight",
+    displayName: "Crushing Weight",
+    description:
+      "Stomp Attacks have AP -1. Treats low linear obstacles as dangerous terrain (not impassable).",
+    phases: ["remaining-moves", "choose-fight"],
+  },
+  {
+    id: "stable firing platform",
+    displayName: "Stable Firing Platform",
+    description:
+      "The crew's missile weapons can shoot even if the War Wagon marched this turn.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "nuln state troops",
+    displayName: "Nuln State Troops",
+    description:
+      "Army building: a regimental unit of (Veteran) State Troops with halberds plus 1-2 detachments of State Missile Troops (handguns) and/or Swordsmen (hand weapons and shields). Detachments may upgrade a Sergeant for free.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "steam power",
+    displayName: "Steam Power",
+    description:
+      "Cannot march. Instead may roll 2D6, discard the lowest, and add the result to Movement (see Temperamental).",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "temperamental",
+    displayName: "Temperamental",
+    description:
+      "A natural 1 on either dice of a Steam Power or Charge roll: choose Bang! (lose 1 Wound) or Phweee! (halt, cannot move again this turn). Double 1: lose 1 Wound and halt.",
+    phases: ["declare-charges", "remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "prayer of the damned",
+    displayName: "Prayer of the Damned",
+    description:
+      "Take a Leadership test (own Leadership). If passed, until your next Start of Turn this character and its unit have a 6+ Ward save, 5+ against wounds caused in combat by Fear- or Terror-causing enemies.",
+    phases: ["command"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "zealot",
+    displayName: "Zealot",
+    description: "Can only join a unit with the Fanatical Zeal rule.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "fanatical zeal",
+    displayName: "Fanatical Zeal",
+    description:
+      "Can only be joined by a Lector or Priest of Sigmar, who becomes Unbreakable while with the unit.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "inner circle",
+    displayName: "Inner Circle",
+    description:
+      "In combat, this model (not its mount) may re-roll To Hit rolls of a natural 1.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "blessings of ulric",
+    displayName: "Blessings of Ulric",
+    description: "6+ Ward save against wounds from Flaming Attacks.",
+    passive: true,
+    phases: [],
+    ward: "6+ (Flaming Attacks)",
+  },
+  {
+    id: "living saints",
+    displayName: "Living Saints",
+    description:
+      "Every model in the unit can issue and accept challenges as if it were a character.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "sacrifice",
+    displayName: "Sacrifice",
+    description:
+      "Only while joined to a unit: before a Casting roll, remove one model of the unit as a casualty and add its Wounds characteristic to the result (doesn't negate a double 1).",
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "thralls of chaos",
+    displayName: "Thralls of Chaos",
+    description:
+      "Cannot be your General and can only join a unit with the Dark Pawns rule.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "dark pawns",
+    displayName: "Dark Pawns",
+    description:
+      "Friendly units don't take Panic tests when this unit is destroyed or Breaks within 6\", or when it flees through them.",
+    phases: ["shoot", "compulsory-moves", "break-test"],
+  },
+  {
+    id: "unseen threat",
+    displayName: "Unseen Threat",
+    description:
+      'In reserve: +1 or -1 to the roll for arriving as reinforcements. Arrives more than 4" (not 8") from enemy units.',
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "courage beyond compare",
+    displayName: "Courage Beyond Compare",
+    description:
+      "A Guardians of Talsyn unit this character joins gains Immune to Psychology (lost if it leaves).",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "troubadour of loec",
+    displayName: "Troubadour of Loec",
+    description:
+      "While joined to Wardancers, this Shadowdancer has the Dances of Loec rule.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "dances of loec",
+    displayName: "Dances of Loec",
+    description:
+      "When this unit's combat is chosen, pick one Dance for the whole unit, lasting this Combat phase.",
+    phases: [
+      {
+        subPhaseId: "choose-fight",
+        description:
+          "When this unit's combat is chosen, pick one Dance for the whole unit, lasting this Combat phase.",
+        table: [
+          { Dance: "Whirling Death", Effect: "Weapons' AP improved by 2" },
+          { Dance: "Storm of Blades", Effect: "Extra Attacks (+1)" },
+          { Dance: "The Shadows Coil", Effect: "4+ Ward save" },
+          { Dance: "Woven Mist", Effect: "Enemies attacking it: -1 To Hit" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "guardians of the wildwood",
+    displayName: "Guardians of the Wildwood",
+    description:
+      "In base contact with an enemy causing Fear or Terror: +1 Attacks (max 10) and Multiple Wounds (2).",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "deepwood coven",
+    displayName: "Deepwood Coven",
+    description:
+      "Knows one random Battle Magic or Elementalism spell (or that lore's signature spell), cast as a Bound spell: Power Level 0, 1 with a Handmaiden of the Thorn, 2 with Handmaiden and standard bearer.",
+    phases: ["conjuration", "shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "arcane shield",
+    displayName: "Arcane Shield",
+    description: "5+ Ward save against any wounds suffered.",
+    passive: true,
+    phases: [],
+    ward: "5+",
+  },
+  {
+    id: "guardians",
+    displayName: "Guardians",
+    description:
+      "If a friendly Slann within 3\" suffers a hit in the Shooting phase, roll D6: on 2+ you may transfer the hit to this unit. Within a Slann's Command range, every model can issue and accept challenges as if a character.",
+    phases: ["shoot", "choose-fight"],
+  },
+  {
+    id: "skirmish screen",
+    displayName: "Skirmish Screen",
+    description:
+      'Can see and move through friendly Skink Skirmisher units in Skirmish formation (nudge Skinks aside). Skinks within 1" may count it as part of their unit for coherency.',
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "drop rocks",
+    displayName: "Drop Rocks",
+    description:
+      "Once per game, fly over one enemy unit not in combat: after moving, it suffers D3 S4 hits per model that moved over it.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "toad rage",
+    displayName: "Toad Rage",
+    description:
+      "Before the game (after Scouts), place one blot toad marker per Ripperdactyl Riders unit on an enemy unit. Against a marked unit, Ripperdactyls (not riders) gain Extra Attacks (+1) and re-roll To Hit rolls of a natural 1.",
+    phases: ["deployment", "choose-fight"],
+  },
+  {
+    id: "impervious defence",
+    displayName: "Impervious Defence",
+    description:
+      "Enemy units cannot claim bonus combat result for being engaged with this model's flank or rear.",
+    phases: ["combat-result"],
+  },
+  {
+    id: "primeval roar",
+    displayName: "Primeval Roar",
+    description:
+      'Once per game, take a Leadership test (own Leadership): if passed, friendly Lizardmen units within 7" gain Furious Charge until the end of the turn.',
+    phases: ["command"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "hawk-eyed archer",
+    displayName: "Hawk-eyed Archer",
+    description:
+      "May target any enemy character in line of sight regardless of the Lone character rules, and may target a specific model (e.g. champion or character) within its target unit.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "safe from harm",
+    displayName: "Safe From Harm",
+    description:
+      "Enemy shooting at a Rat Ogre unit with Packmasters: roll D6 per hit — 1-4 hits a Rat Ogre. In combat, enemies must attack models in base contact (or the closest in the fighting rank).",
+    phases: ["shoot", "choose-fight"],
+    opponentOnly: true,
+  },
+  {
+    id: "rampant mutation",
+    displayName: "Rampant Mutation",
+    description:
+      "When this unit's combat is chosen, roll D6 for its mutation, lasting this Combat phase.",
+    phases: [
+      {
+        subPhaseId: "choose-fight",
+        description:
+          "When this unit's combat is chosen, roll D6 for its mutation, lasting this Combat phase.",
+        table: [
+          { D6: "1-2", Result: "Venomous Fangs: Poisoned Attacks" },
+          { D6: "3-4", Result: "Razor Talons: all attacks AP -2" },
+          { D6: "5-6", Result: "Decapitating Claws: Killing Blow" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "relentless warriors",
+    displayName: "Relentless Warriors",
+    description: "6+ Ward save against wounds from non-magical enemy attacks.",
+    passive: true,
+    phases: [],
+    ward: "6+ (non-magical)",
+  },
+  {
+    id: "warped form",
+    displayName: "Warped Form",
+    description:
+      "When this unit's combat is chosen, pick a Transfiguration lasting until your next Start of Turn.",
+    phases: [
+      {
+        subPhaseId: "choose-fight",
+        description:
+          "When this unit's combat is chosen, pick a Transfiguration lasting until your next Start of Turn.",
+        table: [
+          {
+            Transfiguration: "Enlarged Claws",
+            Effect: "Weapons' AP improved by 1 and Armour Bane (2)",
+          },
+          {
+            Transfiguration: "Barbed Protrusions",
+            Effect: "Extra Attacks (+1)",
+          },
+          {
+            Transfiguration: "Toughened Flesh",
+            Effect: "+1 Toughness and armour value improved by 2",
+          },
+        ],
+      },
+    ],
   },
 ];
 

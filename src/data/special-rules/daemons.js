@@ -68,6 +68,41 @@ const RULES = [
       "Reduce the wounds suffered from Daemonic Instability by the number in brackets. Not cumulative: a unit uses the highest Infernal Favour value among its models.",
     phases: ["break-test"],
   },
+  {
+    id: "scintillating sorcery",
+    displayName: "Scintillating Sorcery",
+    description:
+      "Knows one spell of its Daemonic Alignment (chosen before deployment), cast as a Bound spell with Power Level equal to the unit's current Rank Bonus.",
+    phases: ["conjuration", "shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "attention seeker",
+    displayName: "Attention Seeker",
+    description:
+      "Every model in the unit can issue and accept challenges as if it were a character.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "slime trail",
+    displayName: "Slime Trail",
+    description:
+      "Enemy units cannot claim bonus combat result for being engaged in this unit's flank or rear.",
+    phases: ["combat-result"],
+  },
+  {
+    id: "soporific musk",
+    displayName: "Soporific Musk",
+    description:
+      "Enemy models engaged with this model cannot use Strike First; enemies without Strike First are subject to Strike Last.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "brazen wheels",
+    displayName: "Brazen Wheels",
+    description: "Stomp Attacks have AP -3 (not against Behemoths).",
+    phases: ["choose-fight"],
+  },
 ];
 
 export default RULES;

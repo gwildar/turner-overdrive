@@ -400,9 +400,11 @@ const RULES = [
   {
     id: "fire and chaos",
     displayName: "Fire and Chaos",
+    aliases: ["fire & chaos"],
     description:
       "5+ Ward save against wounds caused by attacks with the Magical Attacks or Flaming Attacks special rule.",
     phases: ["choose-fight"],
+    ward: "5+ (Magical or Flaming Attacks)",
   },
   {
     id: "warriors duel",

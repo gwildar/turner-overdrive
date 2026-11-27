@@ -652,14 +652,21 @@ function wardValue(ward) {
 export function computeWard(magicItems, specialRules) {
   let best = null;
   for (const source of [...magicItems, ...specialRules]) {
-    if (
-      source.ward &&
-      (best === null || wardValue(source.ward) < wardValue(best))
-    ) {
-      best = source.ward;
+    const ward = source.ward ?? wardFromRuleName(source.displayName);
+    if (ward && (best === null || wardValue(ward) < wardValue(best))) {
+      best = ward;
     }
   }
   return best;
+}
+
+/**
+ * Rules whose Ward save is given in brackets in the army list, e.g.
+ * "Chaos Armour (5+)". These resolve as bare entries (the bracket isn't part
+ * of the rule id), so the value is read from the name.
+ */
+function wardFromRuleName(name) {
+  return name?.match(/^Chaos Armour\s*\((\d\+)\)/i)?.[1] ?? null;
 }
 
 /**

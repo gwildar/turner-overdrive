@@ -524,8 +524,14 @@ async function compareRules(since) {
       usage.set(n, u);
     }
   }
+  // Not reminders: the combat panels compute these from the unit's data, the
+  // spell screens handle lores, and "Daemons of X" are alignment labels.
+  const handledElsewhere = (n) =>
+    ["impact hits", "stomp attacks", "armour bane"].includes(n) ||
+    /^lore of /.test(n) ||
+    /^daemons of /.test(n);
   const unknown = [...usage]
-    .filter(([n]) => !known.has(n))
+    .filter(([n]) => !known.has(n) && !handledElsewhere(n))
     .sort((a, b) => b[1].count - a[1].count)
     .map(([rule, u]) => ({ rule, ...u }));
   return {
@@ -643,7 +649,7 @@ function report({ meta, since, units, spells, weapons, items, rules }) {
     "",
   );
   L.push(
-    "Some are handled elsewhere (Impact Hits, Stomp Attacks, Armour Bane, lores, armour).",
+    "Impact Hits, Stomp Attacks, Armour Bane, lores and Daemonic alignments are left out: they are handled outside the rules list.",
     "",
   );
   for (const u of rules.unknown)

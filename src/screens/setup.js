@@ -172,7 +172,7 @@ function renderUploadSection() {
         <h3 class="font-semibold text-wh-accent mb-2">How to get your army file</h3>
         <p class="text-xs text-wh-muted mb-2 font-semibold uppercase tracking-wide">Old World Builder</p>
         <ol class="text-sm text-wh-muted space-y-1 list-decimal list-inside">
-          <li>Go to <span class="text-wh-text">Old World Builder</span> (oldworldbuilder.com)</li>
+          <li>Go to <a href="https://old-world-builder.com" target="_blank" rel="noopener noreferrer" class="text-wh-accent hover:underline">Old World Builder</a> (old-world-builder.com)</li>
           <li>Create or open your army list</li>
           <li>Export as <span class="font-mono text-wh-text">.owb.json</span></li>
           <li>Upload the file here</li>

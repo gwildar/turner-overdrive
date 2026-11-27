@@ -12,6 +12,15 @@ import { getDisplayMode, saveDisplayMode } from "../../state.js";
 
 describe("Setup Screen", () => {
   describe("without army", () => {
+    it("links to Old World Builder at its real address", () => {
+      renderSetupScreen();
+      const app = getApp();
+      expect(app.textContent).not.toContain("oldworldbuilder.com");
+      expect(
+        app.querySelector('a[href="https://old-world-builder.com"]'),
+      ).toBeTruthy();
+    });
+
     it("shows upload section", () => {
       renderSetupScreen();
       const app = getApp();

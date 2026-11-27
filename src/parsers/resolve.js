@@ -578,17 +578,17 @@ const extractNumber = (str) => {
   return match ? parseInt(match[1], 10) : null;
 };
 
-/**
- * Compute ward save from magic items and special rules
- */
 // Base value of a ward string: "5+" → 5, "5+ (4+ vs S5+)" → 5. Lower is better.
 function wardValue(ward) {
   const match = String(ward).match(/(\d)\+/);
   return match ? parseInt(match[1], 10) : Infinity;
 }
 
+/**
+ * Compute ward save from magic items and special rules. Wards don't stack —
+ * the model uses the single best one available.
+ */
 export function computeWard(magicItems, specialRules) {
-  // Wards don't stack — the model uses the single best one available.
   let best = null;
   for (const source of [...magicItems, ...specialRules]) {
     if (

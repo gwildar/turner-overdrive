@@ -9,9 +9,23 @@ import { loadArmy, getApp } from "../helpers.js";
 import * as Nav from "../../navigate.js";
 import { displayUnitName } from "../../utils/unit-name.js";
 import { getDisplayMode, saveDisplayMode } from "../../state.js";
+import { version } from "../../../package.json";
 
 describe("Setup Screen", () => {
   describe("without army", () => {
+    it("labels What's New with the current major.minor version", () => {
+      renderSetupScreen();
+      const majorMinor = version.split(".").slice(0, 2).join(".");
+      expect(getApp().textContent).toContain(`What's New — v${majorMinor}`);
+    });
+
+    it("tells users in What's New that New Recruit import has been removed", () => {
+      renderSetupScreen();
+      const summary = getApp().querySelector("details");
+      expect(summary.textContent).toContain("New Recruit");
+      expect(summary.textContent).toContain("no longer supported");
+    });
+
     it("links to Old World Builder at its real address", () => {
       renderSetupScreen();
       const app = getApp();

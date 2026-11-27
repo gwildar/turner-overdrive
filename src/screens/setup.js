@@ -128,21 +128,32 @@ export function renderSetupScreen() {
 }
 
 function renderWhatsNew() {
+  const majorMinor = version.split(".").slice(0, 2).join(".");
   return `
     <details class="mb-4 group">
       <summary class="flex items-center justify-between cursor-pointer list-none py-2 px-3 rounded-lg border border-wh-border bg-wh-surface hover:border-wh-accent transition-colors">
-        <span class="text-sm font-semibold text-wh-accent">&#9733; What's New — v4.0</span>
+        <span class="text-sm font-semibold text-wh-accent">&#9733; What's New — v${majorMinor}</span>
         <span class="text-wh-muted text-xs group-open:hidden">Show</span>
         <span class="text-wh-muted text-xs hidden group-open:inline">Hide</span>
       </summary>
       <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
         <div class="pt-3">
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Legacy Pack — Draft Support</p>
-          <p class="text-xs">Community draft rules (v1.5.2.2) now supported for <span class="text-wh-text">Dark Elves</span>, <span class="text-wh-text">Ogre Kingdoms</span>, and <span class="text-wh-text">Skaven</span> renegade compositions. Enable via Settings to use the draft rules — stable v1.5 is the default.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Old World Builder Only</p>
+          <p class="text-xs">New Recruit files are no longer supported. Export your list from <span class="text-wh-text">Old World Builder</span> as <span class="font-mono text-wh-text">.owb.json</span>. A previously saved New Recruit army will need re-uploading.</p>
         </div>
         <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Army Validation</p>
-          <p class="text-xs">New warning when a character's mundane armour is redundant due to a mount with an equal or better natural armour save.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Updates Apply Straight Away</p>
+          <p class="text-xs">Rules updates and the community supplements setting now apply to your saved army without re-importing it.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Fixes</p>
+          <ul class="text-xs list-disc list-inside space-y-0.5">
+            <li>Units with more than one ward save now show the best one.</li>
+            <li>Thrown weapons show the correct Strength (e.g. S4 for a Throwing Axe on S3).</li>
+            <li>Swiftstride is no longer counted twice in charge ranges.</li>
+            <li>The "Terror tests!" reminder only appears if your army causes Terror.</li>
+            <li>Your turn no longer starts on a step your army doesn't use.</li>
+          </ul>
         </div>
       </div>
     </details>

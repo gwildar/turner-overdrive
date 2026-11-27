@@ -9,6 +9,7 @@ const KEYS = {
   timings: "tow-timings",
   startTime: "tow-start-time",
   assignments: "tow-character-assignments",
+  activeLores: "tow-active-lores",
   schemaVersion: "tow-schema-version",
   deploymentTime: "tow-deployment-time",
   displayMode: "tow-display-mode",
@@ -48,7 +49,8 @@ function save(key, value) {
 
 // Army
 export function getArmy() {
-  return load(KEYS.army, null);
+  const army = load(KEYS.army, null);
+  return army ? applyActiveLores(army) : null;
 }
 
 export function saveArmy(army) {
@@ -59,6 +61,25 @@ export function clearArmy() {
   localStorage.removeItem(KEYS.army);
   localStorage.removeItem(KEYS.spellSelections);
   localStorage.removeItem(KEYS.assignments);
+  localStorage.removeItem(KEYS.activeLores);
+}
+
+// Core lore chosen per caster on the spell selection screen: { [unitId]: loreKey }.
+// Kept separate from the army so the army itself is never edited after import.
+export function getActiveLores() {
+  return load(KEYS.activeLores, {});
+}
+
+export function saveActiveLore(unitId, loreKey) {
+  save(KEYS.activeLores, { ...getActiveLores(), [unitId]: loreKey });
+}
+
+export function applyActiveLores(army) {
+  const chosen = getActiveLores();
+  for (const unit of army.units) {
+    if (chosen[unit.id]) unit.activeLore = chosen[unit.id];
+  }
+  return army;
 }
 
 // Character assignments: { [characterId]: unitId }

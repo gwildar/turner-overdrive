@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { renderSpellSelection } from "../../screens/spell-selection.js";
-import { saveSpellSelections } from "../../state.js";
+import {
+  renderSpellSelection,
+  bindSpellSelectors,
+} from "../../screens/spell-selection.js";
+import { saveSpellSelections, getArmy } from "../../state.js";
 import { loadArmy } from "../helpers.js";
 import { getCasters } from "../../army.js";
 
@@ -141,5 +144,37 @@ describe("renderSpellSelection — Lore Familiar with many lore options (Supreme
 
   it("shows spell checkboxes for the selected lore", () => {
     expect(html).toContain('class="spell-checkbox');
+  });
+});
+
+describe("core lore choice persists", () => {
+  function findLoreChoiceCaster(army) {
+    return getCasters(army).find(
+      (c) =>
+        c.lores.length > 1 &&
+        !c.spellSelectionMode?.canChoose &&
+        !c.spellSelectionMode?.multiLore,
+    );
+  }
+
+  it("keeps the chosen core lore when the army is loaded again", () => {
+    const army = loadArmy("lizardmen");
+    const caster = findLoreChoiceCaster(army);
+    expect(caster).toBeTruthy();
+    const newLore = caster.lores.find((l) => l !== caster.activeLore);
+
+    document.getElementById("app").innerHTML = renderSpellSelection(
+      army,
+      getCasters(army),
+    );
+    bindSpellSelectors(army);
+    const select = document.querySelector(
+      `.lore-select[data-unit-id="${caster.id}"]`,
+    );
+    select.value = newLore;
+    select.dispatchEvent(new Event("change"));
+
+    const reloaded = getArmy().units.find((u) => u.id === caster.id);
+    expect(reloaded.activeLore).toBe(newLore);
   });
 });

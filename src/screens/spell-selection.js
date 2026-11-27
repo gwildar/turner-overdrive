@@ -1,5 +1,9 @@
 import { LORES, getSpellTypeLabel } from "../data/spells.js";
-import { getSpellSelections, saveSpellSelections, saveArmy } from "../state.js";
+import {
+  getSpellSelections,
+  saveSpellSelections,
+  saveActiveLore,
+} from "../state.js";
 import { formatSlug } from "../helpers.js";
 
 export function renderSpellSelection(army, casters) {
@@ -289,7 +293,7 @@ export function bindSpellSelectors(army) {
 
       const caster = army.units.find((u) => u.id === unitId);
       if (caster) caster.activeLore = loreKey;
-      saveArmy(army);
+      saveActiveLore(unitId, loreKey);
 
       const selections = getSpellSelections();
       selections[unitId] = {};

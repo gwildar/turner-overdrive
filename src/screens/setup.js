@@ -1,9 +1,7 @@
 import { version } from "../../package.json";
-import { parseArmyList, getCasters } from "../army.js";
+import { importArmy, loadStoredArmy, getCasters } from "../army.js";
 import { displayUnitName } from "../utils/unit-name.js";
 import {
-  getArmy,
-  saveArmy,
   clearArmy,
   saveSpellSelections,
   resetGame,
@@ -32,7 +30,7 @@ export function setCurrentWarnings(w) {
 
 export function renderSetupScreen() {
   renderScreen(() => {
-    const army = getArmy();
+    const army = loadStoredArmy();
     const currentMode = getDisplayMode();
     const supplementsEnabled = getSupplementsEnabled();
     const wasRecovered = sessionStorage.getItem("tow-recovered");
@@ -77,7 +75,7 @@ export function renderSetupScreen() {
         </div>
         <div class="mt-6 border-t border-wh-border pt-4">
           <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
-          <p class="text-xs text-wh-muted mb-3">Default: Renegade Legacy Pack v1.5 (stable). Toggle to use the v1.5.2.2 community draft (DE, OK, Skaven only). Re-import your army list after changing.</p>
+          <p class="text-xs text-wh-muted mb-3">Default: Renegade Legacy Pack v1.5 (stable). Toggle to use the v1.5.2.2 community draft (DE, OK, Skaven only). Applies to your current army straight away.</p>
           <label class="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" id="supplements-toggle" ${supplementsEnabled ? "checked" : ""}
               class="w-4 h-4 accent-wh-accent cursor-pointer" />
@@ -360,9 +358,8 @@ function handleFile(file, errorEl) {
   reader.onload = () => {
     try {
       const json = JSON.parse(reader.result);
-      const army = parseArmyList(json);
+      const army = importArmy(json);
       currentWarnings = validateArmy(json, army);
-      saveArmy(army);
       const casters = getCasters(army);
       const selections = {};
       for (const c of casters) {
@@ -383,7 +380,7 @@ function bindArmyActions() {
   document.getElementById("start-game-btn")?.addEventListener("click", () => {
     const firstTurn = getFirstTurn();
     if (!firstTurn) {
-      const army = getArmy();
+      const army = loadStoredArmy();
       const casters = getCasters(army);
       navigate(casters.length > 0 ? "/spell-selection" : "/unit-assignment");
     } else if (getIsOpponentTurn()) {

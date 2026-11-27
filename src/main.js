@@ -1,6 +1,5 @@
 import "./style.css";
 import {
-  getArmy,
   clearAll,
   getFirstTurn,
   getIsOpponentTurn,
@@ -17,6 +16,7 @@ import {
 import { showErrorOverlay } from "./error-overlay.js";
 import { getAllSubPhases, PHASES, subPhaseToIndex } from "./phases.js";
 import { router, navigate } from "./navigate.js";
+import { loadStoredArmy } from "./army.js";
 
 import { renderSetupScreen } from "./screens/setup.js";
 import { renderGameScreen } from "./screens/game.js";
@@ -32,7 +32,7 @@ import { renderScenarioSetupScreen } from "./screens/scenario-setup.js";
 const allSubPhases = getAllSubPhases();
 
 function guardArmy(fn) {
-  const army = getArmy();
+  const army = loadStoredArmy();
   if (!army) {
     navigate("/");
     return;
@@ -76,7 +76,7 @@ router
     });
   })
   .notFound(() => {
-    const army = getArmy();
+    const army = loadStoredArmy();
     if (!army || !getFirstTurn()) {
       navigate("/");
     } else if (getIsOpponentTurn()) {

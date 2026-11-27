@@ -1694,3 +1694,49 @@ describe("Skeleton Horde army — Casket of Souls", () => {
     expect(getApp().textContent).not.toContain("Light of Death");
   });
 });
+
+describe("Terror priority banner at Declare Charges", () => {
+  const declareIdx = getAllSubPhases().findIndex(
+    (sp) => sp.subPhase.id === "declare-charges",
+  );
+
+  function stripTerror(army) {
+    for (const u of army.units) {
+      u.specialRules = u.specialRules.filter(
+        (r) => !/^terror$/i.test(r.displayName),
+      );
+      if (u.mount?.rules)
+        u.mount.rules = u.mount.rules.filter((r) => r !== "Terror");
+    }
+    return army;
+  }
+
+  it("shows the Terror reminder when a unit causes Terror via its special rules", () => {
+    const army = stripTerror(loadArmy("bretonnian-exiles"));
+    army.units[0].specialRules.push({ id: "terror", displayName: "Terror" });
+    saveArmy(army);
+    startGame(army);
+    savePhaseIndex(declareIdx);
+    renderGameScreen(army);
+    expect(getApp().textContent).toContain("Terror tests!");
+  });
+
+  it("shows the Terror reminder when a unit's mount causes Terror", () => {
+    const army = loadArmy("dark-elves");
+    const rider = army.units.find((u) => u.mount?.rules?.includes("Terror"));
+    expect(rider).toBeTruthy();
+    startGame(army);
+    savePhaseIndex(declareIdx);
+    renderGameScreen(army);
+    expect(getApp().textContent).toContain("Terror tests!");
+  });
+
+  it("hides the Terror reminder when nothing in the army causes Terror", () => {
+    const army = stripTerror(loadArmy("dark-elves"));
+    saveArmy(army);
+    startGame(army);
+    savePhaseIndex(declareIdx);
+    renderGameScreen(army);
+    expect(getApp().textContent).not.toContain("Terror tests!");
+  });
+});

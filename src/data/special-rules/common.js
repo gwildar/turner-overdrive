@@ -759,7 +759,7 @@ export default [
     phases: [],
     description:
       "The Green Knight has a 5+ Ward save against any wounds suffered.",
-    ward: "+5",
+    ward: "5+",
   },
   {
     id: "guardian of the sacred sites",

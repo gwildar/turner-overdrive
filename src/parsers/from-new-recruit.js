@@ -248,7 +248,7 @@ function parseCanonicalUnit(selection, category) {
   const magicResistance = computeMR(
     resolvedMagicItems,
     specialRules,
-    modelProfiles,
+    resolvedMount,
   );
   const poisonedAttacks = computePoisonedAttacks(specialRules);
   const stomp = computeStomp(resolvedMount, specialRules);

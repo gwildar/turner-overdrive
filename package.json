@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "crawl:rules": "node scripts/crawl-tow-rules.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

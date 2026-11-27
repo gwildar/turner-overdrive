@@ -146,3 +146,45 @@ describe("New Recruit import", () => {
     expect(army.owbId).toBeFalsy();
   });
 });
+
+describe("New Recruit import — mount Magic Resistance", () => {
+  // Minimal NR roster: a character whose Model selection nests a mount Model.
+  const model = (name) => ({
+    profiles: [{ typeName: "Model", name, characteristics: [] }],
+  });
+  const roster = {
+    roster: {
+      name: "MR test",
+      costs: [{ name: "pts", value: 0 }],
+      forces: [
+        {
+          selections: [
+            {
+              entryGroupId: "characters",
+              profiles: [
+                {
+                  typeName: "Unit",
+                  name: "Sorcerer-Prophet",
+                  characteristics: [{ name: "Unit Size", $text: "1" }],
+                },
+              ],
+              selections: [
+                {
+                  ...model("Sorcerer-Prophet"),
+                  selections: [model("Lammasu")],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  it("takes Magic Resistance from the mount (Lammasu gives -3)", () => {
+    const army = parseArmyList(roster);
+    const unit = army.units[0];
+    expect(unit.mount?.name).toBe("Lammasu");
+    expect(unit.magicResistance).toBe("-3");
+  });
+});

@@ -47,3 +47,26 @@ describe("First Turn Screen", () => {
     expect(Nav.navigate).toHaveBeenCalledWith("/deployment");
   });
 });
+
+describe("First Turn Screen — starting sub-phase", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  // No units → no Start of Turn content and no Command content, so both
+  // of the first two Strategy sub-phases are hidden.
+  const emptyArmy = { name: "Empty", units: [], skipPhases: [] };
+
+  it("skips straight to the first visible sub-phase when Start of Turn and Command are hidden", () => {
+    vi.spyOn(Nav, "navigate").mockImplementation(() => {});
+    renderFirstTurnScreen(emptyArmy);
+    getApp().querySelector("#first-you-btn").click();
+    expect(Nav.navigate).toHaveBeenCalledWith("/game/1/strategy/conjuration");
+  });
+
+  it("starts at Start of Turn when the army has start-of-turn content", () => {
+    vi.spyOn(Nav, "navigate").mockImplementation(() => {});
+    const army = loadArmy("dark-elves");
+    renderFirstTurnScreen(army);
+    getApp().querySelector("#first-you-btn").click();
+    expect(Nav.navigate).toHaveBeenCalledWith("/game/1/strategy/start-of-turn");
+  });
+});

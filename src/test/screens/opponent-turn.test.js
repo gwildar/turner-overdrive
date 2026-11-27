@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import * as Nav from "../../navigate.js";
 import { renderOpponentTurnScreen } from "../../screens/opponent-turn.js";
 import { loadArmy, startGame, getApp } from "../helpers.js";
 import { saveIsOpponentTurn, savePhaseIndex } from "../../state.js";
@@ -80,5 +81,20 @@ describe("Opponent Turn Screen", () => {
     savePhaseIndex(0); // strategy phase
     renderOpponentTurnScreen(vcArmy);
     expect(getApp().textContent).not.toContain("Invocation of Nehek");
+  });
+});
+
+describe("Opponent Turn Screen — ending the turn", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it("moves to your first visible sub-phase, skipping hidden Start of Turn and Command", () => {
+    vi.spyOn(Nav, "navigate").mockImplementation(() => {});
+    const emptyArmy = { name: "Empty", units: [], skipPhases: [] };
+    startGame(emptyArmy, "opponent");
+    saveIsOpponentTurn(true);
+    savePhaseIndex(4); // Scoring (last opponent phase)
+    renderOpponentTurnScreen(emptyArmy);
+    getApp().querySelector("#next-btn").click();
+    expect(Nav.navigate).toHaveBeenCalledWith("/game/1/strategy/conjuration");
   });
 });

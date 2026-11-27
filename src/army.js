@@ -1,5 +1,12 @@
 import { fromOwb } from "./parsers/from-owb.js";
 import { fromNewRecruit } from "./parsers/from-new-recruit.js";
+import {
+  getArmy,
+  getArmySource,
+  saveArmySource,
+  clearArmy,
+  applyActiveLores,
+} from "./state.js";
 
 /**
  * Detect the army list format and delegate to the appropriate converter
@@ -24,6 +31,28 @@ export function parseArmyList(json) {
   throw new Error(
     "Unrecognised army list format. Expected OWB or New Recruit format.",
   );
+}
+
+/**
+ * Parse a newly imported army file and store the file itself. Clears any
+ * previous army along with its spell, lore and character choices.
+ */
+export function importArmy(json) {
+  const army = parseArmyList(json);
+  clearArmy();
+  saveArmySource(json);
+  return army;
+}
+
+/**
+ * Load the stored army by re-parsing the imported file, so the current data
+ * and settings always apply. Falls back to a parsed army saved by an older
+ * version of the app.
+ */
+export function loadStoredArmy() {
+  const source = getArmySource();
+  if (source) return applyActiveLores(parseArmyList(source));
+  return getArmy();
 }
 
 export function getCasters(army) {

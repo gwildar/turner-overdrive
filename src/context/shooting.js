@@ -37,7 +37,10 @@ function resolveStrength(weaponS, unitS) {
   if (!weaponS || !unitS) return weaponS;
   if (weaponS === "S") return unitS;
   const mod = weaponS.match(/^S([+-]\d+)$/);
-  if (mod) return `${unitS}${mod[1]}`;
+  if (mod) {
+    const base = parseInt(unitS, 10);
+    return isNaN(base) ? weaponS : `${base + parseInt(mod[1], 10)}`;
+  }
   return weaponS;
 }
 

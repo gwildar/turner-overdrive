@@ -72,6 +72,7 @@ const TROOP_TYPE_MARKERS = new Set(["Ch", "NCh"]);
  * For a character on a monster mount (mount.wBonus > 0), returns mount US + 1.
  * Otherwise derives US per model from the unit's primary troop type × model count.
  */
+/** @param {Pick<import("../types").Unit, "mount" | "stats" | "strength" | "detachments">} unit */
 export function computeUnitStrength(unit) {
   const mount = unit.mount;
 
@@ -110,12 +111,25 @@ export function computeUnitStrength(unit) {
   return baseUS;
 }
 
+/**
+ * @param {import("../types").UnitEntry} entry
+ * @returns {import("../types").UnitProfile[]}
+ */
 export function resolveUnitEntry(entry) {
   return Array.isArray(entry)
     ? entry
-    : entry.stats.map((s) => ({ ...entry.shared, ...s }));
+    : entry.stats.map(
+        // shared + per-line fields together form a full profile
+        // (checked by "every unit profile is complete" in data-validity.test.js)
+        (s) =>
+          /** @type {import("../types").UnitProfile} */ ({
+            ...entry.shared,
+            ...s,
+          }),
+      );
 }
 
+/** @returns {import("../types").UnitProfile[]} */
 export function resolveStats(id, name, composition, isDraft = false) {
   const baseId = (id || "").split(".")[0];
   const slug = name?.replace(/[{}]/g, "").toLowerCase().replace(/\s+/g, "-");
@@ -143,6 +157,10 @@ function parseBonusInt(val) {
   return parseInt(String(val ?? "").match(/\(\+(\d+)\)/)?.[1] ?? "0", 10);
 }
 
+/**
+ * @param {string | import("../types").Mount | null | undefined} name
+ * @returns {import("../types").Mount | null}
+ */
 export function findMount(name) {
   if (!name) return null;
   if (typeof name === "object") return name;
@@ -388,6 +406,7 @@ export function resolveShootingWeapons(equipmentStrings, isDraft = false) {
  * @param {string} [composition] - army composition for supplement-aware lookup
  * @returns {object[]} - array of full magic item objects
  */
+/** @returns {import("../types").ResolvedMagicItem[]} */
 export function resolveMagicItems(itemNames, composition, isDraft = false) {
   const items = [];
 
@@ -406,6 +425,7 @@ export function resolveMagicItems(itemNames, composition, isDraft = false) {
  * @param {string} rulesString - e.g. "Killing Blow, Hatred (Elves), Armoured Hide (1)"
  * @returns {object[]} - array of resolved rule objects
  */
+/** @returns {import("../types").ResolvedRule[]} */
 export function resolveSpecialRules(rulesString, isDraft = false) {
   if (!rulesString || !rulesString.trim()) return [];
 
@@ -447,6 +467,7 @@ export function resolveSpecialRules(rulesString, isDraft = false) {
  * @param {string} mountName
  * @returns {object|null} - full mount object or null
  */
+/** @returns {import("../types").Mount | null} */
 export function resolveMount(mountName) {
   if (!mountName) return null;
   return findMount(mountName);

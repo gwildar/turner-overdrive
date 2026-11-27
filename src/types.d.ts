@@ -293,3 +293,166 @@ export interface Supplement {
   ranged_weapons?: Record<string, RangedWeapon>;
   combat_weapons?: Record<string, CombatWeapon>;
 }
+
+// ─── Parsed army (built by src/parsers/from-owb.js) ─────────────────────────
+
+export type UnitCategory =
+  | "characters"
+  | "lords"
+  | "heroes"
+  | "core"
+  | "special"
+  | "rare"
+  | "mercenaries"
+  | "allies";
+
+/**
+ * A special rule on a parsed unit. Rules the app doesn't know about are kept
+ * as bare entries with `id: null` so their names still display.
+ */
+export type ResolvedRule = Omit<SpecialRule, "id"> & { id: string | null };
+
+/** A magic item on a parsed unit. */
+export type ResolvedMagicItem = MagicItem & {
+  /** Bought for the unit's champion, not the whole unit. */
+  championOnly?: boolean;
+};
+
+/** A combat weapon resolved for a unit. */
+export interface ResolvedWeapon {
+  name: string;
+  s: string;
+  ap: string;
+  rules: string[];
+  magical: boolean;
+  attacks: string | null;
+  reservedAttacks: number | null;
+  profiles?: WeaponProfile[] | null;
+}
+
+/** A shooting weapon resolved for a unit. */
+export type ResolvedShootingWeapon = RangedWeapon & {
+  magical: boolean;
+  attacks: string | null;
+  /** Set when the weapon belongs to a mount's crew (uses the crew's BS). */
+  crewBS?: string | null;
+  crewName?: string;
+};
+
+/** A crew member riding a mount (e.g. a chariot's charioteers). */
+export interface MountCrew {
+  name: string;
+  i: string;
+  ws: string;
+  bs: string;
+  s: string;
+  a: string;
+  equipment: string[];
+}
+
+/** A mount resolved by findMount(). Characteristics are as in UnitProfile. */
+export interface Mount {
+  name: string;
+  /** Movement in inches. */
+  m: number;
+  stomp: string | null;
+  impactHits: string | null;
+  /** Toughness/Wounds the mount adds to its rider ("(+1)" → 1). */
+  tBonus: number;
+  wBonus: number;
+  ws: string;
+  s: string;
+  i: string;
+  a: string;
+  /** Natural armour save as a number (4 = 4+). */
+  as: number | null;
+  /** Lowercase combat weapon keys. */
+  weapons: string[];
+  crew: MountCrew[] | null;
+  troopType: TroopType | null;
+  armourBane: number | null;
+  /** Fly movement in inches. */
+  f: number | null;
+  /** Ranged weapon key of a breath attack. */
+  breath: string | null;
+  /** The mount's special rules, as written in the unit data. */
+  rules: string[];
+}
+
+/** Models attached to a unit, e.g. beasts in a Wood Elf Beast Pack. */
+export interface Detachment {
+  id: string;
+  name: string;
+  strength: number;
+  points: number;
+  stats: UnitProfile[];
+  weapons: ResolvedWeapon[];
+  specialRules: ResolvedRule[];
+}
+
+export interface SpellSelectionMode {
+  /** Lore Familiar: choose spells freely. */
+  canChoose: boolean;
+  /** Arcane Familiar: choose from all lores. */
+  multiLore: boolean;
+  /** Cursed Coven: only one spell. */
+  maxSpells: number | null;
+}
+
+export interface Unit {
+  /** OWB unit id, e.g. "dark-elf-dreadlord.abc123". Stable across re-parses. */
+  id: string;
+  name: string;
+  category: UnitCategory;
+  /** Number of models. */
+  strength: number;
+  points: number;
+  /** Stat lines: the unit itself first, then champions, crew or embedded mounts. */
+  stats: UnitProfile[];
+  weapons: ResolvedWeapon[];
+  shootingWeapons: ResolvedShootingWeapon[];
+  magicItems: ResolvedMagicItem[];
+  specialRules: ResolvedRule[];
+  mount: Mount | null;
+  /** e.g. "4+", or null for no save. */
+  armourSave: string | null;
+  /** The mount's natural save makes the rider's mundane armour redundant. */
+  armourSaveFromMount: boolean;
+  ward: string | null;
+  regen: string | null;
+  /** e.g. "-2". */
+  magicResistance: string | null;
+  poisonedAttacks: boolean;
+  stomp: string | null;
+  impactHits: string | null;
+  detachments: Detachment[];
+  isGeneral: boolean;
+  isBSB: boolean;
+  hasChampion: boolean;
+  hasStandard: boolean;
+  hasMusician: boolean;
+  isCaster: boolean;
+  /** Lore keys this caster can use. */
+  lores: string[];
+  spellSelectionMode: SpellSelectionMode;
+  /** Core lore chosen on the spell selection screen. */
+  activeLore: string | null;
+  /** Faction lores whose signature spells are also available. */
+  factionLores: string[];
+  unitStrength: number;
+}
+
+export interface Army {
+  name: string;
+  /** OWB army id, e.g. "dark-elves". */
+  armySlug: string;
+  faction: string;
+  points: number;
+  /** Army of Infamy / composition key, e.g. "de-renegade". */
+  composition: string | null;
+  /** OWB list id, used for the "view in Old World Builder" link. */
+  owbId: string | null;
+  units: Unit[];
+  /** Sub-phases this army never uses (e.g. Undead skip Rally). */
+  skipPhases: SubPhaseId[];
+}

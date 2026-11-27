@@ -1958,6 +1958,37 @@ const UNITS = {
       optionalRules: [],
     },
   ],
+  giant: [
+    {
+      A: "*",
+      I: "2",
+      M: "6",
+      S: "6",
+      T: "7",
+      W: "6",
+      BS: "1",
+      Ld: "10",
+      WS: "3",
+      Name: "Giant",
+      as: 6,
+      Stomps: "D6",
+      rules: [
+        "Close Order",
+        "Giant Attacks",
+        "Immune to Psychology",
+        "Large Target",
+        "Pick Up And…",
+        "Stomp Attacks (D6)",
+        "Terror",
+        "Timmm-berrr!",
+        "Unbreakable",
+      ],
+      equipment: ["Giant's club", "light armour"],
+      troopType: ["Be"],
+      magic: [],
+      optionalRules: [],
+    },
+  ],
 };
 
 export default UNITS;

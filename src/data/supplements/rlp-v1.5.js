@@ -54,7 +54,8 @@ const SUPPLEMENT = {
       displayName: "Wisdom of the Old Ones",
       description:
         "Once per turn, the Slann Mage-Priest may re-roll one D6 when making a Casting Roll. This ability may not be used to re-roll a Miscast. In addition, it knows one more spell (chosen in the usual way) than is normal for their Level of Wizardry.",
-      phases: ["strategy"],
+      phases: ["conjuration", "shoot", "choose-fight"],
+      yourTurnOnly: true,
     },
 
     // ── Vampire Counts ───────────────────────────────────────────────

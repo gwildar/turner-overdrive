@@ -3,6 +3,9 @@ import { MAGIC_ITEMS } from "../data/magic-items.js";
 import { SUPPLEMENT_ITEMS } from "../data/supplements/index.js";
 import { PHASES } from "../phases.js";
 import { renderMagicItemsContext } from "../context/items.js";
+import { CORE_RULES } from "../data/special-rules.js";
+import { SUPPLEMENT_RULES } from "../data/supplements/index.js";
+import { renderSpecialRulesContext } from "../context/special-rules-context.js";
 
 const PHASE_IDS = PHASES.map((p) => p.id);
 const SUB_PHASE_IDS = PHASES.flatMap((p) => p.subPhases.map((s) => s.id));
@@ -95,5 +98,29 @@ describe("magic items appear on the steps where they matter", () => {
     expect(
       renderMagicItemsContext(armyWith("Spellshield"), phase, step),
     ).not.toContain("Spellshield");
+  });
+});
+
+describe("special rule data", () => {
+  const RULE_STEP_IDS = [...SUB_PHASE_IDS, "deployment"];
+
+  it("every rule reminder points at a real game step (or deployment)", () => {
+    const bad = [...CORE_RULES, ...SUPPLEMENT_RULES].flatMap((r) =>
+      r.phases
+        .map((p) => (typeof p === "string" ? p : p.subPhaseId))
+        .filter((id) => !RULE_STEP_IDS.includes(id))
+        .map((id) => `${r.displayName}: ${id}`),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it("From the Ashes shows at Choose & Fight", () => {
+    const rule = CORE_RULES.find((r) => r.id === "from the ashes");
+    const army = {
+      units: [{ name: "Flamespyre Phoenix", specialRules: [rule] }],
+    };
+    expect(renderSpecialRulesContext(army, { id: "choose-fight" })).toContain(
+      "From The Ashes",
+    );
   });
 });

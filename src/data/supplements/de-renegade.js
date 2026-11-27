@@ -658,7 +658,7 @@ const SUPPLEMENT = {
       displayName: "Altar of Khaine",
       description:
         "This model has a 5+ Ward save against any wounds suffered. Any unit joined by this model gains a 6+ Ward save against any wounds suffered.",
-      phases: ["choose-fight", "shooting"],
+      phases: ["choose-fight", "shoot"],
       ward: "5+",
     },
     {

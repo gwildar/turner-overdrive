@@ -1074,7 +1074,7 @@ const RULES = [
     displayName: "From The Ashes",
     description:
       "When a Flamespyre Phoenix loses its last Wound, roll a D6: 1-2 removed; 3-5 explodes (D6 S3 AP-1 Flaming hits to enemies in base contact) then removed; 6 reborn, recovers D3 Wounds.",
-    phases: ["remove-casualties"],
+    phases: ["shoot", "choose-fight"],
   },
   {
     id: "horn of isha",
@@ -1772,7 +1772,7 @@ const RULES = [
     displayName: "Too Horrible To Die",
     description:
       "First time this model loses its last Wound, roll D6: 1-3 removed; 4-5 replaced with a Rat Swarm (Skaven) or equivalent; 6 recovers D3 Wounds.",
-    phases: ["remove-casualties"],
+    phases: ["shoot", "choose-fight"],
   },
   {
     id: "enhanced regeneration",

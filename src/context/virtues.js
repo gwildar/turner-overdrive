@@ -1,3 +1,4 @@
+/** @param {import("../types").Army} army */
 export function renderVirtuesContext(army, phaseId, subPhaseId) {
   const grouped = {};
 

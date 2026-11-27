@@ -20,6 +20,7 @@ for (const rule of SPECIAL_RULES) {
   }
 }
 
+/** @param {import("../types").Unit} unit */
 function detectChargeMods(unit, mountData) {
   const mods = [];
   const seen = new Set();
@@ -55,6 +56,7 @@ function detectChargeMods(unit, mountData) {
   return mods;
 }
 
+/** @param {import("../types").Army} army */
 export function renderChargeContext(army) {
   const units = army.units;
   if (units.length === 0) return "";

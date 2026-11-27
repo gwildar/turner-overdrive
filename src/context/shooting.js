@@ -4,6 +4,7 @@ import { SUPPLEMENT_RANGED_WEAPONS } from "../data/supplements/index.js";
 import { getSupplementsEnabled } from "../state.js";
 import { displayUnitName } from "../utils/unit-name.js";
 
+/** @param {import("../types").Unit} unit */
 function getBS(unit) {
   if (!unit.stats || unit.stats.length === 0) return null;
   for (const profile of unit.stats) {
@@ -12,6 +13,7 @@ function getBS(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function getS(unit) {
   if (!unit.stats || unit.stats.length === 0) return null;
   for (const profile of unit.stats) {
@@ -20,6 +22,7 @@ function getS(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function getChampionBS(unit) {
   if (unit.category === "characters") return null;
   if (!unit.hasChampion) return null;
@@ -44,6 +47,7 @@ function resolveStrength(weaponS, unitS) {
   return weaponS;
 }
 
+/** @param {import("../types").Army} army */
 export function renderShootingContext(army) {
   const shooters = getShootingUnits(army);
   if (shooters.length === 0) return "";

@@ -1,3 +1,4 @@
+/** @param {import("../types").Army} army */
 export function renderMagicItemsContext(army, phaseId, subPhaseId) {
   const grouped = {};
 

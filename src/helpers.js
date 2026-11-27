@@ -1,5 +1,6 @@
 import { findMount } from "./parsers/resolve.js";
 
+/** @param {import("./types").Unit} unit */
 export function resolveMovement(unit) {
   // 1. Inline stats from army file
   const inlineMv = unit.stats?.[0]?.M;

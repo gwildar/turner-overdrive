@@ -1,5 +1,6 @@
 import { displayUnitName } from "../utils/unit-name.js";
 
+/** @param {import("../types").Army} army */
 export function renderRandomMoverContext(army) {
   const movers = army.units.filter((u) =>
     (u.specialRules || []).some((r) => r.id === "random movement"),

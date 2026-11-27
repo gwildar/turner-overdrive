@@ -8,6 +8,7 @@ import { getCharacterAssignments } from "../state.js";
 
 const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
 
+/** @param {import("../types").Army} army */
 export function renderMovementStatsContext(army) {
   const assignments = getCharacterAssignments();
   const assignedCharIds = new Set(

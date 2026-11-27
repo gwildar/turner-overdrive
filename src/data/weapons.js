@@ -396,7 +396,7 @@ export const RANGED_WEAPONS = {
     name: "Fiery Breath (Dark Elves)",
     range: "Template",
     s: "W",
-    ap: "—",
+    ap: "-1",
     noBS: true,
     rules: ["Breath Weapon", "Flaming Attacks", "S = remaining Wounds"],
   },
@@ -678,7 +678,10 @@ export const COMBAT_WEAPONS = {
     name: "Halberd",
     s: "S+1",
     ap: "-1",
-    rules: ["Armour Bane (1)", "Requires Two Hands. AP -2 vs charged enemies."],
+    rules: [
+      "Armour Bane (1)",
+      "Requires Two Hands. AP -2 vs enemies it charged this turn.",
+    ],
   },
   flail: {
     name: "Flail",
@@ -884,9 +887,9 @@ export const COMBAT_WEAPONS = {
   },
   "great horns": {
     name: "Great Horns",
-    s: "S+1",
-    ap: "-1",
-    rules: ["Armour Bane (1). Charge turn only."],
+    s: "S",
+    ap: "-3",
+    rules: [],
   },
   "serpentine tail": {
     name: "Serpentine Tail",

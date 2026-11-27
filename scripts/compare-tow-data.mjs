@@ -406,7 +406,9 @@ async function compareSpells() {
 
 // The site writes "N/A" where the app writes "Template" (range) or "—" (AP).
 const weaponVal = (s) =>
-  ["na", "template", "-", ""].includes(val(s)) ? "-" : val(s).replace(/"/g, "");
+  ["na", "n/a", "template", "-", ""].includes(val(s))
+    ? "-"
+    : val(s).replace(/"/g, "");
 
 async function compareWeapons() {
   const { RANGED_WEAPONS, COMBAT_WEAPONS } = await appModule(
@@ -449,7 +451,10 @@ async function compareWeapons() {
 // ---------------------------------------------------------------------------
 
 async function compareItems() {
-  const { MAGIC_ITEMS } = await appModule("src/data/magic-items.js");
+  // Core items only: supplement items have their own (Renegade) costs
+  const { CORE_MAGIC_ITEMS: MAGIC_ITEMS } = await appModule(
+    "src/data/magic-items.js",
+  );
   const site = collect(["magic-items", "warhammer-armies"], "magicItem").filter(
     (i) => i.cost !== undefined,
   );
@@ -460,10 +465,19 @@ async function compareItems() {
       (s) => key(s.name).replace(/\*$/, "") === key(a.name),
     );
     if (!c.length) continue;
-    if (c.some((s) => Number(s.cost) === a.points)) same++;
+    // costOverride holds the real price when it isn't a flat cost
+    // ("+15 points per Character / +3 points per model"); cost is then a
+    // placeholder.
+    const costs = (s) =>
+      s.costOverride
+        ? /^free$/i.test(String(s.costOverride).trim())
+          ? [0]
+          : (String(s.costOverride).match(/\d+/g) || []).map(Number)
+        : [/^free$/i.test(String(s.cost)) ? 0 : Number(s.cost)];
+    if (c.some((s) => costs(s).includes(a.points))) same++;
     else
       diffs.push(
-        `${a.name}: app ${a.points} pts | site ${[...new Set(c.map((s) => s.cost))].join(" / ")} pts`,
+        `${a.name}: app ${a.points} pts | site ${[...new Set(c.map((s) => s.costOverride ?? s.cost))].join(" / ")} pts`,
       );
   }
   return { same, diffs };

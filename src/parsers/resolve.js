@@ -363,8 +363,15 @@ export function resolveWeapons(
   // Then check equipment strings for mundane weapons
   for (const equipStr of equipmentStrings) {
     const lower = equipStr.toLowerCase();
-    for (const [key, weapon] of Object.entries(weaponMap)) {
-      if (lower.includes(key) && !seen.has(weapon.name)) {
+    // A key inside a longer matching key is the same weapon named more
+    // fully ("bloodflail" also contains "flail"): keep only the longest.
+    const matched = Object.keys(weaponMap).filter((key) => lower.includes(key));
+    const longest = matched.filter(
+      (key) => !matched.some((other) => other !== key && other.includes(key)),
+    );
+    for (const key of longest) {
+      const weapon = weaponMap[key];
+      if (!seen.has(weapon.name)) {
         seen.add(weapon.name);
         weapons.push({
           name: weapon.name,

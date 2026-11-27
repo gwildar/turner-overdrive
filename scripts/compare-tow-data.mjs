@@ -443,7 +443,33 @@ async function compareWeapons() {
           .join(" / ")}`,
       );
   }
-  return { same, diffs };
+
+  // Site profiles the app has no weapon for. Magic weapons are left out:
+  // the app models them as magic items.
+  const { MAGIC_ITEMS } = await appModule("src/data/magic-items.js");
+  const base = (s) =>
+    key(s)
+      .replace(/\s*\((profile|renegade)\)/g, "")
+      .replace(
+        /\s+(profile|ranged|combat|single-handed|double-handed|solid shot|scatter shot)$/,
+        "",
+      )
+      .replace(/\s*\(.*\)$/, "")
+      .trim();
+  const known = new Set([
+    ...app.flatMap((a) => [base(a.name)]),
+    ...Object.keys({ ...RANGED_WEAPONS, ...COMBAT_WEAPONS }).map(base),
+    ...MAGIC_ITEMS.map((i) => base(i.name)),
+  ]);
+  const missing = [
+    ...new Set(
+      site
+        .map((s) => s.name)
+        .filter((n) => !/renegade/i.test(n) && !known.has(base(n)))
+        .map((n) => n.replace(/\s*\(?profile\)?\s*$/i, "")),
+    ),
+  ].sort();
+  return { same, diffs, missing };
 }
 
 // ---------------------------------------------------------------------------
@@ -624,6 +650,10 @@ function report({ meta, since, units, spells, weapons, items, rules }) {
     `## Weapons (${weapons.diffs.length})`,
     "",
     ...weapons.diffs.map((d) => `- ${d}`),
+    "",
+    `### Weapon profiles on the site but not in the app (${weapons.missing.length})`,
+    "",
+    ...weapons.missing.map((n) => `- ${n}`),
   );
   L.push(
     "",
@@ -687,7 +717,9 @@ async function main() {
   console.log(
     `Spells:  ${spells.same} same, ${spells.diffs.length} differ, ${spells.missing.length} unmatched`,
   );
-  console.log(`Weapons: ${weapons.same} same, ${weapons.diffs.length} differ`);
+  console.log(
+    `Weapons: ${weapons.same} same, ${weapons.diffs.length} differ, ${weapons.missing.length} missing from app`,
+  );
   console.log(
     `Items:   ${items.same} same points, ${items.diffs.length} differ`,
   );

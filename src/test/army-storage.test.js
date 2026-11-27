@@ -2,15 +2,16 @@ import { describe, it, expect, afterEach } from "vitest";
 import { importArmy, loadStoredArmy, parseArmyList } from "../army.js";
 import {
   getArmySource,
+  saveArmySource,
   getArmy,
   saveArmy,
   clearArmy,
   saveActiveLore,
   saveSupplementsEnabled,
 } from "../state.js";
+import { renderSetupScreen } from "../screens/setup.js";
 import lizardmenJson from "./fixtures/lizardmen.owb.json";
 import deRenegadeDraftJson from "./fixtures/de-renegade-draft.owb.json";
-import darkElvesNRJson from "./fixtures/dark-elves.new-recruit.json";
 
 describe("army storage — raw file is stored and re-parsed on load", () => {
   afterEach(() => saveSupplementsEnabled(false));
@@ -25,9 +26,10 @@ describe("army storage — raw file is stored and re-parsed on load", () => {
     expect(loadStoredArmy()).toEqual(parseArmyList(lizardmenJson));
   });
 
-  it("loads the same army that a fresh parse produces (New Recruit)", () => {
-    importArmy(darkElvesNRJson);
-    expect(loadStoredArmy()).toEqual(parseArmyList(darkElvesNRJson));
+  it("rejects a New Recruit file with a message pointing to Old World Builder", () => {
+    const newRecruitFile = { roster: { forces: [{ selections: [] }] } };
+    expect(() => importArmy(newRecruitFile)).toThrow(/Old World Builder/);
+    expect(() => importArmy(newRecruitFile)).toThrow(/New Recruit/);
   });
 
   it("picks up settings changed after import without re-importing", () => {
@@ -75,5 +77,16 @@ describe("army storage — raw file is stored and re-parsed on load", () => {
     importArmy(lizardmenJson);
     expect(() => importArmy({ not: "an army" })).toThrow();
     expect(getArmySource()).toEqual(lizardmenJson);
+  });
+
+  it("clears a stored army that no longer parses, and tells the user on the setup screen", () => {
+    saveArmySource({ not: "an army" });
+    expect(loadStoredArmy()).toBeNull();
+    expect(getArmySource()).toBeNull();
+
+    renderSetupScreen();
+    expect(document.getElementById("app").textContent).toContain(
+      "Please re-upload your army",
+    );
   });
 });

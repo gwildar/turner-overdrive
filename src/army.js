@@ -1,5 +1,4 @@
 import { fromOwb } from "./parsers/from-owb.js";
-import { fromNewRecruit } from "./parsers/from-new-recruit.js";
 import {
   getArmy,
   getArmySource,
@@ -9,14 +8,15 @@ import {
 } from "./state.js";
 
 /**
- * Detect the army list format and delegate to the appropriate converter
- * - OWB format: has "army" and direct category arrays (characters, core, special, etc.)
- * - New Recruit format: has roster.forces nested structure
+ * Parse an Old World Builder (.owb.json) export into the canonical army.
+ * OWB files have "army" and direct category arrays (characters, core, special, etc.)
  */
 export function parseArmyList(json) {
-  // Detect New Recruit format
-  if (json?.roster?.forces && Array.isArray(json.roster.forces)) {
-    return fromNewRecruit(json);
+  // New Recruit / BattleScribe rosters were supported in earlier versions
+  if (json?.roster?.forces) {
+    throw new Error(
+      "New Recruit files are no longer supported. Export your list from Old World Builder as .owb.json instead.",
+    );
   }
 
   // Detect OWB format
@@ -29,7 +29,7 @@ export function parseArmyList(json) {
   }
 
   throw new Error(
-    "Unrecognised army list format. Expected OWB or New Recruit format.",
+    "Unrecognised army list format. Expected an Old World Builder (.owb.json) export.",
   );
 }
 
@@ -48,11 +48,22 @@ export function importArmy(json) {
  * Load the stored army by re-parsing the imported file, so the current data
  * and settings always apply. Falls back to a parsed army saved by an older
  * version of the app.
+ *
+ * If the stored file no longer parses (e.g. a format the app has dropped),
+ * the army is cleared and the setup screen asks the user to re-upload,
+ * rather than every screen failing.
  */
 export function loadStoredArmy() {
   const source = getArmySource();
-  if (source) return applyActiveLores(parseArmyList(source));
-  return getArmy();
+  if (!source) return getArmy();
+  try {
+    return applyActiveLores(parseArmyList(source));
+  } catch (err) {
+    console.warn("Stored army could not be parsed and was cleared:", err);
+    clearArmy();
+    sessionStorage.setItem("tow-recovered", "1");
+    return null;
+  }
 }
 
 export function getCasters(army) {

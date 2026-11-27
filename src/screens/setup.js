@@ -52,7 +52,7 @@ export function renderSetupScreen() {
         </header>
   
         <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
-          ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved game data was cleared due to an error. Please re-upload your army.</p>` : ""}
+          ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved army couldn't be loaded and has been cleared. Please re-upload your army.</p>` : ""}
           ${renderWhatsNew()}
           ${army ? renderArmySummary(army, currentWarnings) : renderUploadSection()}
         </main>
@@ -128,25 +128,32 @@ export function renderSetupScreen() {
 }
 
 function renderWhatsNew() {
+  const majorMinor = version.split(".").slice(0, 2).join(".");
   return `
     <details class="mb-4 group">
       <summary class="flex items-center justify-between cursor-pointer list-none py-2 px-3 rounded-lg border border-wh-border bg-wh-surface hover:border-wh-accent transition-colors">
-        <span class="text-sm font-semibold text-wh-accent">&#9733; What's New — v4.0</span>
+        <span class="text-sm font-semibold text-wh-accent">&#9733; What's New — v${majorMinor}</span>
         <span class="text-wh-muted text-xs group-open:hidden">Show</span>
         <span class="text-wh-muted text-xs hidden group-open:inline">Hide</span>
       </summary>
       <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
         <div class="pt-3">
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Legacy Pack — Draft Support</p>
-          <p class="text-xs">Community draft rules (v1.5.2.2) now supported for <span class="text-wh-text">Dark Elves</span>, <span class="text-wh-text">Ogre Kingdoms</span>, and <span class="text-wh-text">Skaven</span> renegade compositions. Enable via Settings to use the draft rules — stable v1.5 is the default.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Old World Builder Only</p>
+          <p class="text-xs">New Recruit files are no longer supported. Export your list from <span class="text-wh-text">Old World Builder</span> as <span class="font-mono text-wh-text">.owb.json</span>. A previously saved New Recruit army will need re-uploading.</p>
         </div>
         <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">New Recruit Import</p>
-          <p class="text-xs">Undead armies (Vampire Counts, Tomb Kings) now correctly skip Rally and Break Test phases when imported from New Recruit.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Updates Apply Straight Away</p>
+          <p class="text-xs">Rules updates and the community supplements setting now apply to your saved army without re-importing it.</p>
         </div>
         <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Army Validation</p>
-          <p class="text-xs">New warning when a character's mundane armour is redundant due to a mount with an equal or better natural armour save.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Fixes</p>
+          <ul class="text-xs list-disc list-inside space-y-0.5">
+            <li>Units with more than one ward save now show the best one.</li>
+            <li>Thrown weapons show the correct Strength (e.g. S4 for a Throwing Axe on S3).</li>
+            <li>Swiftstride is no longer counted twice in charge ranges.</li>
+            <li>The "Terror tests!" reminder only appears if your army causes Terror.</li>
+            <li>Your turn no longer starts on a step your army doesn't use.</li>
+          </ul>
         </div>
       </div>
     </details>
@@ -162,7 +169,7 @@ function renderUploadSection() {
                hover:border-wh-accent transition-colors cursor-pointer">
         <div class="text-4xl mb-4">&#128193;</div>
         <p class="text-lg mb-2">Drop your army file here</p>
-        <p class="text-wh-muted text-sm mb-2"><span class="text-wh-accent font-mono">.owb.json</span> or <span class="text-wh-accent font-mono">newrecruit_file.json</span></p>
+        <p class="text-wh-muted text-sm mb-2"><span class="text-wh-accent font-mono">.owb.json</span> from Old World Builder</p>
         <p class="text-wh-muted text-sm mb-4">or click to browse</p>
         <input type="file" id="file-input" accept=".json,.owb" class="hidden" />
         <button id="browse-btn"
@@ -175,16 +182,10 @@ function renderUploadSection() {
       <div class="mt-8 p-4 bg-wh-surface rounded-lg border border-wh-border">
         <h3 class="font-semibold text-wh-accent mb-2">How to get your army file</h3>
         <p class="text-xs text-wh-muted mb-2 font-semibold uppercase tracking-wide">Old World Builder</p>
-        <ol class="text-sm text-wh-muted space-y-1 list-decimal list-inside mb-3">
-          <li>Go to <span class="text-wh-text">Old World Builder</span> (oldworldbuilder.com)</li>
+        <ol class="text-sm text-wh-muted space-y-1 list-decimal list-inside">
+          <li>Go to <a href="https://old-world-builder.com" target="_blank" rel="noopener noreferrer" class="text-wh-accent hover:underline">Old World Builder</a> (old-world-builder.com)</li>
           <li>Create or open your army list</li>
           <li>Export as <span class="font-mono text-wh-text">.owb.json</span></li>
-          <li>Upload the file here</li>
-        </ol>
-        <p class="text-xs text-wh-muted mb-2 font-semibold uppercase tracking-wide">New Recruit</p>
-        <ol class="text-sm text-wh-muted space-y-1 list-decimal list-inside">
-          <li>Open your army in <span class="text-wh-text">New Recruit</span></li>
-          <li>Export / share as <span class="font-mono text-wh-text">.json</span></li>
           <li>Upload the file here</li>
         </ol>
       </div>

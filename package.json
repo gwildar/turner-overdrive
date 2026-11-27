@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
+    "typecheck": "tsc -p .",
     "prettier": "prettier --write .",
     "crawl:rules": "node scripts/crawl-tow-rules.mjs"
   },

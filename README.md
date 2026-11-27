@@ -30,7 +30,12 @@ npm run build
 
 # Preview production build
 npm run preview
+
+# Type check (JSDoc types, see src/types.d.ts)
+npm run typecheck
 ```
+
+The app is plain JavaScript. `src/types.d.ts` describes the data and army shapes, and `tsc` checks the JSDoc-annotated files listed in `tsconfig.json` (currently `src/data` and `src/parsers`). Nothing is compiled.
 
 ## Tech stack
 

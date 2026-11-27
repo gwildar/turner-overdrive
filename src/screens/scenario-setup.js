@@ -75,6 +75,14 @@ function renderCard(condition, opts) {
   `;
 }
 
+/** @param {string} id */
+function isChecked(id) {
+  const input = /** @type {HTMLInputElement | null} */ (
+    document.getElementById(id)
+  );
+  return input?.checked ?? false;
+}
+
 export function renderScenarioSetupScreen(army) {
   renderScreen(() => {
     const opts = getScenarioOptions();
@@ -108,10 +116,14 @@ export function renderScenarioSetupScreen(army) {
     let currentCount = opts.strategicLocations.count;
 
     // Count picker buttons
-    document.querySelectorAll(".count-btn").forEach((btn) => {
+    /** @type {NodeListOf<HTMLElement>} */ (
+      document.querySelectorAll(".count-btn")
+    ).forEach((btn) => {
       btn.addEventListener("click", () => {
         currentCount = parseInt(btn.dataset.count, 10);
-        document.querySelectorAll(".count-btn").forEach((b) => {
+        /** @type {NodeListOf<HTMLElement>} */ (
+          document.querySelectorAll(".count-btn")
+        ).forEach((b) => {
           const active = parseInt(b.dataset.count, 10) === currentCount;
           b.className = b.className
             .replace(
@@ -131,7 +143,8 @@ export function renderScenarioSetupScreen(army) {
       .getElementById("toggle-strategicLocations")
       ?.addEventListener("change", (e) => {
         const picker = document.getElementById("count-picker");
-        if (picker) picker.classList.toggle("hidden", !e.target.checked);
+        const toggle = /** @type {HTMLInputElement} */ (e.target);
+        if (picker) picker.classList.toggle("hidden", !toggle.checked);
       });
 
     document.getElementById("prev-btn").addEventListener("click", () => {
@@ -140,18 +153,13 @@ export function renderScenarioSetupScreen(army) {
 
     document.getElementById("next-btn").addEventListener("click", () => {
       const newOpts = {
-        domination:
-          document.getElementById("toggle-domination")?.checked ?? false,
-        baggageTrains:
-          document.getElementById("toggle-baggageTrains")?.checked ?? false,
+        domination: isChecked("toggle-domination"),
+        baggageTrains: isChecked("toggle-baggageTrains"),
         strategicLocations: {
-          enabled:
-            document.getElementById("toggle-strategicLocations")?.checked ??
-            false,
+          enabled: isChecked("toggle-strategicLocations"),
           count: currentCount,
         },
-        specialFeatures:
-          document.getElementById("toggle-specialFeatures")?.checked ?? false,
+        specialFeatures: isChecked("toggle-specialFeatures"),
       };
       saveScenarioOptions(newOpts);
       navigate("/deployment");

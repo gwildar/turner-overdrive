@@ -40,8 +40,20 @@ function getPostDeploymentRules(unit) {
 function ruleDescription(displayName) {
   const id = normaliseRuleId(displayName);
   const rule = SPECIAL_RULES.find((sr) => sr.id === id);
-  // phases[0] is used as a fallback; deployment rules lack a dedicated deployment-phase entry
-  return rule?.phases?.[0]?.description ?? "";
+  if (!rule) return "";
+  // Prefer a dedicated deployment entry (e.g. The Arrow of Kurnous), then the
+  // rule's own description (Scouts, Vanguard), then its first phase entry
+  // (Ambushers only describes itself per step).
+  const phaseEntries = rule.phases.filter((p) => typeof p === "object");
+  const deploymentEntry = phaseEntries.find(
+    (p) => p.subPhaseId === "deployment",
+  );
+  return (
+    deploymentEntry?.description ||
+    rule.description ||
+    phaseEntries[0]?.description ||
+    ""
+  );
 }
 
 function renderExplainer() {

@@ -10,10 +10,19 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "skipLibCheck": true,
     "strict": false
   },
-  // Start with the data and the parser; widen as each area is cleaned up.
-  "include": ["src/types.d.ts", "src/data/**/*.js", "src/parsers/**/*.js"]
+  // All app code and scripts. Tests are not checked yet.
+  "include": [
+    "src/types.d.ts",
+    "src/*.js",
+    "src/data/**/*.js",
+    "src/parsers/**/*.js",
+    "src/context/**/*.js",
+    "src/screens/**/*.js",
+    "src/utils/**/*.js",
+    "scripts/**/*.mjs"
+  ]
 }

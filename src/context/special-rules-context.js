@@ -54,6 +54,7 @@ function injectUnitTroopTypeRules(unitRules, unit) {
   }
 }
 
+/** @param {import("../types").Unit} unit */
 function buildUnitRules(unit) {
   // Resolved rule objects from the unit (already draft-toggle-aware)
   const resolvedRules = new Map();
@@ -182,6 +183,7 @@ function findRulesForName(normName, resolvedRules) {
   return RULES.filter((rule) => ruleMatches(rule, normName));
 }
 
+/** @param {import("../types").Army} army */
 export function hasSpecialRulesForSubPhase(army, subPhaseId) {
   for (const unit of army.units) {
     const { unitRules, resolvedRules } = buildUnitRules(unit);
@@ -195,6 +197,7 @@ export function hasSpecialRulesForSubPhase(army, subPhaseId) {
   return false;
 }
 
+/** @param {import("../types").Army} army */
 export function hasStartOfTurnRules(army, round) {
   for (const unit of army.units) {
     const { unitRules, resolvedRules } = buildUnitRules(unit);
@@ -213,6 +216,7 @@ export function hasStartOfTurnRules(army, round) {
   return false;
 }
 
+/** @param {import("../types").Army} army */
 export function renderSpecialRulesContext(army, subPhase) {
   const round = getRound();
   const matches = [];
@@ -255,6 +259,7 @@ export function renderSpecialRulesContext(army, subPhase) {
   return renderRulesBlock(grouped, "Special Rules This Step");
 }
 
+/** @param {import("../types").Army} army */
 export function renderSpecialRulesForPhase(army, phase) {
   const round = getRound();
   const grouped = {};

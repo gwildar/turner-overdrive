@@ -37,6 +37,7 @@ export function getKnownSpells(caster) {
   return spells;
 }
 
+/** @param {import("../types").Army} army */
 export function renderCasterContext(army, allowedTypes) {
   const casters = getCasters(army);
   if (casters.length === 0) return "";

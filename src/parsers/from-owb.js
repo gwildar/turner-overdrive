@@ -116,6 +116,10 @@ function calculateUnitPoints(raw) {
 
 /**
  * Parse a single unit from OWB export format to canonical unit
+ * @param {any} raw - one unit from the OWB export
+ * @param {import("../types").UnitCategory} category
+ * @param {string} [armyComposition]
+ * @returns {import("../types").Unit}
  */
 function parseCanonicalUnit(raw, category, armyComposition = "") {
   const isDraft = getSupplementsEnabled();
@@ -526,6 +530,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   });
 
   // Build canonical unit
+  /** @type {Omit<import("../types").Unit, "unitStrength">} */
   const unit = {
     id,
     name: displayName,
@@ -547,8 +552,6 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     stomp,
     impactHits,
     detachments,
-    champions: [], // TODO: parse from stat lines
-    crew: [], // TODO: parse from stat lines
     isGeneral,
     isBSB,
     hasChampion,
@@ -561,15 +564,18 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     factionLores,
   };
 
-  unit.unitStrength = computeUnitStrength(unit);
-  return unit;
+  return { ...unit, unitStrength: computeUnitStrength(unit) };
 }
 
 /**
  * Convert OWB export JSON to canonical army schema
+ * @param {any} json - the parsed .owb.json file
+ * @returns {import("../types").Army}
  */
 export function fromOwb(json) {
+  /** @type {import("../types").Unit[]} */
   const units = [];
+  /** @type {import("../types").UnitCategory[]} */
   const categories = [
     "characters",
     "core",

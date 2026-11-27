@@ -6,6 +6,9 @@ import { renderMagicItemsContext } from "../context/items.js";
 import { CORE_RULES } from "../data/special-rules.js";
 import { SUPPLEMENT_RULES } from "../data/supplements/index.js";
 import { renderSpecialRulesContext } from "../context/special-rules-context.js";
+import { UNIT_STATS } from "../data/units.js";
+import { SUPPLEMENT_UNITS } from "../data/supplements/index.js";
+import { resolveUnitEntry } from "../parsers/resolve.js";
 
 const PHASE_IDS = PHASES.map((p) => p.id);
 const SUB_PHASE_IDS = PHASES.flatMap((p) => p.subPhases.map((s) => s.id));
@@ -122,5 +125,32 @@ describe("special rule data", () => {
     expect(renderSpecialRulesContext(army, { id: "choose-fight" })).toContain(
       "From The Ashes",
     );
+  });
+});
+
+describe("unit profile data", () => {
+  const CHARACTERISTICS = [
+    "Name",
+    "M",
+    "WS",
+    "BS",
+    "S",
+    "T",
+    "W",
+    "I",
+    "A",
+    "Ld",
+  ];
+
+  it("every unit profile is complete (including shared + per-line entries)", () => {
+    const bad = Object.entries({ ...UNIT_STATS, ...SUPPLEMENT_UNITS }).flatMap(
+      ([key, entry]) =>
+        resolveUnitEntry(entry).flatMap((profile, i) =>
+          CHARACTERISTICS.filter((c) => typeof profile[c] !== "string").map(
+            (c) => `${key}[${i}] missing ${c}`,
+          ),
+        ),
+    );
+    expect(bad).toEqual([]);
   });
 });

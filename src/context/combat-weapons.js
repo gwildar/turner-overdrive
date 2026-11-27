@@ -445,6 +445,7 @@ function renderFooter(r) {
   ].join("");
 }
 
+/** @param {import("../types").Army} army */
 export function renderCombatWeaponsContext(army) {
   const rows = buildCombatEntries(army);
   if (rows.length === 0) return "";
@@ -515,6 +516,7 @@ export function renderCombatWeaponsContext(army) {
   `;
 }
 
+/** @param {import("../types").Army} army */
 export function renderCombatResultContext(army) {
   const rows = buildCombatResultEntries(army);
   if (rows.length === 0) return "";
@@ -541,6 +543,7 @@ export function renderCombatResultContext(army) {
   `;
 }
 
+/** @param {import("../types").Army} army */
 export function renderCombatLeadershipContext(army, title = "Break Test") {
   const { rows, general, generalLd, generalRange, bsb, bsbRange } =
     buildCombatLeadershipData(army);
@@ -574,6 +577,7 @@ export function renderCombatLeadershipContext(army, title = "Break Test") {
   `;
 }
 
+/** @param {import("../types").Army} army */
 export function renderDefensiveStatsContext(army) {
   const rows = buildDefensiveStatsEntries(army);
   if (rows.length === 0) return "";

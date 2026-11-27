@@ -6,10 +6,12 @@ export const HAND_WEAPON = { name: "Hand Weapon", s: "S", ap: "—", rules: [] }
 
 const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
 
+/** @param {import("../types").Unit} unit */
 function isCharacter(unit) {
   return CHARACTER_CATEGORIES.has(unit.category);
 }
 
+/** @param {import("../types").Unit} unit */
 function findVirtueAttacks(unit) {
   for (const item of unit.magicItems || []) {
     if (
@@ -23,6 +25,7 @@ function findVirtueAttacks(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function findMagicWeapon(unit) {
   const virtueAttacks = findVirtueAttacks(unit);
   for (const item of unit.magicItems || []) {
@@ -45,6 +48,7 @@ function findMagicWeapon(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function matchRiderWeapons(unit) {
   const weapons = [];
   const matched = new Set();
@@ -83,6 +87,7 @@ function matchRiderWeapons(unit) {
   return { weapons, matched };
 }
 
+/** @param {import("../types").Unit} unit */
 function matchMountWeapons(unit, alreadyMatched) {
   const weapons = [];
   if (!unit.mount) return weapons;
@@ -101,6 +106,7 @@ function matchMountWeapons(unit, alreadyMatched) {
   return weapons;
 }
 
+/** @param {import("../types").Unit} unit */
 function detectSingleUseItems(unit) {
   return (unit.magicItems || []).filter(
     (item) =>
@@ -109,6 +115,7 @@ function detectSingleUseItems(unit) {
   );
 }
 
+/** @param {import("../types").Unit} unit */
 function hasRiderMagicalAttacks(unit) {
   for (const item of unit.magicItems || []) {
     if (item.championOnly) continue;
@@ -168,6 +175,7 @@ function isWeaponMagical(w) {
   return w.rules?.some((r) => /^Magical Attacks/i.test(r)) || false;
 }
 
+/** @param {import("../types").Unit} unit */
 function buildRiderTags(unit, externalGrantedRules = null) {
   const inlineParts = [];
   const subSpans = [];
@@ -242,6 +250,7 @@ export function mergeTagParts(t1, t2) {
 
 const COMBAT_VOWS = ["the grail vow", "the questing vow"];
 
+/** @param {import("../types").Unit} unit */
 function buildItemNames(unit) {
   const names = (unit.magicItems || []).map((item) => item.name);
   for (const rule of unit.specialRules || []) {
@@ -257,6 +266,7 @@ function buildItemNames(unit) {
   return names;
 }
 
+/** @param {import("../types").Unit} u */
 function buildFilteredItems(u) {
   const suItems = detectSingleUseItems(u);
   const suNames = new Set(suItems.map((i) => i.name.toLowerCase()));
@@ -290,6 +300,7 @@ function buildFilteredItems(u) {
   return { itemNames, bannerNames, bannerLabels, singleUseItems: suItems };
 }
 
+/** @param {import("../types").Unit} unit */
 function findChampions(unit) {
   if (!unit.stats || unit.stats.length < 2) return [];
   // Champion is a non-mount stat line (T is a real number, not "-" or "(+N)")
@@ -303,6 +314,7 @@ function findChampions(unit) {
   return champions;
 }
 
+/** @param {import("../types").Unit} unit */
 function getChampionWeapons(unit) {
   for (const item of unit.magicItems || []) {
     if (!item.championOnly) continue;
@@ -345,6 +357,7 @@ function resolveCrewWeapons(equipmentStrings) {
   return weapons;
 }
 
+/** @param {import("../types").Unit} unit */
 function findCrewProfiles(unit) {
   const stats0 = unit.stats?.[0];
   if (!stats0 || unit.stats.length < 2) return [];
@@ -354,6 +367,7 @@ function findCrewProfiles(unit) {
   return [];
 }
 
+/** @param {import("../types").Unit} unit */
 function findEmbeddedMount(unit) {
   if (!unit.stats || unit.stats.length < 2) return null;
   // Look for a mount profile: T is "-" or "(+N)", Ld is "-", not the first line
@@ -417,6 +431,7 @@ const COMBAT_RELEVANT_RULES = [
 // Format: { ruleId -> attackBonus } where attackBonus is the string to append (e.g. "+D3").
 const EXTRA_ATTACK_RULES = { "rune of khaine": "+D3" };
 
+/** @param {import("../types").Unit} unit */
 function extraAttackBonus(unit) {
   for (const rule of unit.specialRules || []) {
     const id = rule.id?.toLowerCase();
@@ -430,6 +445,9 @@ const RIDER_ONLY_RULES = new Set(["strike first", "elven reflexes"]);
 // Troop types where rider and mount are distinct models (Elven Reflexes applies to rider only)
 const CAVALRY_TROOP_TYPES = new Set(["LC", "HC", "MCa"]);
 
+const MOUNT_CHARGE_RULES = ["Counter Charge", "Furious Charge", "First Charge"];
+
+/** @param {import("../types").Unit} unit */
 function extractCombatRules(unit) {
   const hasMount = !!unit.mount;
   const isCavalryMount = hasMount && !(unit.mount.wBonus > 0);
@@ -458,30 +476,24 @@ function extractCombatRules(unit) {
       results.push(displayName);
     }
   }
-  if (
-    unit.mount?.counterCharge &&
-    !results.some((r) => r.toLowerCase().includes("counter charge"))
-  ) {
-    results.push("Counter Charge");
+  // Charge rules the mount brings (e.g. a Bretonnian Warhorse's Counter Charge
+  // and First Charge). Strike First is labelled because it only affects the mount.
+  const mountRules = unit.mount?.rules ?? [];
+  for (const name of MOUNT_CHARGE_RULES) {
+    if (
+      mountRules.includes(name) &&
+      !results.some((r) => r.toLowerCase().includes(name.toLowerCase()))
+    ) {
+      results.push(name);
+    }
   }
-  if (
-    unit.mount?.furiousCharge &&
-    !results.some((r) => r.toLowerCase().includes("furious charge"))
-  ) {
-    results.push("Furious Charge");
-  }
-  if (
-    unit.mount?.firstCharge &&
-    !results.some((r) => r.toLowerCase().includes("first charge"))
-  ) {
-    results.push("First Charge");
-  }
-  if (unit.mount?.strikeFirst) {
+  if (mountRules.includes("Strike First")) {
     results.push("Strike First (mount)");
   }
   return results;
 }
 
+/** @param {import("../types").Unit} u */
 function getUnitLd(u) {
   if (u.stats) {
     for (const profile of u.stats) {
@@ -494,6 +506,7 @@ function getUnitLd(u) {
 // For crewed units (beast + handlers), returns { primary, alt } where primary is the
 // handlers' Ld (used while alive) and alt is the beast's own Ld (fallback).
 // Returns null when there is only one distinct Ld value.
+/** @param {import("../types").Unit} u */
 function getCrewedLds(u) {
   if (!u.stats || u.stats.length < 2 || !u.stats[0].crewed) return null;
   const beastLd = u.stats[0].Ld && u.stats[0].Ld !== "-" ? u.stats[0].Ld : null;
@@ -508,6 +521,17 @@ function getCrewedLds(u) {
   return { primary: crewLd, alt: beastLd };
 }
 
+// Large Target (own rule or from the mount) extends General/BSB range to 18".
+/** @param {import("../types").Unit} unit */
+function hasLargeTarget(unit) {
+  return (
+    (unit.specialRules || []).some((r) =>
+      r.displayName?.toLowerCase().includes("large target"),
+    ) || (unit.mount?.rules ?? []).includes("Large Target")
+  );
+}
+
+/** @param {import("../types").Army} army */
 export function buildCombatLeadershipData(army) {
   if (army.units.length === 0) {
     return {
@@ -579,25 +603,18 @@ export function buildCombatLeadershipData(army) {
         }
       }
     }
-    const hasLargeTarget =
-      (general.specialRules || []).some((r) =>
-        r.displayName?.toLowerCase().includes("large target"),
-      ) || !!general.mount?.largeTarget;
-    if (hasLargeTarget) generalRange = 18;
+    if (hasLargeTarget(general)) generalRange = 18;
   }
 
   let bsbRange = 12;
   if (bsb) {
-    const hasLargeTarget =
-      (bsb.specialRules || []).some((r) =>
-        r.displayName?.toLowerCase().includes("large target"),
-      ) || !!bsb.mount?.largeTarget;
-    if (hasLargeTarget) bsbRange = 18;
+    if (hasLargeTarget(bsb)) bsbRange = 18;
   }
 
   return { rows, general, generalLd, generalRange, bsb, bsbRange };
 }
 
+/** @param {import("../types").Army} army */
 export function buildCombatResultEntries(army) {
   if (army.units.length === 0) return [];
 
@@ -666,6 +683,7 @@ export function buildCombatResultEntries(army) {
   return Object.values(deduped).sort((a, b) => b.total - a.total);
 }
 
+/** @param {import("../types").Army} army */
 export function buildCombatEntries(army) {
   if (army.units.length === 0) return [];
 
@@ -1011,7 +1029,7 @@ export function buildCombatEntries(army) {
       mr: mergedMR,
       ward: u.ward ?? null,
       regen: u.regen ?? null,
-      iNum: Math.max(parseInt(riderI) || 0, mountI || 0),
+      iNum: Math.max(parseInt(riderI) || 0, parseInt(String(mountI)) || 0),
       riderWeapons,
       riderA: stats.A ? `${stats.A}${extraAttackBonus(u) ?? ""}` : "?",
       mountWeapons,
@@ -1144,6 +1162,7 @@ export function buildCombatEntries(army) {
   return Object.values(deduped).sort((a, b) => b.iNum - a.iNum);
 }
 
+/** @param {import("../types").Army} army */
 export function buildDefensiveStatsEntries(army) {
   if (army.units.length === 0) return [];
 

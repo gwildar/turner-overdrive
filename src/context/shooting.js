@@ -1,9 +1,8 @@
 import { getShootingUnits } from "../army.js";
 import { RANGED_WEAPONS, MISFIRE_TABLES, getWeapon } from "../data/weapons.js";
-import { SUPPLEMENT_RANGED_WEAPONS } from "../data/supplements/index.js";
-import { getSupplementsEnabled } from "../state.js";
 import { displayUnitName } from "../utils/unit-name.js";
 
+/** @param {import("../types").Unit} unit */
 function getBS(unit) {
   if (!unit.stats || unit.stats.length === 0) return null;
   for (const profile of unit.stats) {
@@ -12,6 +11,7 @@ function getBS(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function getS(unit) {
   if (!unit.stats || unit.stats.length === 0) return null;
   for (const profile of unit.stats) {
@@ -20,6 +20,7 @@ function getS(unit) {
   return null;
 }
 
+/** @param {import("../types").Unit} unit */
 function getChampionBS(unit) {
   if (unit.category === "characters") return null;
   if (!unit.hasChampion) return null;
@@ -44,6 +45,7 @@ function resolveStrength(weaponS, unitS) {
   return weaponS;
 }
 
+/** @param {import("../types").Army} army */
 export function renderShootingContext(army) {
   const shooters = getShootingUnits(army);
   if (shooters.length === 0) return "";
@@ -84,116 +86,32 @@ export function renderShootingContext(army) {
       }
     }
 
-    // Check shooting weapons from canonical schema or equipment array
+    // Shooting weapons are resolved at import (including supplement overrides).
     const matchedWeapons = new Set();
+    for (const weapon of u.shootingWeapons || []) {
+      if (matchedWeapons.has(weapon.name)) continue;
+      matchedWeapons.add(weapon.name);
+      const weaponBS = weapon.crewBS || bs;
+      const weaponCrewName = weapon.crewName || null;
+      const entryFor = (w) => ({
+        unitName: u.name,
+        strength: u.strength,
+        bs: weaponBS,
+        unitS,
+        championBS: weaponCrewName ? null : championBS,
+        hasArrowsOfIsha,
+        weapon: w,
+        crewName: weaponCrewName,
+      });
+      entries.push(entryFor(weapon));
+      matched = true;
 
-    // In canonical schema, shootingWeapons are already resolved
-    if (Array.isArray(u.shootingWeapons) && u.shootingWeapons.length > 0) {
-      const isDraft = getSupplementsEnabled();
-      for (const weapon of u.shootingWeapons) {
-        if (weapon && !matchedWeapons.has(weapon.name)) {
-          matchedWeapons.add(weapon.name);
-          // Use the already-resolved weapon object (which includes supplement
-          // overrides from parsing). Only fall back to RANGED_WEAPONS lookup
-          // when the resolved object is missing profile data.
-          let rangedWeapon = weapon.range ? weapon : null;
-          if (!rangedWeapon) {
-            const weaponMap = isDraft
-              ? { ...RANGED_WEAPONS, ...SUPPLEMENT_RANGED_WEAPONS }
-              : RANGED_WEAPONS;
-            for (const rw of Object.values(weaponMap)) {
-              if (rw.name === weapon.name) {
-                rangedWeapon = rw;
-                break;
-              }
-            }
-          }
-          if (!rangedWeapon && weapon.name) {
-            // Fallback: create a simple weapon object
-            rangedWeapon = { name: weapon.name };
-          }
-          if (rangedWeapon) {
-            const weaponBS = weapon.crewBS || bs;
-            const weaponCrewName = weapon.crewName || null;
-            entries.push({
-              unitName: u.name,
-              strength: u.strength,
-              bs: weaponBS,
-              unitS,
-              championBS: weaponCrewName ? null : championBS,
-              hasArrowsOfIsha,
-              weapon: rangedWeapon,
-              crewName: weaponCrewName,
-            });
-            matched = true;
-
-            if (rangedWeapon.altProfiles) {
-              for (const altKey of rangedWeapon.altProfiles) {
-                const altWeapon = getWeapon(RANGED_WEAPONS, altKey);
-                if (altWeapon && !matchedWeapons.has(altWeapon.name)) {
-                  matchedWeapons.add(altWeapon.name);
-                  entries.push({
-                    unitName: u.name,
-                    strength: u.strength,
-                    bs: weaponBS,
-                    unitS,
-                    championBS: weaponCrewName ? null : championBS,
-                    hasArrowsOfIsha,
-                    weapon: altWeapon,
-                    crewName: weaponCrewName,
-                  });
-                }
-              }
-            }
-          }
-        }
-      }
-    } else {
-      // Legacy support for string-based equipment
-      const allParts = [...(u.equipment || []), specialRulesStr || ""].flatMap(
-        (g) => g.split(",").map((s) => s.trim().toLowerCase()),
-      );
-      for (const part of allParts) {
-        // Find the longest matching key for this part to avoid substring false positives
-        let bestKey = null;
-        let bestWeapon = null;
-        for (const [key, weapon] of Object.entries(RANGED_WEAPONS)) {
-          if (part.includes(key) && (!bestKey || key.length > bestKey.length)) {
-            bestKey = key;
-            bestWeapon = weapon;
-          }
-        }
-        if (bestWeapon && !matchedWeapons.has(bestWeapon.name)) {
-          matchedWeapons.add(bestWeapon.name);
-          entries.push({
-            unitName: u.name,
-            strength: u.strength,
-            bs,
-            unitS,
-            championBS,
-            hasArrowsOfIsha,
-            weapon: bestWeapon,
-          });
-          matched = true;
-
-          // Include alternate profiles (e.g. scatter shot)
-          if (bestWeapon.altProfiles) {
-            for (const altKey of bestWeapon.altProfiles) {
-              const altWeapon = getWeapon(RANGED_WEAPONS, altKey);
-              if (altWeapon && !matchedWeapons.has(altWeapon.name)) {
-                matchedWeapons.add(altWeapon.name);
-                entries.push({
-                  unitName: u.name,
-                  strength: u.strength,
-                  bs,
-                  unitS,
-                  championBS,
-                  hasArrowsOfIsha,
-                  weapon: altWeapon,
-                });
-              }
-            }
-          }
+      // Alternate profiles (e.g. grapeshot)
+      for (const altKey of weapon.altProfiles || []) {
+        const altWeapon = getWeapon(RANGED_WEAPONS, altKey);
+        if (altWeapon && !matchedWeapons.has(altWeapon.name)) {
+          matchedWeapons.add(altWeapon.name);
+          entries.push(entryFor(altWeapon));
         }
       }
     }

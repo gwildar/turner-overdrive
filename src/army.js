@@ -66,11 +66,13 @@ export function loadStoredArmy() {
   }
 }
 
+/** @param {import("./types").Army} army */
 export function getCasters(army) {
   if (!army) return [];
   return army.units.filter((u) => u.isCaster);
 }
 
+/** @param {import("./types").Army} army */
 export function getShootingUnits(army) {
   if (!army) return [];
   return army.units.filter((u) => {

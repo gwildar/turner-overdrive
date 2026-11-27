@@ -153,7 +153,9 @@ export function renderUnitAssignmentScreen(army) {
 }
 
 function bindDragDrop(army) {
-  document.querySelectorAll("[data-char-id][draggable]").forEach((el) => {
+  /** @type {NodeListOf<HTMLElement>} */ (
+    document.querySelectorAll("[data-char-id][draggable]")
+  ).forEach((el) => {
     el.addEventListener("dragstart", (e) => {
       e.dataTransfer.setData("text/plain", el.dataset.charId);
       el.classList.add("opacity-50");
@@ -163,8 +165,11 @@ function bindDragDrop(army) {
     });
   });
 
+  /** @type {HTMLElement[]} */
   const dropTargets = [
-    ...document.querySelectorAll(".unit-drop-zone"),
+    .../** @type {NodeListOf<HTMLElement>} */ (
+      document.querySelectorAll(".unit-drop-zone")
+    ),
     document.getElementById("char-pool"),
   ];
 
@@ -176,7 +181,7 @@ function bindDragDrop(army) {
         "color-mix(in srgb, var(--color-wh-accent) 12%, transparent)";
     });
     zone.addEventListener("dragleave", (e) => {
-      if (!zone.contains(e.relatedTarget)) {
+      if (!zone.contains(/** @type {Node | null} */ (e.relatedTarget))) {
         zone.style.borderColor = "";
         zone.style.backgroundColor = "";
       }
@@ -199,7 +204,9 @@ function bindDragDrop(army) {
     });
   }
 
-  document.querySelectorAll(".remove-char-btn").forEach((btn) => {
+  /** @type {NodeListOf<HTMLElement>} */ (
+    document.querySelectorAll(".remove-char-btn")
+  ).forEach((btn) => {
     btn.addEventListener("click", () => {
       const assignments = getCharacterAssignments();
       delete assignments[btn.dataset.charId];

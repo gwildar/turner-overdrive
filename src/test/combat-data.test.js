@@ -125,3 +125,81 @@ describe("buildDefensiveStatsEntries", () => {
     expect(buildDefensiveStatsEntries({ units: [] })).toEqual([]);
   });
 });
+
+describe("buildCombatLeadershipData — Large Target mounts extend command range", () => {
+  it('a General on a Large Target mount (Dreadlord on Black Dragon) has an 18" Inspiring Presence', () => {
+    const army = loadArmy("dark-elves");
+    expect(army.units.find((u) => u.isGeneral).mount.name).toBe("Black Dragon");
+    expect(buildCombatLeadershipData(army).generalRange).toBe(18);
+  });
+
+  it('a BSB on a Large Target mount (Griffon) has an 18" Hold Your Ground', () => {
+    const army = loadArmy("santas-jolly-elves");
+    expect(army.units.find((u) => u.isBSB).mount.name).toBe("Griffon");
+    expect(buildCombatLeadershipData(army).bsbRange).toBe(18);
+  });
+
+  it('a General without Large Target keeps 12"', () => {
+    const army = loadArmy("dark-elves");
+    const general = army.units.find((u) => u.isGeneral);
+    general.mount = null;
+    expect(buildCombatLeadershipData(army).generalRange).toBe(12);
+  });
+});
+
+describe("buildCombatEntries — combat rules granted by the mount", () => {
+  const entryFor = (army, name) =>
+    buildCombatEntries(army).find((e) => e.unitName === name);
+
+  it("a Baron on a Bretonnian Warhorse shows Counter Charge and First Charge", () => {
+    const army = loadArmy("bretonnia");
+    const baron = army.units.find((u) => u.name === "Baron");
+    expect(baron.mount.name).toBe("Bretonnian Warhorse");
+    const rules = entryFor(army, "Baron").combatRules;
+    expect(rules).toContain("Counter Charge");
+    expect(rules).toContain("First Charge");
+  });
+
+  it("a Duke on a Hippogryph shows Counter Charge", () => {
+    const army = loadArmy("bretonnia");
+    expect(entryFor(army, "Duke").combatRules).toContain("Counter Charge");
+  });
+
+  it("marks Strike First from a mount as the mount's", () => {
+    const army = loadArmy("bretonnia");
+    army.units.find((u) => u.name === "Baron").mount.rules.push("Strike First");
+    expect(entryFor(army, "Baron").combatRules).toContain(
+      "Strike First (mount)",
+    );
+  });
+
+  it("does not list a mount rule twice when the rider has it too", () => {
+    const army = loadArmy("bretonnia");
+    const baron = army.units.find((u) => u.name === "Baron");
+    baron.specialRules.push({
+      id: "first charge",
+      displayName: "First Charge",
+      phases: [],
+    });
+    const rules = entryFor(army, "Baron").combatRules;
+    expect(rules.filter((r) => r === "First Charge")).toHaveLength(1);
+  });
+});
+
+describe("buildCombatEntries — sorting by Initiative", () => {
+  it("gives every entry a numeric Initiative, even on a mount with I '-' (Cauldron of Blood)", () => {
+    const army = loadArmy("de-renegade-draft");
+    const hag = army.units.find((u) => u.mount?.name === "Cauldron of Blood");
+    expect(hag?.mount.i).toBe("-");
+    for (const e of buildCombatEntries(army)) {
+      expect(Number.isFinite(e.iNum)).toBe(true);
+    }
+  });
+
+  it("sorts combat entries from highest to lowest Initiative", () => {
+    const iNums = buildCombatEntries(loadArmy("de-renegade-draft")).map(
+      (e) => e.iNum,
+    );
+    expect(iNums).toEqual([...iNums].sort((a, b) => b - a));
+  });
+});

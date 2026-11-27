@@ -8,6 +8,7 @@ import { getCharacterAssignments } from "../state.js";
 
 const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
 
+/** @param {import("../types").Army} army */
 export function renderMovementStatsContext(army) {
   const assignments = getCharacterAssignments();
   const assignedCharIds = new Set(
@@ -51,7 +52,7 @@ export function renderMovementStatsContext(army) {
       const mv = resolveMovement(u);
       let baseMv = resolveBaseMv(mountData, mv);
       let march = baseMv != null ? baseMv * 2 : null;
-      const flyMv = extractFlyMovement(u, mountData);
+      const flyMv = extractFlyMovement(u);
 
       // Run with the Pack: unit moves at the majority M when beasts outnumber keepers
       if (u.detachments && u.detachments.length > 0) {

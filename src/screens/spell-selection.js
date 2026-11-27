@@ -286,7 +286,9 @@ function renderSpellCheckbox(loreKey, spell, unitId, unitSelections, disabled) {
 }
 
 export function bindSpellSelectors(army) {
-  document.querySelectorAll(".lore-select").forEach((select) => {
+  /** @type {NodeListOf<HTMLSelectElement>} */ (
+    document.querySelectorAll(".lore-select")
+  ).forEach((select) => {
     select.addEventListener("change", () => {
       const unitId = select.dataset.unitId;
       const loreKey = select.value;
@@ -299,8 +301,8 @@ export function bindSpellSelectors(army) {
       selections[unitId] = {};
       saveSpellSelections(selections);
 
-      const container = document.querySelector(
-        `.spell-list[data-unit-id="${unitId}"]`,
+      const container = /** @type {HTMLElement | null} */ (
+        document.querySelector(`.spell-list[data-unit-id="${unitId}"]`)
       );
       if (container) {
         container.dataset.lore = loreKey;
@@ -319,7 +321,9 @@ export function bindSpellSelectors(army) {
 }
 
 function bindSpellCheckboxes() {
-  document.querySelectorAll(".spell-checkbox:not([disabled])").forEach((cb) => {
+  /** @type {NodeListOf<HTMLInputElement>} */ (
+    document.querySelectorAll(".spell-checkbox:not([disabled])")
+  ).forEach((cb) => {
     cb.addEventListener("change", () => {
       const unitId = cb.dataset.unitId;
       const spellKey = cb.dataset.spellKey;

@@ -381,7 +381,7 @@ const UNITS = {
         Name: "Steam Tank",
         Stomps: "D3+1",
         "Impact-Hits": "D6+1",
-        AS: "1",
+        AS: "3",
         equipment: ["Steam Cannon", "steam gun"],
       },
       {
@@ -428,7 +428,7 @@ const UNITS = {
         Name: "War Wagon",
         Stomps: "D3+1",
         "Impact-Hits": "D6+1, War Wagon only",
-        AS: "4",
+        AS: "3",
         equipment: [],
       },
       {
@@ -592,9 +592,9 @@ const UNITS = {
   ],
   "great-cannon-empire": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: ["Skirmishers"],
+
+      troopType: ["WM"],
       magic: [],
       optionalRules: [],
       crewed: true,
@@ -611,6 +611,7 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Great Cannon",
+        equipment: ["Great cannon"],
       },
       {
         A: "3",
@@ -623,6 +624,7 @@ const UNITS = {
         Ld: "7",
         WS: "3",
         Name: "Gun Crew",
+        equipment: ["hand weapons"],
       },
     ],
   },
@@ -976,9 +978,9 @@ const UNITS = {
   ],
   "mortar-empire": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: ["Skirmishers"],
+
+      troopType: ["WM"],
       magic: [],
       optionalRules: [],
       crewed: true,
@@ -995,6 +997,7 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Mortar",
+        equipment: ["Mortar"],
       },
       {
         A: "3",
@@ -1007,6 +1010,7 @@ const UNITS = {
         Ld: "7",
         WS: "3",
         Name: "Gun Crew",
+        equipment: ["hand weapons"],
       },
     ],
   },

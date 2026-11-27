@@ -1396,7 +1396,12 @@ const UNITS = {
         "Skirmishers",
         "Swiftstride",
       ],
-      equipment: ["Plagueswords", "death's heads", "hand weapons"],
+      equipment: [
+        "Plagueswords",
+        "death's heads",
+        "Filth-encrusted claws",
+        "hand weapons",
+      ],
       troopType: ["MCa"],
       magic: [],
       optionalRules: ["Plague Proboscis", "Venom Sting"],

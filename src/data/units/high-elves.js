@@ -333,10 +333,11 @@ const UNITS = {
   },
   "elven-archers": {
     shared: {
-      rules: undefined,
-      troopType: [],
-      magic: undefined,
-      optionalRules: undefined,
+      rules: ["Close Order", "Detachment", "Elven Reflexes", "Valour of Ages"],
+      equipment: ["Hand weapons", "longbows"],
+      troopType: ["RI"],
+      magic: [],
+      optionalRules: [],
     },
     stats: [
       {
@@ -1299,9 +1300,16 @@ const UNITS = {
   },
   "ship's-company": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: [
+        "Detachment",
+        "Elven Reflexes",
+        "Evasive",
+        "Fire & Flee",
+        "Open Order",
+        "Valour of Ages",
+      ],
+      equipment: ["Hand weapons", "warbows"],
+      troopType: ["RI"],
       magic: [],
       optionalRules: [],
     },

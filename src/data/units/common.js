@@ -137,9 +137,17 @@ const UNITS = {
   },
   "prince-ulther's-dragon-company": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: [
+        "Close Order",
+        "Drilled",
+        "Gromril Weapons",
+        "Hatred (Orcs & Goblins)",
+        "Magic Resistance (-1)",
+        "Resolute",
+        "Stubborn",
+      ],
+
+      troopType: ["HI", "NCh"],
       magic: [],
       optionalRules: [],
     },
@@ -155,6 +163,15 @@ const UNITS = {
         Ld: "10",
         WS: "5",
         Name: "Prince Ulther Stonehammer",
+        as: 5,
+        "Magic-Res": "-1",
+        equipment: [
+          "Hand weapon",
+          "Dragonblade",
+          "brace of pistols",
+          "light armour",
+          "shield",
+        ],
       },
       {
         A: "2",
@@ -167,6 +184,15 @@ const UNITS = {
         Ld: "9",
         WS: "4",
         Name: "Borri Forkbeard (champion)",
+        as: 5,
+        "Magic-Res": "-1",
+        equipment: [
+          "Hand weapon",
+          "great weapon",
+          "brace of pistols",
+          "light armour",
+          "shield",
+        ],
       },
       {
         A: "1",
@@ -179,6 +205,14 @@ const UNITS = {
         Ld: "9",
         WS: "4",
         Name: "Dragon Company trooper",
+        as: 5,
+        "Magic-Res": "-1",
+        equipment: [
+          "Hand weapon",
+          "brace of pistols",
+          "light armour",
+          "shields",
+        ],
       },
     ],
   },

@@ -117,7 +117,7 @@ const UNITS = {
         Name: "Black Coach",
         Regen: "6+",
         "Impact-Hits": "D6+2",
-        AS: "4",
+        AS: "3",
         equipment: [],
       },
       {

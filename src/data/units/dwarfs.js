@@ -56,9 +56,14 @@ const UNITS = {
   },
   "bolt-thrower-dwarfs": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: [
+        "Hatred (Orcs & Goblins)",
+        "Magic Resistance (-1)",
+        "Skirmishers",
+        "Stubborn",
+      ],
+
+      troopType: ["WM"],
       magic: [],
       optionalRules: [],
       crewed: true,
@@ -75,6 +80,9 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Bolt Thrower",
+        as: 6,
+        "Magic-Res": "-1",
+        equipment: ["Bolt thrower"],
       },
       {
         A: "3",
@@ -87,6 +95,9 @@ const UNITS = {
         Ld: "9",
         WS: "3",
         Name: "Dwarf Crew",
+        as: 6,
+        "Magic-Res": "-1",
+        equipment: ["hand weapons", "light armour"],
       },
     ],
   },
@@ -173,9 +184,14 @@ const UNITS = {
   ],
   "cannon-dwarfs": {
     shared: {
-      rules: [],
-      equipment: [],
-      troopType: [],
+      rules: [
+        "Hatred (Orcs & Goblins)",
+        "Magic Resistance (-1)",
+        "Skirmishers",
+        "Stubborn",
+      ],
+
+      troopType: ["WM"],
       magic: [],
       optionalRules: [],
       crewed: true,
@@ -192,6 +208,9 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Cannon",
+        as: 6,
+        "Magic-Res": "-1",
+        equipment: ["Cannon"],
       },
       {
         A: "3",
@@ -204,6 +223,9 @@ const UNITS = {
         Ld: "9",
         WS: "3",
         Name: "Dwarf Crew",
+        as: 6,
+        "Magic-Res": "-1",
+        equipment: ["hand weapons", "light armour"],
       },
     ],
   },

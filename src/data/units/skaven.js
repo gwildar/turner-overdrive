@@ -67,6 +67,7 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Doomwheel",
+        AS: "5",
         Stomps: "2",
         "Impact-Hits": "D3+1",
         equipment: [],

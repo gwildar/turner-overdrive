@@ -123,6 +123,9 @@ function collect(dirs, type) {
  */
 const equipmentList = (s) =>
   String(s)
+    // "Sharp stuff (counts as hand weapons and throwing weapons)" → also
+    // list what it counts as, so those items aren't lost with the brackets.
+    .replace(/\(counts as (?:an? )?([^)]*)\)/gi, ", $1")
     .split(/,|\band\b|\n/)
     .map((x) =>
       key(x)

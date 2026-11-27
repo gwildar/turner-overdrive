@@ -14,6 +14,14 @@
     "skipLibCheck": true,
     "strict": false
   },
-  // Start with the data and the parser; widen as each area is cleaned up.
-  "include": ["src/types.d.ts", "src/data/**/*.js", "src/parsers/**/*.js"]
+  // All app code. Tests and scripts are not checked yet.
+  "include": [
+    "src/types.d.ts",
+    "src/*.js",
+    "src/data/**/*.js",
+    "src/parsers/**/*.js",
+    "src/context/**/*.js",
+    "src/screens/**/*.js",
+    "src/utils/**/*.js"
+  ]
 }

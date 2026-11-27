@@ -201,10 +201,17 @@ describe("Chaos Dwarfs Renegade: v1.5 vs the v1.5.2.2 draft", () => {
   const core = CORE_RULESET;
   const ward = (name, rs) => resolveSpecialRules(name, rs)[0].ward;
 
-  it("Hellbound: official and draft ward only non-magical attacks; v1.5 wards everything", () => {
+  it("Hellbound: the official rule wards only non-magical attacks; v1.5 and the draft ward everything", () => {
     expect(ward("Hellbound", core)).toBe("6+ (non-magical)");
     expect(ward("Hellbound", v15)).toBe("6+");
-    expect(ward("Hellbound", draft)).toBe("6+ (non-magical)");
+    expect(ward("Hellbound", draft)).toBe("6+");
+  });
+
+  it("the draft's Dreadquake Mortar no longer has Slow Reload", () => {
+    const [v] = resolveShootingWeapons(["Dreadquake Mortar"], v15);
+    const [d] = resolveShootingWeapons(["Dreadquake Mortar"], draft);
+    expect(v.rules).toContain("Slow Reload");
+    expect(d.rules).not.toContain("Slow Reload");
   });
 
   it("Blackshard Armour improves the armour value only on the draft", () => {

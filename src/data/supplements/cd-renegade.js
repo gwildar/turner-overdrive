@@ -526,16 +526,8 @@ const SUPPLEMENT = {
       id: "blazing body",
       displayName: "Blazing Body",
       description:
-        "Each Combat phase, when choosing combats (before challenges), every model (friend or foe) in base contact without this rule suffers a S4 AP -1 Flaming hit. Wounds lost to these hits don't count towards combat result.",
+        "Each Combat phase, when choosing combats (before challenges), every model (friend or foe) in base contact without this rule suffers a S4 AP -1 Flaming hit. (The draft drops the official note: these wounds count towards combat result.)",
       phases: ["choose-fight"],
-    },
-    {
-      id: "hellbound",
-      displayName: "Hellbound",
-      description:
-        "6+ Ward save against wounds from non-magical enemy attacks; gains Fear and Magical Attacks (Terror if it already has Fear). Once per game, may re-roll one Scatter or Artillery dice. -1 to any Misfire table roll. A Hellcannon taken as Rare in a Chaos Dwarf Grand Army gains this rule.",
-      phases: ["shoot"],
-      ward: "6+ (non-magical)",
     },
     {
       id: "infernal engineer",
@@ -565,14 +557,6 @@ const SUPPLEMENT = {
       displayName: "Quake",
       description:
         'Until your next Start of Turn, every unit (friend or foe) within 2D6" of the central hole of a scattered Dreadquake Mortar template has -1 Movement and cannot use Swiftstride.',
-      phases: ["shoot"],
-      yourTurnOnly: true,
-    },
-    {
-      id: "slow reload",
-      displayName: "Slow Reload",
-      description:
-        "If it shot last turn, roll D6 before shooting: on 1-2 it does not shoot this turn (+1 with an Ogre Loader).",
       phases: ["shoot"],
       yourTurnOnly: true,
     },
@@ -631,8 +615,8 @@ const SUPPLEMENT = {
       type: "banner",
       points: 30,
       effect:
-        "Enemy models shooting at the unit in the Shooting phase suffer an additional -1 To Hit.",
-      phases: ["shooting"],
+        "Any enemy model that shoots at the unit suffers an additional -1 To Hit (including Stand & Shoot).",
+      phases: ["shooting", "movement"],
     },
     {
       name: "Daemonic Familiar",
@@ -707,7 +691,6 @@ const SUPPLEMENT = {
         "Move or Shoot",
         "Multiple Wounds (D3+1)",
         "Quake",
-        "Slow Reload",
         'Shoots like a stone thrower: 5" blast template, Black Powder Misfire table. Multiple Wounds (D3+1) only on the model under the central hole.',
       ],
       range: '12"-72"',

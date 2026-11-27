@@ -508,6 +508,15 @@ function getCrewedLds(u) {
   return { primary: crewLd, alt: beastLd };
 }
 
+// Large Target (own rule or from the mount) extends General/BSB range to 18".
+function hasLargeTarget(unit) {
+  return (
+    (unit.specialRules || []).some((r) =>
+      r.displayName?.toLowerCase().includes("large target"),
+    ) || (unit.mount?.rules ?? []).includes("Large Target")
+  );
+}
+
 export function buildCombatLeadershipData(army) {
   if (army.units.length === 0) {
     return {
@@ -579,20 +588,12 @@ export function buildCombatLeadershipData(army) {
         }
       }
     }
-    const hasLargeTarget =
-      (general.specialRules || []).some((r) =>
-        r.displayName?.toLowerCase().includes("large target"),
-      ) || !!general.mount?.largeTarget;
-    if (hasLargeTarget) generalRange = 18;
+    if (hasLargeTarget(general)) generalRange = 18;
   }
 
   let bsbRange = 12;
   if (bsb) {
-    const hasLargeTarget =
-      (bsb.specialRules || []).some((r) =>
-        r.displayName?.toLowerCase().includes("large target"),
-      ) || !!bsb.mount?.largeTarget;
-    if (hasLargeTarget) bsbRange = 18;
+    if (hasLargeTarget(bsb)) bsbRange = 18;
   }
 
   return { rows, general, generalLd, generalRange, bsb, bsbRange };

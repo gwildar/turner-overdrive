@@ -125,3 +125,24 @@ describe("buildDefensiveStatsEntries", () => {
     expect(buildDefensiveStatsEntries({ units: [] })).toEqual([]);
   });
 });
+
+describe("buildCombatLeadershipData — Large Target mounts extend command range", () => {
+  it('a General on a Large Target mount (Dreadlord on Black Dragon) has an 18" Inspiring Presence', () => {
+    const army = loadArmy("dark-elves");
+    expect(army.units.find((u) => u.isGeneral).mount.name).toBe("Black Dragon");
+    expect(buildCombatLeadershipData(army).generalRange).toBe(18);
+  });
+
+  it('a BSB on a Large Target mount (Griffon) has an 18" Hold Your Ground', () => {
+    const army = loadArmy("santas-jolly-elves");
+    expect(army.units.find((u) => u.isBSB).mount.name).toBe("Griffon");
+    expect(buildCombatLeadershipData(army).bsbRange).toBe(18);
+  });
+
+  it('a General without Large Target keeps 12"', () => {
+    const army = loadArmy("dark-elves");
+    const general = army.units.find((u) => u.isGeneral);
+    general.mount = null;
+    expect(buildCombatLeadershipData(army).generalRange).toBe(12);
+  });
+});

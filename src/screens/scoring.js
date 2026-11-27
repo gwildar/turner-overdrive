@@ -110,26 +110,25 @@ export function bindScoringEvents(army, renderCallback) {
   const isOpponentTurn = getIsOpponentTurn();
 
   document.getElementById("score-you")?.addEventListener("change", (e) => {
-    updateScore(round, isOpponentTurn, "you", parseInt(e.target.value, 10));
+    const select = /** @type {HTMLSelectElement} */ (e.target);
+    updateScore(round, isOpponentTurn, "you", parseInt(select.value, 10));
     renderCallback(army);
   });
 
   document.getElementById("score-opponent")?.addEventListener("change", (e) => {
-    updateScore(
-      round,
-      isOpponentTurn,
-      "opponent",
-      parseInt(e.target.value, 10),
-    );
+    const select = /** @type {HTMLSelectElement} */ (e.target);
+    updateScore(round, isOpponentTurn, "opponent", parseInt(select.value, 10));
     renderCallback(army);
   });
 
-  document.querySelectorAll("select[data-hist-round]").forEach((el) => {
-    el.addEventListener("change", (e) => {
-      const r = parseInt(e.target.dataset.histRound, 10);
-      const isOpp = e.target.dataset.histTurn === "opponent";
-      const player = e.target.dataset.histPlayer;
-      updateScore(r, isOpp, player, parseInt(e.target.value, 10));
+  /** @type {NodeListOf<HTMLSelectElement>} */ (
+    document.querySelectorAll("select[data-hist-round]")
+  ).forEach((el) => {
+    el.addEventListener("change", () => {
+      const r = parseInt(el.dataset.histRound, 10);
+      const isOpp = el.dataset.histTurn === "opponent";
+      const player = el.dataset.histPlayer;
+      updateScore(r, isOpp, player, parseInt(el.value, 10));
       renderCallback(army);
     });
   });

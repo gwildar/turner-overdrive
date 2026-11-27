@@ -28,6 +28,12 @@ export function setCurrentWarnings(w) {
   currentWarnings = w;
 }
 
+function settingsModal() {
+  return /** @type {HTMLDialogElement | null} */ (
+    document.getElementById("settings-modal")
+  );
+}
+
 export function renderSetupScreen() {
   renderScreen(() => {
     const army = loadStoredArmy();
@@ -97,16 +103,16 @@ export function renderSetupScreen() {
     });
 
     document.getElementById("settings-btn")?.addEventListener("click", () => {
-      document.getElementById("settings-modal")?.showModal();
+      settingsModal()?.showModal();
     });
 
     document.getElementById("settings-close")?.addEventListener("click", () => {
-      document.getElementById("settings-modal")?.close();
+      settingsModal()?.close();
     });
 
     document.getElementById("mode-standard")?.addEventListener("click", () => {
       saveDisplayMode("standard");
-      document.getElementById("settings-modal")?.close();
+      settingsModal()?.close();
       renderSetupScreen();
     });
 
@@ -114,14 +120,16 @@ export function renderSetupScreen() {
       .getElementById("mode-lightweight")
       ?.addEventListener("click", () => {
         saveDisplayMode("lightweight");
-        document.getElementById("settings-modal")?.close();
+        settingsModal()?.close();
         renderSetupScreen();
       });
 
     document
       .getElementById("supplements-toggle")
       ?.addEventListener("change", (e) => {
-        saveSupplementsEnabled(e.target.checked);
+        saveSupplementsEnabled(
+          /** @type {HTMLInputElement} */ (e.target).checked,
+        );
         renderSetupScreen();
       });
   });
@@ -324,7 +332,9 @@ function renderUnitList(army) {
 
 function bindUpload() {
   const dropZone = document.getElementById("drop-zone");
-  const fileInput = document.getElementById("file-input");
+  const fileInput = /** @type {HTMLInputElement} */ (
+    document.getElementById("file-input")
+  );
   const browseBtn = document.getElementById("browse-btn");
   const errorEl = document.getElementById("upload-error");
 
@@ -358,7 +368,7 @@ function handleFile(file, errorEl) {
   const reader = new FileReader();
   reader.onload = () => {
     try {
-      const json = JSON.parse(reader.result);
+      const json = JSON.parse(String(reader.result));
       const army = importArmy(json);
       currentWarnings = validateArmy(json, army);
       const casters = getCasters(army);

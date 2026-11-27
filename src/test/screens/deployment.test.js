@@ -3,6 +3,7 @@ import { renderDeploymentScreen } from "../../screens/deployment.js";
 import { getApp, loadArmy } from "../helpers.js";
 import { getDeploymentTime } from "../../state.js";
 import * as Nav from "../../navigate.js";
+import { SPECIAL_RULES } from "../../data/special-rules.js";
 
 describe("Deployment screen", () => {
   let army;
@@ -200,5 +201,42 @@ describe("Deployment Screen — navigation", () => {
     renderDeploymentScreen(army);
     getApp().querySelector("#next-btn").click();
     expect(Nav.navigate).toHaveBeenCalledWith("/first-turn");
+  });
+});
+
+describe("Deployment screen — rule descriptions", () => {
+  const armyWithRule = (displayName) => ({
+    name: "Test Army",
+    units: [
+      {
+        id: "u1",
+        name: "Test Unit",
+        category: "core",
+        specialRules: [{ displayName }],
+        magicItems: [],
+      },
+    ],
+  });
+  const descriptionOf = (id) =>
+    SPECIAL_RULES.find((r) => r.id === id).description;
+
+  it.each([
+    ["Scouts", "scouts"],
+    ["Vanguard", "vanguard"],
+  ])("shows the %s rule description", (displayName, id) => {
+    renderDeploymentScreen(armyWithRule(displayName));
+    expect(getApp().textContent).toContain(descriptionOf(id));
+  });
+
+  it("shows Ambushers' reserve-arrival text (it has no rule-level description)", () => {
+    renderDeploymentScreen(armyWithRule("Ambushers"));
+    expect(getApp().textContent).toContain("Roll D6 for each unit in reserve");
+  });
+
+  it("shows a post-deployment rule's description from its deployment phase entry", () => {
+    renderDeploymentScreen(armyWithRule("The Arrow of Kurnous"));
+    expect(getApp().textContent).toContain(
+      "enemy General suffers a single S3 hit",
+    );
   });
 });

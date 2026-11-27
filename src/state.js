@@ -1,5 +1,6 @@
 const KEYS = {
   army: "tow-army",
+  armySource: "tow-army-source",
   spellSelections: "tow-spell-selections",
   phaseIndex: "tow-phase-index",
   round: "tow-round",
@@ -48,6 +49,18 @@ function save(key, value) {
 }
 
 // Army
+// The imported file is stored as-is and re-parsed on every load (see
+// loadStoredArmy in army.js), so data and settings changes apply without a
+// re-import. getArmy/saveArmy hold a parsed army: older versions of the app
+// stored that instead, and it's still read as a fallback.
+export function getArmySource() {
+  return load(KEYS.armySource, null);
+}
+
+export function saveArmySource(json) {
+  save(KEYS.armySource, json);
+}
+
 export function getArmy() {
   const army = load(KEYS.army, null);
   return army ? applyActiveLores(army) : null;
@@ -59,6 +72,7 @@ export function saveArmy(army) {
 
 export function clearArmy() {
   localStorage.removeItem(KEYS.army);
+  localStorage.removeItem(KEYS.armySource);
   localStorage.removeItem(KEYS.spellSelections);
   localStorage.removeItem(KEYS.assignments);
   localStorage.removeItem(KEYS.activeLores);

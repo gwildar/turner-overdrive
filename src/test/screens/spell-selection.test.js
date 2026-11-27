@@ -3,9 +3,9 @@ import {
   renderSpellSelection,
   bindSpellSelectors,
 } from "../../screens/spell-selection.js";
-import { saveSpellSelections, getArmy } from "../../state.js";
+import { saveSpellSelections } from "../../state.js";
 import { loadArmy } from "../helpers.js";
-import { getCasters } from "../../army.js";
+import { getCasters, loadStoredArmy } from "../../army.js";
 
 beforeEach(() => {
   saveSpellSelections({});
@@ -174,7 +174,7 @@ describe("core lore choice persists", () => {
     select.value = newLore;
     select.dispatchEvent(new Event("change"));
 
-    const reloaded = getArmy().units.find((u) => u.id === caster.id);
+    const reloaded = loadStoredArmy().units.find((u) => u.id === caster.id);
     expect(reloaded.activeLore).toBe(newLore);
   });
 });

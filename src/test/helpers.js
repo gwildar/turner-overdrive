@@ -1,6 +1,5 @@
-import { parseArmyList } from "../army.js";
+import { importArmy } from "../army.js";
 import {
-  saveArmy,
   saveSpellSelections,
   savePhaseIndex,
   saveRound,
@@ -48,8 +47,7 @@ export function loadArmy(fixture) {
     "de-renegade-draft": deRenegadeDraftJson,
   };
   const json = jsonMap[fixture];
-  const army = parseArmyList(json);
-  saveArmy(army);
+  const army = importArmy(json);
 
   // Initialise empty spell selections
   const casters = getCasters(army);

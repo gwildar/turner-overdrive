@@ -1029,7 +1029,7 @@ export function buildCombatEntries(army) {
       mr: mergedMR,
       ward: u.ward ?? null,
       regen: u.regen ?? null,
-      iNum: Math.max(parseInt(riderI) || 0, mountI || 0),
+      iNum: Math.max(parseInt(riderI) || 0, parseInt(String(mountI)) || 0),
       riderWeapons,
       riderA: stats.A ? `${stats.A}${extraAttackBonus(u) ?? ""}` : "?",
       mountWeapons,

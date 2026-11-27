@@ -185,3 +185,21 @@ describe("buildCombatEntries — combat rules granted by the mount", () => {
     expect(rules.filter((r) => r === "First Charge")).toHaveLength(1);
   });
 });
+
+describe("buildCombatEntries — sorting by Initiative", () => {
+  it("gives every entry a numeric Initiative, even on a mount with I '-' (Cauldron of Blood)", () => {
+    const army = loadArmy("de-renegade-draft");
+    const hag = army.units.find((u) => u.mount?.name === "Cauldron of Blood");
+    expect(hag?.mount.i).toBe("-");
+    for (const e of buildCombatEntries(army)) {
+      expect(Number.isFinite(e.iNum)).toBe(true);
+    }
+  });
+
+  it("sorts combat entries from highest to lowest Initiative", () => {
+    const iNums = buildCombatEntries(loadArmy("de-renegade-draft")).map(
+      (e) => e.iNum,
+    );
+    expect(iNums).toEqual([...iNums].sort((a, b) => b - a));
+  });
+});

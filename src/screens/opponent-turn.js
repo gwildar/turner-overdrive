@@ -27,7 +27,7 @@ import { renderScoringUI, bindScoringEvents } from "./scoring.js";
 import { renderSpecialFeaturesTable } from "../context/scenario-context.js";
 import { renderMiscastPanel } from "../context/miscast.js";
 import { navigate } from "../navigate.js";
-import { hasStartOfTurnContent } from "./game.js";
+import { firstVisibleSubPhaseIdx } from "./game.js";
 import { getApp, renderScreen } from "./_app.js";
 
 const allSubPhases = getAllSubPhases();
@@ -148,12 +148,7 @@ function bindOpponentTurnActions(army) {
     if (idx < PHASES.length - 1) {
       recordAndNavigate(army, idx + 1, true, false);
     } else {
-      recordAndNavigate(
-        army,
-        hasStartOfTurnContent(army) ? 0 : 1,
-        false,
-        false,
-      );
+      recordAndNavigate(army, firstVisibleSubPhaseIdx(army), false, false);
     }
   });
 

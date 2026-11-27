@@ -287,7 +287,7 @@ function hasCommandContent(army) {
   );
 }
 
-export function hasStartOfTurnContent(army) {
+function hasStartOfTurnContent(army) {
   if (getScenarioOptions().specialFeatures) return true;
   const round = getRound();
   if (hasStartOfTurnRules(army, round)) return true;
@@ -319,6 +319,11 @@ function getVisibleSubPhases(army) {
       return false;
     return !shouldSkipSubPhase(army, subPhase.id);
   });
+}
+
+/** Index (into getAllSubPhases()) of the first sub-phase shown at the start of your turn. */
+export function firstVisibleSubPhaseIdx(army) {
+  return nextVisibleIdx(army, -1, 1);
 }
 
 function nextVisibleIdx(army, from, direction) {

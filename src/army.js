@@ -48,11 +48,22 @@ export function importArmy(json) {
  * Load the stored army by re-parsing the imported file, so the current data
  * and settings always apply. Falls back to a parsed army saved by an older
  * version of the app.
+ *
+ * If the stored file no longer parses (e.g. a format the app has dropped),
+ * the army is cleared and the setup screen asks the user to re-upload,
+ * rather than every screen failing.
  */
 export function loadStoredArmy() {
   const source = getArmySource();
-  if (source) return applyActiveLores(parseArmyList(source));
-  return getArmy();
+  if (!source) return getArmy();
+  try {
+    return applyActiveLores(parseArmyList(source));
+  } catch (err) {
+    console.warn("Stored army could not be parsed and was cleared:", err);
+    clearArmy();
+    sessionStorage.setItem("tow-recovered", "1");
+    return null;
+  }
 }
 
 export function getCasters(army) {

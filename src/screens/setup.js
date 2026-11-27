@@ -52,7 +52,7 @@ export function renderSetupScreen() {
         </header>
   
         <main class="flex-1 p-4 max-w-2xl mx-auto w-full">
-          ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved game data was cleared due to an error. Please re-upload your army.</p>` : ""}
+          ${wasRecovered ? `<p class="text-wh-red text-sm text-center mt-4 mb-2">Your saved army couldn't be loaded and has been cleared. Please re-upload your army.</p>` : ""}
           ${renderWhatsNew()}
           ${army ? renderArmySummary(army, currentWarnings) : renderUploadSection()}
         </main>

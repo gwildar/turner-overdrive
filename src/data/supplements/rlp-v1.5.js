@@ -18,6 +18,7 @@ const SUPPLEMENT = {
     {
       id: "monstrous-ranks",
       displayName: "Monstrous Ranks",
+      aliases: ["monstrous ranks"],
       passive: true,
       description:
         "All Ogre Kingdoms Monstrous Infantry (except Yhetees) gain the Press of Battle and Massed Infantry special rules.",
@@ -28,6 +29,7 @@ const SUPPLEMENT = {
     {
       id: "born-of-fire",
       displayName: "Born of Fire",
+      aliases: ["born of fire"],
       passive: true,
       description:
         "K'daai Fireborn have a 3+ Ward save against any wounds suffered that were caused by an attack that has the Flaming Attacks special rule.",
@@ -52,6 +54,7 @@ const SUPPLEMENT = {
     {
       id: "wisdom-of-the-old-ones",
       displayName: "Wisdom of the Old Ones",
+      aliases: ["wisdom of the old ones"],
       description:
         "Once per turn, the Slann Mage-Priest may re-roll one D6 when making a Casting Roll. This ability may not be used to re-roll a Miscast. In addition, it knows one more spell (chosen in the usual way) than is normal for their Level of Wizardry.",
       phases: ["conjuration", "shoot", "choose-fight"],
@@ -62,6 +65,7 @@ const SUPPLEMENT = {
     {
       id: "dark-vitality",
       displayName: "Dark Vitality",
+      aliases: ["dark vitality"],
       passive: true,
       description:
         "A Vampire Count or Vampire Thrall Wizard with this special rule may wear armour or carry a shield without penalty — they may Cast and Dispel as normal.",

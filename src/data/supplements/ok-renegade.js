@@ -543,6 +543,7 @@ const SUPPLEMENT = {
     {
       id: "ogre-kingdoms-charge",
       displayName: "Ogre Kingdoms Charge",
+      aliases: ["ogre kingdoms charge"],
       description:
         "The Strength and AP of Impact Hits are improved by the unit's current Rank Bonus (or the joined unit's Rank Bonus for characters). In addition, if a unit makes a Charge move of 6\" or more following a Charge roll that includes one or more natural 6s, all models gain Impact Hits (1) and treat low linear obstacles as open ground during the turn they charge.",
       phases: ["declare-charges", "choose-fight"],
@@ -550,6 +551,7 @@ const SUPPLEMENT = {
     {
       id: "ogre-club",
       displayName: "Ogre Club",
+      aliases: ["ogre club"],
       passive: true,
       description:
         "A hand weapon carried by this model has an AP of -1. Only applies to a single non-magical hand weapon. Ceases to apply if using an Ironfist or any other weapon.",
@@ -558,6 +560,7 @@ const SUPPLEMENT = {
     {
       id: "deluge-of-sharp-instruments",
       displayName: "Deluge of Sharp Instruments",
+      aliases: ["deluge of sharp instruments"],
       description:
         "If a natural 6 is rolled when making a roll To Wound with this weapon, enemy models whose troop type is regular infantry, heavy infantry, light cavalry, heavy cavalry or war beasts are not permitted an armour or Regeneration save.",
       phases: ["shoot"],

@@ -523,11 +523,12 @@ describe("resolveSpecialRules draft awareness", () => {
     expect(rules[0].id).toBe("if one head is severed");
   });
 
-  it("Murderous {renegade} resolves to v1.5 rule in every version", () => {
+  it("Murderous {renegade} is the v1.5 rule on v1.5 and the draft rule on the draft", () => {
     const stable = resolveSpecialRules("Murderous {renegade}", DE_V15);
     const draft = resolveSpecialRules("Murderous {renegade}", DE_DRAFT);
     expect(stable[0].id).toBe("murderous-v1.5");
-    expect(draft[0].id).toBe("murderous-v1.5");
+    // v1.5.2.2: works in every round of combat, on all mundane weapons
+    expect(draft[0].id).toBe("murderous-renegade");
   });
 
   it("core rules resolve in every version", () => {

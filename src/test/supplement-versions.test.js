@@ -168,3 +168,28 @@ describe("Settings — Community Supplements", () => {
     expect(getSupplementVersion("de-renegade")).toBeNull();
   });
 });
+
+describe("every supplement rule can be found by its name", () => {
+  // Variant rules that unit data names by id instead (de-renegade.js
+  // cauldron-of-blood-mount lists "blessings of khaine-renegade").
+  const ID_ONLY = new Set(["blessings of khaine-renegade"]);
+  const layers = [
+    ...new Set(
+      Object.values(SUPPLEMENT_VERSIONS).flatMap((vs) =>
+        vs.flatMap((v) => v.layers),
+      ),
+    ),
+  ];
+  it.each(layers.flatMap((l) => (l.specialRules || []).map((r) => [r.id, r])))(
+    "%s",
+    (id, rule) => {
+      const keys = [rule.id, ...(rule.aliases || [])].map((k) =>
+        k.toLowerCase(),
+      );
+      const name = rule.displayName.toLowerCase();
+      const byName =
+        keys.includes(name) || keys.some((k) => k.startsWith(name + " {"));
+      expect(byName || ID_ONLY.has(id)).toBe(true);
+    },
+  );
+});

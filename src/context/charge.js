@@ -37,7 +37,7 @@ function detectChargeMods(unit, mountData) {
   // From mount
   if (mountData?.rules.includes("Swiftstride")) {
     const mod = CHARGE_MOD_RULES.get("swiftstride");
-    if (mod) {
+    if (mod && !seen.has(mod.tag)) {
       seen.add(mod.tag);
       mods.push(mod);
     }

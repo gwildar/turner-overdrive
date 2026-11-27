@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
+    "typecheck": "tsc -p .",
+    "prepare": "git config core.hooksPath .githooks",
     "prettier": "prettier --write .",
     "crawl:rules": "node scripts/crawl-tow-rules.mjs"
   },
@@ -21,6 +23,7 @@
     "jsdom": "^29.0.1",
     "prettier": "3.8.1",
     "tailwindcss": "^4.2.2",
+    "typescript": "^5.9.3",
     "vite": "^8.0.1",
     "vitest": "^4.1.2"
   },

@@ -1,0 +1,19 @@
+{
+  // Type checking only — the app stays plain JavaScript and Vite builds it
+  // as before. Run with `npm run typecheck`.
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+    "strict": false
+  },
+  // Start with the data and the parser; widen as each area is cleaned up.
+  "include": ["src/types.d.ts", "src/data/**/*.js", "src/parsers/**/*.js"]
+}

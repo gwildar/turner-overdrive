@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "black-ark-corsairs": {
     shared: {
       rules: [
@@ -1425,3 +1426,5 @@ export default {
     ],
   },
 };
+
+export default UNITS;

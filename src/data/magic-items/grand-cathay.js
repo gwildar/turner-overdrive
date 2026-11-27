@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Grand Cathay ─────────────────────────────────────────────────────
   // Magic Weapons
   {
@@ -310,3 +311,5 @@ export default [
     phases: ["movement"],
   },
 ];
+
+export default ITEMS;

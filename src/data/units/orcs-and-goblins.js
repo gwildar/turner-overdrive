@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "arachnarok-spider": {
     shared: {
       crewed: true,
@@ -1957,3 +1958,5 @@ export default {
     },
   ],
 };
+
+export default UNITS;

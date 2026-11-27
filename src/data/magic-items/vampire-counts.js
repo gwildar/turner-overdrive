@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Vampire Counts ──────────────────────────────────────────────────
   {
     name: "Frostblade",
@@ -221,3 +222,5 @@ export default [
     phases: ["passive"],
   },
 ];
+
+export default ITEMS;

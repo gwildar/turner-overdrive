@@ -3,7 +3,8 @@
  * Draft v1.5.2.2 — community supplement.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {
     // Tyrant/Bruiser: "Ogre Kingdoms Charge" replaces "Ogre Charge", +Ogre Club
     "tyrant-renegade": [
@@ -598,7 +599,7 @@ export default {
   magicItems: [
     {
       name: "Tooth-Gnoblar",
-      type: "arcane",
+      type: "arcane-item",
       points: 10,
       extremely: true,
       maxPerModel: 3,
@@ -609,3 +610,5 @@ export default {
     },
   ],
 };
+
+export default SUPPLEMENT;

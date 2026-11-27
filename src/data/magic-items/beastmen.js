@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Beastmen ────────────────────────────────────────────────────────
   {
     name: "The Black Maul",
@@ -407,3 +408,5 @@ export default [
     phases: ["passive"],
   },
 ];
+
+export default ITEMS;

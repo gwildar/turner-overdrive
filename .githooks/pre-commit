@@ -1,0 +1,10 @@
+#!/bin/sh
+# Runs before every commit. Installed by `npm install` (the "prepare" script
+# points git's core.hooksPath at .githooks). Skip once with `git commit --no-verify`.
+
+echo "pre-commit: type checking…"
+if ! npm run --silent typecheck; then
+  echo ""
+  echo "pre-commit: type check failed — fix the errors above, or commit with --no-verify to skip."
+  exit 1
+fi

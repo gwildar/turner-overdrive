@@ -447,9 +447,9 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Remap lores for composition variants.
   // Toggle OFF → v1.5 stable lore (loreRemaps)
   // Toggle ON  → draft v1.5.2.2 lore (draftLoreRemaps), falling back to v1.5
-  const compConfig = armyComposition
-    ? ARMY_COMPOSITIONS[armyComposition] || {}
-    : {};
+  /** @type {Partial<import("../types").ArmyComposition>} */
+  const compConfig =
+    (armyComposition && ARMY_COMPOSITIONS[armyComposition]) || {};
   const loreRemaps = isDraft
     ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
     : compConfig.loreRemaps || {};

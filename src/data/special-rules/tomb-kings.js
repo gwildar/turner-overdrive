@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Tomb Kings ───────────────────────────────────────────────────────
 
   {
@@ -10,3 +11,5 @@ export default [
     phases: [],
   },
 ];
+
+export default RULES;

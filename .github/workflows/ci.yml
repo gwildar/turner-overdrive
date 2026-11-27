@@ -20,5 +20,7 @@ jobs:
         run: npx prettier --check .
       - name: Lint (ESLint)
         run: npm run lint
+      - name: Type check (tsc)
+        run: npm run typecheck
       - name: Run Tests
         run: npm run test

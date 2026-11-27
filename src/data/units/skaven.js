@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   clanrats: {
     shared: {
       rules: ["Close Order", "Horde", "Scurry Away", "Warband"],
@@ -999,3 +1000,5 @@ export default {
     },
   ],
 };
+
+export default UNITS;

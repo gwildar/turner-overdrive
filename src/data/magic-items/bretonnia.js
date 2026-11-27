@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Kingdom of Bretonnia ────────────────────────────────────────────
   {
     name: "Crusader's Lance",
@@ -474,3 +475,5 @@ export default [
     phases: ["movement"],
   },
 ];
+
+export default ITEMS;

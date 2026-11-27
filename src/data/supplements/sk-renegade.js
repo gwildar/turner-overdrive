@@ -3,7 +3,8 @@
  * Draft v1.5.2.2 — community supplement.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {
     // Night Runners: +Regimental Unit, +Vanguard
     "night-runners-renegade": {
@@ -563,7 +564,7 @@ export default {
     },
     {
       name: "Warp Condenser",
-      type: "arcane",
+      type: "arcane-item",
       points: 50,
       effect:
         'Dispel range +3". +1 to Casting rolls for Magic Missile spells. May re-roll Miscast table result.',
@@ -571,7 +572,7 @@ export default {
     },
     {
       name: "Storm Daemon",
-      type: "arcane",
+      type: "arcane-item",
       points: 40,
       effect:
         "Bearer can cast Warp Lightning (Lore of the Horned Rat) as a Bound spell, Power Level 2.",
@@ -579,7 +580,7 @@ export default {
     },
     {
       name: "Warpstone Tokens",
-      type: "arcane",
+      type: "arcane-item",
       points: 15,
       extremely: true,
       maxPerModel: 3,
@@ -590,3 +591,5 @@ export default {
     },
   ],
 };
+
+export default SUPPLEMENT;

@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Ogre Kingdoms ───────────────────────────────────────────────────
 
   // Big Names
@@ -228,3 +229,5 @@ export default [
     phases: ["combat"],
   },
 ];
+
+export default ITEMS;

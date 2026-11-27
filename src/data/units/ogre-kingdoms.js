@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "badlands-ogre-bulls": {
     shared: {
       rules: [
@@ -1005,3 +1006,5 @@ export default {
     ],
   },
 };
+
+export default UNITS;

@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Vampire Counts ───────────────────────────────────────────────────
 
   {
@@ -18,3 +19,5 @@ export default [
     ],
   },
 ];
+
+export default RULES;

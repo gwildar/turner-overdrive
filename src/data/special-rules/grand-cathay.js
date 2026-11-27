@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Grand Cathay ────────────────────────────────────────────────────
 
   {
@@ -99,7 +100,7 @@ export default [
     aliases: ["harmony of stone & steel"],
     description:
       "Friendly units within Command range may re-roll failed Leadership tests when attempting to reform after running down a foe, when redirecting a charge, or when making a Restraint test.",
-    phases: ["movement"],
+    phases: ["declare-charges", "pursuit"],
     yourTurnOnly: true,
   },
   {
@@ -193,7 +194,7 @@ export default [
     displayName: "Implacable",
     description:
       "Once per game when charged, may choose not to Give Ground if combat is lost. Once per game, may re-roll its Charge roll.",
-    phases: ["movement", "choose-fight"],
+    phases: ["declare-charges", "choose-fight"],
   },
   {
     id: "jade sentinel",
@@ -315,7 +316,7 @@ export default [
     displayName: "Warriors of the Land",
     description:
       "When Falling Back in Good Order, may choose which dice to discard when making the Flee roll rather than automatically discarding the lowest.",
-    phases: ["movement"],
+    phases: ["break-test"],
   },
   {
     id: "warriors of the wind",
@@ -412,3 +413,5 @@ export default [
       "Before the first-turn roll-off, either player may propose a Warriors' Duel. Each side nominates one champion (infantry or cavalry, exactly 1 Wound). Champions fight in a challenge until one falls — the winner's army takes the first turn. If both fall simultaneously, revert to a standard roll-off. If the opponent declines, Wolves of the Sea automatically takes the first turn.",
   },
 ];
+
+export default RULES;

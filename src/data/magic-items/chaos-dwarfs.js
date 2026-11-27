@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Chaos Dwarfs ────────────────────────────────────────────────────
   {
     name: "Black Hammer of Hashut",
@@ -153,3 +154,5 @@ export default [
     phases: ["combat"],
   },
 ];
+
+export default ITEMS;

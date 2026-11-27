@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Beastmen ────────────────────────────────────────────────────────
 
   {
@@ -23,3 +24,5 @@ export default [
     phases: ["choose-fight"],
   },
 ];
+
+export default RULES;

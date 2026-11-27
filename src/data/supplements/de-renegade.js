@@ -3,7 +3,8 @@
  * Draft v1.5.2.2 — community supplement.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {
     "cauldron-of-blood-mount": [
       {
@@ -657,7 +658,7 @@ export default {
       displayName: "Altar of Khaine",
       description:
         "This model has a 5+ Ward save against any wounds suffered. Any unit joined by this model gains a 6+ Ward save against any wounds suffered.",
-      phases: ["choose-fight", "shooting"],
+      phases: ["choose-fight", "shoot"],
       ward: "5+",
     },
     {
@@ -830,3 +831,5 @@ export default {
     },
   },
 };
+
+export default SUPPLEMENT;

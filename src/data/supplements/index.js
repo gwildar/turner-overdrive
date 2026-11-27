@@ -16,6 +16,7 @@ import deRenegade from "./de-renegade.js";
 import okRenegade from "./ok-renegade.js";
 import skRenegade from "./sk-renegade.js";
 import cdRenegade from "./cd-renegade.js";
+import lmRenegade from "./lm-renegade.js";
 
 /** @typedef {import("../../types").Supplement} Supplement */
 
@@ -57,7 +58,10 @@ export const SUPPLEMENT_VERSIONS = {
     draft("v1.5.2.2", skRenegade, { "horned-rat": "horned-rat-renegade" }),
   ],
   "vc-renegade": [V1_5],
-  "lm-renegade": [V1_5],
+  "lm-renegade": [
+    V1_5,
+    draft("v1.5.2.1", lmRenegade, { lustria: "lustria-renegade" }),
+  ],
   "cd-renegade": [V1_5, draft("v1.5.2.2", cdRenegade)],
   "doc-renegade": [V1_5],
 };
@@ -77,7 +81,14 @@ export function findSupplementVersion(composition, versionId) {
   return versions.find((v) => v.id === versionId) ?? versions[0] ?? null;
 }
 
-const supplements = [rlpV15, deRenegade, okRenegade, skRenegade, cdRenegade];
+const supplements = [
+  rlpV15,
+  deRenegade,
+  okRenegade,
+  skRenegade,
+  cdRenegade,
+  lmRenegade,
+];
 
 // ── Per-release lists (used by tests and data checks) ──────────────
 export const STABLE_SUPPLEMENT_RULES = rlpV15.specialRules || [];
@@ -86,6 +97,7 @@ export const DRAFT_SUPPLEMENT_RULES = [
   ...(okRenegade.specialRules || []),
   ...(skRenegade.specialRules || []),
   ...(cdRenegade.specialRules || []),
+  ...(lmRenegade.specialRules || []),
 ];
 
 export const STABLE_SUPPLEMENT_ITEMS = rlpV15.magicItems || [];
@@ -94,6 +106,7 @@ export const DRAFT_SUPPLEMENT_ITEMS = [
   ...(okRenegade.magicItems || []),
   ...(skRenegade.magicItems || []),
   ...(cdRenegade.magicItems || []),
+  ...(lmRenegade.magicItems || []),
 ];
 
 export const STABLE_SUPPLEMENT_UNITS = Object.assign({}, rlpV15.units || {});
@@ -103,6 +116,7 @@ export const DRAFT_SUPPLEMENT_UNITS = Object.assign(
   okRenegade.units || {},
   skRenegade.units || {},
   cdRenegade.units || {},
+  lmRenegade.units || {},
 );
 
 // ── Everything from every supplement ───────────────────────────────

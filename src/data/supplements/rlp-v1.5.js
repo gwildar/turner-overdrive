@@ -796,6 +796,31 @@ const SUPPLEMENT = {
 
     // ── Lizardmen ────────────────────────────────────────────────────
     {
+      id: "cold blooded-v1.5",
+      displayName: "Cold Blooded",
+      aliases: ["cold blooded {renegade}"],
+      passive: true,
+      description:
+        "When making a Leadership or Break test, roll an extra D6 and discard the highest result. (Renegade Legacy Pack v1.5)",
+      phases: ["command", "rally", "choose-fight", "break-test"],
+    },
+    {
+      id: "guardians-v1.5",
+      displayName: "Guardians",
+      aliases: ["guardians {renegade}"],
+      description:
+        "If a friendly Slann within 3\" suffers a hit in the Shooting phase, roll D6: on 2+ you may transfer the hit to this unit. May be joined by a character with Palanquin. Within a Slann's Command range, every model can issue and accept challenges as if a character. (Renegade Legacy Pack v1.5)",
+      phases: ["shoot", "choose-fight"],
+    },
+    {
+      id: "palanquin",
+      displayName: "Palanquin",
+      aliases: ["palanquin {renegade}"],
+      description:
+        "May join a unit with Guardians despite Fly. With 4+ models in the front rank it is placed in the second rank, still conferring Leadership and rules; unless in base contact, may cast and dispel while the unit is in combat — not Assailment spells. For shooting and casting it has a 360° vision arc and ignores its own unit for line of sight. (Renegade Legacy Pack v1.5)",
+      phases: ["conjuration", "choose-fight"],
+    },
+    {
       id: "wisdom-of-the-old-ones",
       displayName: "Wisdom of the Old Ones",
       aliases: ["wisdom of the old ones"],

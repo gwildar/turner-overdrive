@@ -258,3 +258,35 @@ describe("v1.5 Renegade unit profiles", () => {
     );
   });
 });
+
+describe("Lizardmen Renegade: v1.5 vs the v1.5.2.1 draft", () => {
+  const v15 = getRuleset("lm-renegade", "v1.5");
+  const draft = getRuleset("lm-renegade", "v1.5.2.1");
+  const rule = (name, rs) => resolveSpecialRules(name, rs)[0];
+
+  it('"Cold Blooded {renegade}" is the Renegade rule (Leadership and Break tests), not the official one', () => {
+    expect(rule("Cold Blooded {renegade}", v15).description).toMatch(
+      /Leadership or Break test/,
+    );
+    expect(rule("Cold Blooded", CORE_RULESET).description).toMatch(/Fear/);
+  });
+
+  it("Guardians: v1.5 transfers hits from the Slann, the draft doesn't", () => {
+    expect(rule("Guardians {renegade}", v15).description).toMatch(/transfer/);
+    expect(rule("Guardians {renegade}", draft).description).not.toMatch(
+      /transfer/,
+    );
+  });
+
+  it("the draft's Ripperdactyls are Predatory Fighters, not Furious Chargers", () => {
+    const riders = (rs) =>
+      resolveStats("ripperdactyl-riders", "Ripperdactyl Riders", rs)[0].rules;
+    expect(riders(v15)).toContain("Furious Charge (Ripperdactyl only)");
+    expect(riders(draft)).toContain("Predatory Fighter (Ripperdactyl only)");
+  });
+
+  it("the draft uses its own Lore of Lustria (Monsoon 10+)", () => {
+    expect(v15.loreRemaps.lustria).toBe("lustria-v1.5");
+    expect(draft.loreRemaps.lustria).toBe("lustria-renegade");
+  });
+});

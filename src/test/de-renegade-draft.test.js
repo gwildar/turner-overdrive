@@ -12,7 +12,11 @@ import {
   resolveSpecialRules,
   resolveStats,
   resolveMagicItems,
+  getRuleset,
 } from "../parsers/resolve.js";
+
+const DE_V15 = getRuleset("de-renegade", "v1.5");
+const DE_DRAFT = getRuleset("de-renegade", "v1.5.2.2");
 import {
   hasStartOfTurnRules,
   renderSpecialRulesContext,
@@ -21,7 +25,7 @@ import { buildCombatEntries } from "../context/combat-data.js";
 import {
   saveRound,
   saveCharacterAssignments,
-  saveSupplementsEnabled,
+  saveSupplementVersion,
 } from "../state.js";
 
 describe("de-renegade-draft fixture", () => {
@@ -41,12 +45,12 @@ describe("War Hydra draft rules", () => {
   let army;
 
   beforeEach(() => {
-    saveSupplementsEnabled(true);
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     army = loadArmy("de-renegade-draft");
   });
 
   afterEach(() => {
-    saveSupplementsEnabled(false);
+    saveSupplementVersion("de-renegade", "v1.5");
   });
 
   it("War Hydra has 'if one head is severed' special rule", () => {
@@ -409,49 +413,63 @@ describe("supplement index stable/draft split", () => {
 });
 
 describe("resolveStats draft awareness", () => {
-  it("with isDraft=false, War Hydra uses core stats (AS 5)", () => {
-    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", false);
+  it("with v1.5, War Hydra uses core stats (AS 5)", () => {
+    const stats = resolveStats(
+      "war-hydra",
+      "War Hydra",
+      getRuleset("de-renegade", "v1.5"),
+    );
     expect(stats[0]?.AS).toBe("5");
   });
 
-  it("with isDraft=true, War Hydra uses renegade variant (AS 4)", () => {
-    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", true);
+  it("with the v1.5.2.2 draft, War Hydra uses renegade variant (AS 4)", () => {
+    const stats = resolveStats(
+      "war-hydra",
+      "War Hydra",
+      getRuleset("de-renegade", "v1.5.2.2"),
+    );
     expect(stats[0]?.AS).toBe("4");
   });
 
-  it("with isDraft=false, renegade composition does not look up -renegade keys", () => {
-    const stats = resolveStats("war-hydra", "War Hydra", "de-renegade", false);
+  it("with v1.5, renegade composition does not look up -renegade keys", () => {
+    const stats = resolveStats(
+      "war-hydra",
+      "War Hydra",
+      getRuleset("de-renegade", "v1.5"),
+    );
     const rules = stats[0]?.rules || [];
     expect(rules).toContain("Stomp Attacks (D3)");
     expect(rules).not.toContain("Stomp Attacks (D3+1)");
   });
 
-  it("non-renegade composition ignores isDraft entirely", () => {
-    const stats = resolveStats("war-hydra", "War Hydra", "dark-elves", true);
+  it("non-renegade composition never uses the draft", () => {
+    const stats = resolveStats(
+      "war-hydra",
+      "War Hydra",
+      getRuleset("dark-elves", "v1.5.2.2"),
+    );
     expect(stats[0]?.AS).toBe("5");
   });
 });
 
 describe("resolveMagicItems draft awareness", () => {
   // Banner of Nagarythe exists in both core (65 pts) and de-renegade supplement (50 pts).
-  // With isDraft=false + renegade composition, the supplement map is not consulted,
+  // With v1.5 + renegade composition, the supplement map is not consulted,
   // so the core version (65 pts) is returned.
-  it("with isDraft=false and renegade composition, core version of Banner of Nagarythe is returned (65 pts)", () => {
+  it("with v1.5 and renegade composition, core version of Banner of Nagarythe is returned (65 pts)", () => {
     const result = resolveMagicItems(
       ["Banner of Nagarythe"],
-      "de-renegade",
-      false,
+      getRuleset("de-renegade", "v1.5"),
     );
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe("Banner of Nagarythe");
     expect(result[0].points).toBe(65);
   });
 
-  it("with isDraft=true and renegade composition, supplement version of Banner of Nagarythe resolves (50 pts)", () => {
+  it("with the v1.5.2.2 draft and renegade composition, supplement version of Banner of Nagarythe resolves (50 pts)", () => {
     const result = resolveMagicItems(
       ["Banner of Nagarythe"],
-      "de-renegade",
-      true,
+      getRuleset("de-renegade", "v1.5.2.2"),
     );
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe("Banner of Nagarythe");
@@ -459,9 +477,15 @@ describe("resolveMagicItems draft awareness", () => {
     expect(result[0].points).toBe(50);
   });
 
-  it("core magic items resolve regardless of isDraft", () => {
-    const stable = resolveMagicItems(["Ogre Blade"], "de-renegade", false);
-    const draft = resolveMagicItems(["Ogre Blade"], "de-renegade", true);
+  it("core magic items resolve in every version", () => {
+    const stable = resolveMagicItems(
+      ["Ogre Blade"],
+      getRuleset("de-renegade", "v1.5"),
+    );
+    const draft = resolveMagicItems(
+      ["Ogre Blade"],
+      getRuleset("de-renegade", "v1.5.2.2"),
+    );
     expect(stable).toHaveLength(1);
     expect(draft).toHaveLength(1);
     expect(stable[0].name).toBe("Ogre Blade");
@@ -470,8 +494,7 @@ describe("resolveMagicItems draft awareness", () => {
   it("without renegade composition, supplement version is not consulted — core version returned", () => {
     const result = resolveMagicItems(
       ["Banner of Nagarythe"],
-      "dark-elves",
-      true,
+      getRuleset("dark-elves", "v1.5.2.2"),
     );
     expect(result).toHaveLength(1);
     // Core version: 65 pts (not the renegade supplement's 50 pts)
@@ -480,78 +503,78 @@ describe("resolveMagicItems draft awareness", () => {
 });
 
 describe("resolveSpecialRules draft awareness", () => {
-  it("with isDraft=false, 'altar of khaine' resolves to bare entry (not draft rule)", () => {
-    const rules = resolveSpecialRules("Altar of Khaine", false);
+  it("with v1.5, 'altar of khaine' resolves to bare entry (not draft rule)", () => {
+    const rules = resolveSpecialRules("Altar of Khaine", DE_V15);
     expect(rules[0].id).toBeNull();
   });
 
-  it("with isDraft=true, 'altar of khaine' resolves to the de-renegade rule", () => {
-    const rules = resolveSpecialRules("Altar of Khaine", true);
+  it("with the v1.5.2.2 draft, 'altar of khaine' resolves to the de-renegade rule", () => {
+    const rules = resolveSpecialRules("Altar of Khaine", DE_DRAFT);
     expect(rules[0].id).toBe("altar of khaine");
   });
 
-  it("with isDraft=false, 'if one head is severed' resolves to bare entry", () => {
-    const rules = resolveSpecialRules("If One Head is Severed", false);
+  it("with v1.5, 'if one head is severed' resolves to bare entry", () => {
+    const rules = resolveSpecialRules("If One Head is Severed", DE_V15);
     expect(rules[0].id).toBeNull();
   });
 
-  it("with isDraft=true, 'if one head is severed' resolves to the draft rule", () => {
-    const rules = resolveSpecialRules("If One Head is Severed", true);
+  it("with the v1.5.2.2 draft, 'if one head is severed' resolves to the draft rule", () => {
+    const rules = resolveSpecialRules("If One Head is Severed", DE_DRAFT);
     expect(rules[0].id).toBe("if one head is severed");
   });
 
-  it("Murderous {renegade} resolves to v1.5 rule regardless of isDraft", () => {
-    const stable = resolveSpecialRules("Murderous {renegade}", false);
-    const draft = resolveSpecialRules("Murderous {renegade}", true);
+  it("Murderous {renegade} resolves to v1.5 rule in every version", () => {
+    const stable = resolveSpecialRules("Murderous {renegade}", DE_V15);
+    const draft = resolveSpecialRules("Murderous {renegade}", DE_DRAFT);
     expect(stable[0].id).toBe("murderous-v1.5");
     expect(draft[0].id).toBe("murderous-v1.5");
   });
 
-  it("core rules resolve regardless of isDraft", () => {
-    const stable = resolveSpecialRules("Killing Blow", false);
-    const draft = resolveSpecialRules("Killing Blow", true);
+  it("core rules resolve in every version", () => {
+    const stable = resolveSpecialRules("Killing Blow", DE_V15);
+    const draft = resolveSpecialRules("Killing Blow", DE_DRAFT);
     expect(stable[0].id).toBe("killing blow");
     expect(draft[0].id).toBe("killing blow");
   });
 });
 
-describe("draft toggle integration — from-owb parse pipeline", () => {
+describe("supplement version integration — from-owb parse pipeline", () => {
   afterEach(() => {
-    saveSupplementsEnabled(false);
+    saveSupplementVersion("de-renegade", "v1.5");
   });
 
-  it("toggle OFF: War Hydra uses core stats (AS 5, not renegade AS 4)", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: War Hydra uses core stats (AS 5, not renegade AS 4)", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stats[0].AS).toBe("5");
   });
 
-  it("toggle ON: War Hydra uses renegade variant (AS 4)", () => {
-    saveSupplementsEnabled(true);
+  it("v1.5.2.2 draft: War Hydra uses renegade variant (AS 4)", () => {
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     const army = loadArmy("de-renegade-draft");
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stats[0].AS).toBe("4");
   });
 
-  it("toggle OFF: War Hydra does not have 'if one head is severed' rule", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: War Hydra does not have 'if one head is severed' rule", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     const ruleIds = hydra.specialRules.map((r) => r.id);
     expect(ruleIds).not.toContain("if one head is severed");
   });
 
-  it("toggle ON: War Hydra has 'if one head is severed' rule", () => {
-    saveSupplementsEnabled(true);
+  it("v1.5.2.2 draft: War Hydra has 'if one head is severed' rule", () => {
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     const army = loadArmy("de-renegade-draft");
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     const ruleIds = hydra.specialRules.map((r) => r.id);
     expect(ruleIds).toContain("if one head is severed");
   });
 
-  it("toggle OFF: Witch Elves Murderous is still v1.5 (stable alias)", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: Witch Elves Murderous is still v1.5 (stable alias)", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     const we = army.units.find((u) => u.id.startsWith("witch-elves"));
     const murderous = we.specialRules.find(
@@ -560,15 +583,15 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     expect(murderous?.id).toBe("murderous-v1.5");
   });
 
-  it("toggle OFF: War Hydra stomp is D3 (core, not renegade D3+1)", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: War Hydra stomp is D3 (core, not renegade D3+1)", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     const hydra = army.units.find((u) => u.id.startsWith("war-hydra"));
     expect(hydra.stomp).toBe("D3");
   });
 
-  it("toggle OFF: Hekarti's Blessing shows 'once per game' (not 'once per turn')", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: Hekarti's Blessing shows 'once per game' (not 'once per turn')", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     startGame(army);
     saveRound(1);
@@ -580,8 +603,8 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     expect(html).not.toContain("Once per turn");
   });
 
-  it("toggle ON: Hekarti's Blessing shows 'once per turn' (draft version)", () => {
-    saveSupplementsEnabled(true);
+  it("v1.5.2.2 draft: Hekarti's Blessing shows 'once per turn' (draft version)", () => {
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     const army = loadArmy("de-renegade-draft");
     startGame(army);
     saveRound(1);
@@ -593,8 +616,8 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     expect(html).not.toContain("Once per game");
   });
 
-  it("toggle OFF: caster has no naggaroth-renegade faction lore", () => {
-    saveSupplementsEnabled(false);
+  it("v1.5: caster has no naggaroth-renegade faction lore", () => {
+    saveSupplementVersion("de-renegade", "v1.5");
     const army = loadArmy("de-renegade-draft");
     const casters = army.units.filter(
       (u) => u.factionLores && u.factionLores.length > 0,
@@ -605,8 +628,8 @@ describe("draft toggle integration — from-owb parse pipeline", () => {
     }
   });
 
-  it("toggle ON: caster has naggaroth-renegade faction lore (Power of Darkness)", () => {
-    saveSupplementsEnabled(true);
+  it("v1.5.2.2 draft: caster has naggaroth-renegade faction lore (Power of Darkness)", () => {
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     const army = loadArmy("de-renegade-draft");
     const casters = army.units.filter(
       (u) => u.factionLores && u.factionLores.length > 0,

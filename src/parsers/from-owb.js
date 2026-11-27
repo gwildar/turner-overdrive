@@ -11,6 +11,8 @@ import {
   resolveMagicItems,
   resolveSpecialRules,
   resolveMount,
+  getRuleset,
+  CORE_RULESET,
   resolveStats,
   deriveSpellSelectionMode,
   computeArmourSave,
@@ -27,7 +29,7 @@ import {
   ARMY_PHASE_CONFIG,
 } from "../data/army-compositions.js";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
-import { getSupplementsEnabled } from "../state.js";
+import { getSupplementVersion } from "../state.js";
 
 const MAGIC_ITEM_NAMES = new Set(MAGIC_ITEMS.map((i) => i.name.toLowerCase()));
 
@@ -119,10 +121,15 @@ function calculateUnitPoints(raw) {
  * @param {any} raw - one unit from the OWB export
  * @param {import("../types").UnitCategory} category
  * @param {string} [armyComposition]
+ * @param {import("./resolve.js").Ruleset} [ruleset] - the army's rules data
  * @returns {import("../types").Unit}
  */
-function parseCanonicalUnit(raw, category, armyComposition = "") {
-  const isDraft = getSupplementsEnabled();
+function parseCanonicalUnit(
+  raw,
+  category,
+  armyComposition = "",
+  ruleset = CORE_RULESET,
+) {
   // Core identity
   const id = raw.id || "unknown";
   const strength = raw.strength || 1;
@@ -186,36 +193,28 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   }
 
   // Look up stats from units.js (source of truth)
-  const stats = resolveStats(id, raw.name_en, armyComposition, isDraft);
+  const stats = resolveStats(id, raw.name_en, ruleset);
 
   // Resolve weapons and items (composition-aware for supplement overrides)
-  const weapons = resolveWeapons(
-    equipment,
-    magicItemNames,
-    armyComposition,
-    isDraft,
-  );
+  const weapons = resolveWeapons(equipment, magicItemNames, ruleset);
   const shootingWeapons = resolveShootingWeapons(
     [...equipment, specialRulesText || "", raw.name_en || ""],
-    isDraft,
+    ruleset,
   );
-  const magicItems = resolveMagicItems(
-    magicItemNames,
-    armyComposition,
-    isDraft,
-  ).map((item) =>
+  const magicItems = resolveMagicItems(magicItemNames, ruleset).map((item) =>
     commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
       ? { ...item, championOnly: true }
       : item,
   );
-  let specialRules = resolveSpecialRules(specialRulesText, isDraft);
+  let specialRules = resolveSpecialRules(specialRulesText, ruleset);
 
   // Inject rules from supplement unit definition that aren't in the OWB text.
   // Renegade supplement variants (e.g. war-hydra-renegade) may add draft rules
   // (e.g. "If One Head is Severed") that the OWB export doesn't include.
-  if (isDraft && armyComposition?.includes("renegade") && stats[0]?.rules) {
+  const versionHasUnits = Object.keys(ruleset.units).length > 0;
+  if (versionHasUnits && stats[0]?.rules) {
     for (const ruleName of stats[0].rules) {
-      const resolved = resolveSpecialRules(ruleName, isDraft);
+      const resolved = resolveSpecialRules(ruleName, ruleset);
       for (const r of resolved) {
         if (
           r.id &&
@@ -247,7 +246,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     for (const slot of raw.items) {
       for (const item of slot.selected || []) {
         if (!MAGIC_ITEM_TYPES.has(item.type)) {
-          const resolved = resolveSpecialRules(item.name_en, isDraft);
+          const resolved = resolveSpecialRules(item.name_en, ruleset);
           for (const r of resolved) {
             if (
               r.id &&
@@ -270,7 +269,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   for (const item of magicItems) {
     for (const ruleName of item.grantsRules || []) {
       if (!specialRules.some((r) => r.id === ruleName)) {
-        const resolved = resolveSpecialRules(ruleName, isDraft);
+        const resolved = resolveSpecialRules(ruleName, ruleset);
         specialRules.push(...resolved);
       }
     }
@@ -280,7 +279,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   for (const rule of [...specialRules]) {
     for (const ruleName of rule.grantsRules || []) {
       if (!specialRules.some((r) => r.id === ruleName)) {
-        const resolved = resolveSpecialRules(ruleName, isDraft);
+        const resolved = resolveSpecialRules(ruleName, ruleset);
         specialRules.push(...resolved);
       }
     }
@@ -304,7 +303,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
       mountName = activeMount.name_en;
     }
   }
-  const mount = resolveMount(mountName);
+  const mount = resolveMount(mountName, ruleset);
 
   // Append mount crew shooting weapons (e.g. Scourgerunner Chariot's Ravager Harpoon
   // and Repeater Crossbows are on the crew, not the character's equipment list).
@@ -313,7 +312,7 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     for (const crew of mount.crew) {
       const crewShooting = resolveShootingWeapons(
         crew.equipment || [],
-        isDraft,
+        ruleset,
       );
       for (const sw of crewShooting) {
         if (!shootingWeapons.some((w) => w.name === sw.name)) {
@@ -448,15 +447,10 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
     lores.push("solar-engine");
   }
 
-  // Remap lores for composition variants.
-  // Toggle OFF → v1.5 stable lore (loreRemaps)
-  // Toggle ON  → draft v1.5.2.2 lore (draftLoreRemaps), falling back to v1.5
-  /** @type {Partial<import("../types").ArmyComposition>} */
-  const compConfig =
-    (armyComposition && ARMY_COMPOSITIONS[armyComposition]) || {};
-  const loreRemaps = isDraft
-    ? compConfig.draftLoreRemaps || compConfig.loreRemaps || {}
-    : compConfig.loreRemaps || {};
+  // Remap lores for composition variants: the chosen supplement version's
+  // lores (e.g. "naggaroth" → "naggaroth-renegade" for the v1.5.2.2 draft),
+  // else the composition's own (v1.5).
+  const loreRemaps = ruleset.loreRemaps;
   for (let i = 0; i < lores.length; i++) {
     if (loreRemaps[lores[i]]) lores[i] = loreRemaps[lores[i]];
   }
@@ -502,21 +496,11 @@ function parseCanonicalUnit(raw, category, armyComposition = "") {
   // Parse detachments (e.g. beasts in a Wood Elf Beast Pack)
   const detachments = (raw.detachments || []).map((det) => {
     const detEquipment = collectActive(det.equipment);
-    const detStats = resolveStats(
-      det.id,
-      det.name_en,
-      armyComposition,
-      isDraft,
-    );
-    const detWeapons = resolveWeapons(
-      detEquipment,
-      [],
-      armyComposition,
-      isDraft,
-    );
+    const detStats = resolveStats(det.id, det.name_en, ruleset);
+    const detWeapons = resolveWeapons(detEquipment, [], ruleset);
     const detSpecialRules = resolveSpecialRules(
       det.specialRules?.name_en || "",
-      isDraft,
+      ruleset,
     );
     return {
       id: det.id,
@@ -588,13 +572,15 @@ export function fromOwb(json) {
   ];
 
   const composition = json.armyComposition || "";
+  // Core data, plus the chosen supplement version for Renegade compositions
+  const ruleset = getRuleset(composition, getSupplementVersion(composition));
 
   // Parse units from each category
   for (const category of categories) {
     const categoryUnits = json[category];
     if (Array.isArray(categoryUnits)) {
       for (const raw of categoryUnits) {
-        const unit = parseCanonicalUnit(raw, category, composition);
+        const unit = parseCanonicalUnit(raw, category, composition, ruleset);
         units.push(unit);
       }
     }
@@ -630,6 +616,7 @@ export function fromOwb(json) {
     faction: formatFaction(json.army),
     points: json.points || 0,
     composition: composition || null,
+    supplementVersion: ruleset.version,
     owbId: json.id || null,
     units,
     skipPhases: phaseConfig.skipPhases || [],

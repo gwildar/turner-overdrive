@@ -15,6 +15,9 @@ const KEYS = {
   deploymentTime: "tow-deployment-time",
   displayMode: "tow-display-mode",
   scenario: "tow-scenario",
+  supplementVersions: "tow-supplement-versions",
+  // Before per-army versions: one checkbox for the v1.5.2.2 drafts. Read
+  // only to carry an old choice over (see getSupplementVersions).
   supplementsEnabled: "tow-supplements-enabled",
 };
 
@@ -279,10 +282,34 @@ export function saveDisplayMode(mode) {
   save(KEYS.displayMode, mode);
 }
 
-export function getSupplementsEnabled() {
-  return load(KEYS.supplementsEnabled, false);
+// Community supplement versions, chosen per army composition in Settings:
+// { "de-renegade": "v1.5.2.2", ... }. A composition with no entry uses its
+// default version (see SUPPLEMENT_VERSIONS in data/supplements/index.js).
+
+/** The compositions the old "Use v1.5.2.2 draft rules" checkbox switched. */
+const LEGACY_DRAFT_COMPOSITIONS = ["de-renegade", "ok-renegade", "sk-renegade"];
+
+/** @returns {Record<string, string>} */
+export function getSupplementVersions() {
+  const stored = load(KEYS.supplementVersions, null);
+  if (stored) return stored;
+  if (load(KEYS.supplementsEnabled, false)) {
+    return Object.fromEntries(
+      LEGACY_DRAFT_COMPOSITIONS.map((c) => [c, "v1.5.2.2"]),
+    );
+  }
+  return {};
 }
 
-export function saveSupplementsEnabled(enabled) {
-  save(KEYS.supplementsEnabled, enabled);
+/** @returns {string | null} the chosen version id, or null for the default */
+export function getSupplementVersion(composition) {
+  return (composition && getSupplementVersions()[composition]) || null;
+}
+
+export function saveSupplementVersion(composition, versionId) {
+  save(KEYS.supplementVersions, {
+    ...getSupplementVersions(),
+    [composition]: versionId,
+  });
+  localStorage.removeItem(KEYS.supplementsEnabled);
 }

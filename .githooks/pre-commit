@@ -1,10 +1,22 @@
 #!/bin/sh
-# Runs before every commit. Installed by `npm install` (the "prepare" script
-# points git's core.hooksPath at .githooks). Skip once with `git commit --no-verify`.
+# Runs before every commit: the same checks as CI, fastest first, stopping at
+# the first failure. Installed by `npm install` (the "prepare" script points
+# git's core.hooksPath at .githooks). Skip once with `git commit --no-verify`.
+#
+# Note: checks run against the files on disk, so unstaged changes count too.
 
-echo "pre-commit: type checking…"
-if ! npm run --silent typecheck; then
-  echo ""
-  echo "pre-commit: type check failed — fix the errors above, or commit with --no-verify to skip."
-  exit 1
-fi
+run() {
+  label="$1"
+  shift
+  echo "pre-commit: $label…"
+  if ! "$@"; then
+    echo ""
+    echo "pre-commit: $label failed — fix the problems above, or commit with --no-verify to skip."
+    exit 1
+  fi
+}
+
+run "formatting (prettier)" npx prettier --check --log-level warn .
+run "lint (eslint)" npm run --silent lint
+run "type check (tsc)" npm run --silent typecheck
+run "tests (vitest)" npx vitest run --silent

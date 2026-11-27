@@ -35,7 +35,7 @@ npm run preview
 npm run typecheck
 ```
 
-The app is plain JavaScript. `src/types.d.ts` describes the data and army shapes, and `tsc` checks the JSDoc-annotated files listed in `tsconfig.json` (all app code under `src/`; tests are not checked). Nothing is compiled. A pre-commit hook (`.githooks/pre-commit`, installed by `npm install`) runs the type check before each commit; skip it once with `git commit --no-verify`.
+The app is plain JavaScript. `src/types.d.ts` describes the data and army shapes, and `tsc` checks the JSDoc-annotated files listed in `tsconfig.json` (all app code under `src/`; tests are not checked). Nothing is compiled. A pre-commit hook (`.githooks/pre-commit`, installed by `npm install`) runs the same checks as CI before each commit — prettier, lint, type check and tests (about 10 seconds); skip it once with `git commit --no-verify`.
 
 ## Tech stack
 

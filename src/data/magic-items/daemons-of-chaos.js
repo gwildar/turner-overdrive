@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── chaotic-gifts ─────────────────────────────
   {
     name: `Æther Blade`,
@@ -53,3 +54,5 @@ export default [
     phases: ["passive"],
   },
 ];
+
+export default ITEMS;

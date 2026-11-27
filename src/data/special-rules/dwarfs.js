@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Dwarfs ───────────────────────────────────────────────────────────
 
   {
@@ -45,3 +46,5 @@ export default [
     phases: ["pursuit", "break-test"],
   },
 ];
+
+export default RULES;

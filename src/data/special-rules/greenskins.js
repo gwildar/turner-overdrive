@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Greenskins ──────────────────────────────────────────────────────
 
   {
@@ -11,3 +12,5 @@ export default [
     yourTurnOnly: true,
   },
 ];
+
+export default RULES;

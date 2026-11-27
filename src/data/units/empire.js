@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   archmage: [
     {
       A: "2",
@@ -1587,3 +1588,5 @@ export default {
     },
   ],
 };
+
+export default UNITS;

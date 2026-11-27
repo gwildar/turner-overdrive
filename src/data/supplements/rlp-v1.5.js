@@ -9,7 +9,8 @@
  * (de-renegade.js, ok-renegade.js, sk-renegade.js) are the opt-in override.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {},
 
   specialRules: [
@@ -230,3 +231,5 @@ export default {
 
   magicItems: [],
 };
+
+export default SUPPLEMENT;

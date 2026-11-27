@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Dwarfs ──────────────────────────────────────────────────────────
   // Weapon Runes
   {
@@ -493,3 +494,5 @@ export default [
     phases: ["combat"],
   },
 ];
+
+export default ITEMS;

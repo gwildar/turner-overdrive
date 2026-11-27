@@ -3,7 +3,8 @@
  * Draft v1.5.2.2 — community supplement.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {
     "cauldron-of-blood-mount": [
       {
@@ -830,3 +831,5 @@ export default {
     },
   },
 };
+
+export default SUPPLEMENT;

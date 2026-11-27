@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Dark Elves ──────────────────────────────────────────────────────
   {
     name: "Executioner's Axe",
@@ -152,3 +153,5 @@ export default [
     phases: ["combat"],
   },
 ];
+
+export default ITEMS;

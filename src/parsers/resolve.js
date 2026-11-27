@@ -625,8 +625,8 @@ export function computeRegen(magicItems, specialRules) {
  * @param {Array}  magicItems   - List of resolved magic item objects.
  * @param {Array}  specialRules - List of resolved special rule objects.
  * @param {Object} mount        - Resolved mount object (may have .rules array).
- * @
- **/
+ * @returns {string|null} The strongest Magic Resistance, e.g. "-2", or null.
+ */
 export function computeMR(magicItems, specialRules, mount) {
   // 1. From mount rules (if a mount is present)
   let mountMR = null;

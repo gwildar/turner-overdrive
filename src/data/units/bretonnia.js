@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "barded-warhorse": [
     {
       A: "1",
@@ -1356,3 +1357,5 @@ export default {
     ],
   },
 };
+
+export default UNITS;

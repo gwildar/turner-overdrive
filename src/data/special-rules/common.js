@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   {
     id: "the arrow of kurnous",
     displayName: "The Arrow of Kurnous",
@@ -1821,3 +1822,5 @@ export default [
     yourTurnOnly: true,
   },
 ];
+
+export default RULES;

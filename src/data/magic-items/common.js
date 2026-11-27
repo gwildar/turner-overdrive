@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Magic Weapons ──────────────────────────────────────────────────
   {
     name: "Ogre Blade",
@@ -866,3 +867,5 @@ export default [
     extremely: true,
   },
 ];
+
+export default ITEMS;

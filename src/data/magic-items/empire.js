@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Empire ──────────────────────────────────────────────────────────
   {
     name: "Runefang",
@@ -677,3 +678,5 @@ export default [
     phases: ["passive"],
   },
 ];
+
+export default ITEMS;

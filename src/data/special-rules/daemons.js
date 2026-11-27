@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Daemons of Chaos ────────────────────────────────────────────────
 
   {
@@ -61,3 +62,5 @@ export default [
     phases: ["conjuration"],
   },
 ];
+
+export default RULES;

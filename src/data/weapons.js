@@ -1,3 +1,4 @@
+/** @type {Record<string, import("../types").RangedWeapon>} */
 export const RANGED_WEAPONS = {
   // ─── Bows ────────────────────────────────────────────────────────────
   longbow: {
@@ -658,6 +659,7 @@ export const RANGED_WEAPONS = {
   },
 };
 
+/** @type {Record<string, import("../types").CombatWeapon>} */
 export const COMBAT_WEAPONS = {
   // ─── Core Combat Weapons ─────────────────────────────────────────────
   "hand weapon": {
@@ -1121,6 +1123,7 @@ export const COMBAT_WEAPONS = {
 };
 
 // ─── Misfire Tables ─────────────────────────────────────────────────
+/** @type {Record<string, import("../types").MisfireTable>} */
 export const MISFIRE_TABLES = {
   "black-powder": {
     name: "Black Powder Misfire Table",

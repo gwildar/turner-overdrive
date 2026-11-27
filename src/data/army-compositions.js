@@ -17,6 +17,7 @@
  * Deployment cards that apply to all armies of a given armySlug,
  * regardless of army-of-infamy composition.
  */
+/** @type {Record<string, import("../types").DeploymentCard[]>} */
 export const ARMY_SLUG_DEPLOYMENT_CARDS = {
   "wood-elf-realms": [
     {
@@ -32,6 +33,7 @@ export const ARMY_SLUG_DEPLOYMENT_CARDS = {
   ],
 };
 
+/** @type {Record<string, import("../types").ArmyComposition>} */
 export const ARMY_COMPOSITIONS = {
   "mortuary-cults": {
     name: "Mortuary Cult",

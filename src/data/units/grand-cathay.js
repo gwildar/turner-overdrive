@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   astromancer: [
     {
       A: "1",
@@ -722,3 +723,5 @@ export default {
     ],
   },
 };
+
+export default UNITS;

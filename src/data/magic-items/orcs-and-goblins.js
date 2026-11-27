@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Orcs & Goblins ─────────────────────────────────────────────────
   {
     name: "Battleaxe of the Last Big Waaagh!",
@@ -353,3 +354,5 @@ export default [
     phases: ["passive"],
   },
 ];
+
+export default ITEMS;

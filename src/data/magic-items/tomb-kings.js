@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Tomb Kings of Khemri Banners ───────────────────────────────────
   {
     name: "Standard of the Cursing Word",
@@ -108,3 +109,5 @@ export default [
     phases: ["strategy"],
   },
 ];
+
+export default ITEMS;

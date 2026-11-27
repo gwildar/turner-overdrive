@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "ancient-stegadon": {
     shared: {
       crewed: true,
@@ -1173,3 +1174,5 @@ export default {
     ],
   },
 };
+
+export default UNITS;

@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").SpecialRule[]} */
+const RULES = [
   // ─── Undead ──────────────────────────────────────────────────────────
 
   {
@@ -18,3 +19,5 @@ export default [
     ],
   },
 ];
+
+export default RULES;

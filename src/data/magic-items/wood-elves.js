@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Wood Elves ──────────────────────────────────────────────────────
   {
     name: "Spear of Twilight",
@@ -466,3 +467,5 @@ export default [
     phases: ["shooting"],
   },
 ];
+
+export default ITEMS;

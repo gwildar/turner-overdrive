@@ -1,4 +1,5 @@
-export default [
+/** @type {import("../../types").MagicItem[]} */
+const ITEMS = [
   // ─── Lizardmen ───────────────────────────────────────────────────────
   {
     name: "Blade of Revered Tzunki",
@@ -206,3 +207,5 @@ export default [
     phases: ["combat"],
   },
 ];
+
+export default ITEMS;

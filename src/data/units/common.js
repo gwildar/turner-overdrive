@@ -1,4 +1,5 @@
-export default {
+/** @type {Record<string, import("../../types").UnitEntry>} */
+const UNITS = {
   "cold-one": [
     {
       A: "2",
@@ -667,3 +668,5 @@ export default {
     },
   ],
 };
+
+export default UNITS;

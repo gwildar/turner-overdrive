@@ -2,6 +2,7 @@
 
 import { SUPPLEMENT_SPELLS } from "./supplements/index.js";
 
+/** @type {Record<string, import("../types").Lore>} */
 export const LORES = {
   "battle-magic": {
     name: "Battle Magic",

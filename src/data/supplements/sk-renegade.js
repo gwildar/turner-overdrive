@@ -3,7 +3,8 @@
  * Draft v1.5.2.2 — community supplement.
  */
 
-export default {
+/** @type {import("../../types").Supplement} */
+const SUPPLEMENT = {
   units: {
     // Night Runners: +Regimental Unit, +Vanguard
     "night-runners-renegade": {
@@ -590,3 +591,5 @@ export default {
     },
   ],
 };
+
+export default SUPPLEMENT;

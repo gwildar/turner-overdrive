@@ -22,6 +22,7 @@ import https from "node:https";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import crypto from "node:crypto";
 
 const BASE_URL = "https://tow.whfb.app";
 const USER_AGENT =
@@ -74,6 +75,20 @@ function get(url) {
       req.destroy(new Error(`Timeout fetching ${url}`)),
     );
   });
+}
+
+// Some FAQ slugs are whole questions — longer than the 255-byte filename
+// limit. Keep short slugs as-is; truncate long ones and add a hash so they
+// stay unique and stable between runs.
+const MAX_SLUG_FILENAME = 200;
+function slugFilename(slug) {
+  if (slug.length <= MAX_SLUG_FILENAME) return `${slug}.json`;
+  const hash = crypto
+    .createHash("sha1")
+    .update(slug)
+    .digest("hex")
+    .slice(0, 12);
+  return `${slug.slice(0, MAX_SLUG_FILENAME - 13)}-${hash}.json`;
 }
 
 function sleep(ms) {
@@ -461,7 +476,7 @@ async function main() {
       const entrySlug = entries[i].fields?.slug;
       if (!entrySlug) continue;
 
-      const subRawPath = path.join(subRawDir, `${entrySlug}.json`);
+      const subRawPath = path.join(subRawDir, slugFilename(entrySlug));
 
       // Skip already fetched
       if (fs.existsSync(subRawPath)) {

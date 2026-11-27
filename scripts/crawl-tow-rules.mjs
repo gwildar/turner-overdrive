@@ -58,6 +58,7 @@ function get(url) {
       (res) => {
         if (res.statusCode !== 200) {
           res.resume();
+          /** @type {Error & { statusCode?: number }} */
           const err = new Error(`HTTP ${res.statusCode}`);
           err.statusCode = res.statusCode;
           reject(err);

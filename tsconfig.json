@@ -10,11 +10,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "skipLibCheck": true,
     "strict": false
   },
-  // All app code. Tests and scripts are not checked yet.
+  // All app code and scripts. Tests are not checked yet.
   "include": [
     "src/types.d.ts",
     "src/*.js",
@@ -22,6 +22,7 @@
     "src/parsers/**/*.js",
     "src/context/**/*.js",
     "src/screens/**/*.js",
-    "src/utils/**/*.js"
+    "src/utils/**/*.js",
+    "scripts/**/*.mjs"
   ]
 }

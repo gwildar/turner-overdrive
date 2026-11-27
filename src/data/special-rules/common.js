@@ -1148,7 +1148,6 @@ const RULES = [
     phases: [],
     description:
       "Improves armour value by 1 (max 2+) against non-magical shooting attacks.",
-    armourMod: -1,
   },
   {
     id: "martial prowess",
@@ -2047,7 +2046,7 @@ const RULES = [
     id: "blazing body",
     displayName: "Blazing Body",
     description:
-      "Before challenges, every model (friend or foe) in base contact without this rule suffers a S4 AP -1 Flaming hit.",
+      "At the start of every Combat phase, every model (friend or foe) in base contact without this rule suffers a S3 Flaming hit (no AP). Wounds lost to these hits don't count towards combat result.",
     phases: ["choose-fight"],
   },
   {
@@ -2474,6 +2473,37 @@ const RULES = [
     description:
       "Cannot charge, pursue, overrun or follow up, and cannot use the General's Inspiring Presence or a Battle Standard's Hold Your Ground.",
     phases: ["declare-charges", "break-test"],
+  },
+  {
+    id: "hellbound",
+    displayName: "Hellbound",
+    description:
+      "6+ Ward save against wounds from non-magical enemy attacks; gains Fear and Magical Attacks (Terror if it already has Fear). Once per game, may re-roll one Scatter or Artillery dice. -1 to any Misfire table roll.",
+    phases: ["shoot"],
+    ward: "6+ (non-magical)",
+  },
+  {
+    id: "skullcracker",
+    displayName: "Skullcracker",
+    description:
+      "Impact Hits (D6+1) become Impact Hits (2D6+2), and it gains Armour Bane (1).",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "quake",
+    displayName: "Quake",
+    description:
+      'Until your next Start of Turn, every unit (friend or foe) within 2D6" of the central hole of the scattered template has -1 Movement and cannot use Swiftstride.',
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "slow reload",
+    displayName: "Slow Reload",
+    description:
+      "If it shot last turn, roll D6 before shooting: on 1-2 it does not shoot this turn (+1 with an Ogre Loader).",
+    phases: ["shoot"],
+    yourTurnOnly: true,
   },
 ];
 

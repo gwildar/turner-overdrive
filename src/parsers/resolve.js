@@ -603,6 +603,13 @@ export function computeArmourSave(
     modifier -= 1;
   }
 
+  // Rules that always change the armour value (e.g. the Chaos Dwarf draft's
+  // Blackshard Armour: "improves their armour value by 1"). Conditional
+  // bonuses (Lion Cloak vs shooting) stay in the rule text instead.
+  for (const rule of specialRules) {
+    if (rule.armourMod && baseAS !== null) modifier += rule.armourMod;
+  }
+
   // Armoured Hide from special rules — use displayName regex (rule may be unrecognised)
   for (const rule of specialRules) {
     const match = (rule.displayName || "").match(/Armoured Hide\s*\((\d+)\)/i);

@@ -906,38 +906,6 @@ const UNITS = {
       },
     ],
   },
-  "daemon-prince-renegade": [
-    {
-      A: "5",
-      I: "7",
-      M: "6",
-      S: "6",
-      T: "5",
-      W: "4",
-      BS: "5",
-      Ld: "9",
-      WS: "7",
-      Name: "Daemon Prince",
-      as: 4,
-      Regen: "5+",
-      rules: [
-        "Chaos Armour",
-        "Daemonic",
-        "Infernal Favour (2)",
-        "Lore of Daemons",
-        "Regeneration (5+)",
-      ],
-      equipment: ["Hand weapon", "ensorcelled weapon", "light armour"],
-      troopType: ["MI", "Ch"],
-      magic: ["battle magic", "daemonology", "dark magic"],
-      optionalRules: [
-        "Daemon of Khorne",
-        "Daemon of Nurgle",
-        "Daemon of Slaanesh",
-        "Daemon of Tzeentch",
-      ],
-    },
-  ],
   "daemon-prince-warriors-of-chaos": [
     {
       A: "5",

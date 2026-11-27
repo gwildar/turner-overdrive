@@ -450,44 +450,6 @@ const UNITS = {
       },
     ],
   },
-  "leadbelchers-renegade": {
-    shared: {
-      rules: ["Close Order", "Fear", "Impact Hits (1)", "Ogre Charge"],
-      equipment: ["Hand weapons", "leadbelcher guns", "light armour"],
-      troopType: ["MI"],
-      magic: [],
-      optionalRules: ["Veteran"],
-    },
-    stats: [
-      {
-        A: "3",
-        I: "2",
-        M: "6",
-        S: "4",
-        T: "4",
-        W: "3",
-        BS: "3",
-        Ld: "7",
-        WS: "3",
-        Name: "Leadbelcher",
-        as: 6,
-        "Impact-Hits": "1",
-      },
-      {
-        A: "4",
-        I: "2",
-        M: "6",
-        S: "4",
-        T: "4",
-        W: "3",
-        BS: "4",
-        Ld: "7",
-        WS: "3",
-        Name: "Thunderfist",
-        as: 6,
-      },
-    ],
-  },
   maneaters: {
     shared: {
       rules: [

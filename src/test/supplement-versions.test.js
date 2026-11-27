@@ -6,6 +6,7 @@ import {
   resolveShootingWeapons,
   resolveWeapons,
   findMount,
+  resolveStats,
 } from "../parsers/resolve.js";
 import {
   SUPPLEMENT_VERSIONS,
@@ -192,4 +193,61 @@ describe("every supplement rule can be found by its name", () => {
       expect(byName || ID_ONLY.has(id)).toBe(true);
     },
   );
+});
+
+describe("Chaos Dwarfs Renegade: v1.5 vs the v1.5.2.2 draft", () => {
+  const v15 = getRuleset("cd-renegade", "v1.5");
+  const draft = getRuleset("cd-renegade", "v1.5.2.2");
+  const core = CORE_RULESET;
+  const ward = (name, rs) => resolveSpecialRules(name, rs)[0].ward;
+
+  it("Hellbound: official and draft ward only non-magical attacks; v1.5 wards everything", () => {
+    expect(ward("Hellbound", core)).toBe("6+ (non-magical)");
+    expect(ward("Hellbound", v15)).toBe("6+");
+    expect(ward("Hellbound", draft)).toBe("6+ (non-magical)");
+  });
+
+  it("Blackshard Armour improves the armour value only on the draft", () => {
+    expect(
+      resolveSpecialRules("Blackshard Armour", v15)[0].armourMod,
+    ).toBeUndefined();
+    expect(resolveSpecialRules("Blackshard Armour", draft)[0].armourMod).toBe(
+      -1,
+    );
+  });
+
+  it("the draft's K'daai Fireborn wear heavy armour and Bull Centaurs have more Attacks", () => {
+    const kdaai = (rs) =>
+      resolveStats("k'daai-fireborn", "K'daai Fireborn {renegade}", rs);
+    expect(kdaai(v15)[0].equipment).not.toContain("heavy armour");
+    expect(kdaai(draft)[0].equipment).toContain("heavy armour");
+    expect(kdaai(v15)[0].rules).toContain("Born of Fire");
+    const renders = (rs) =>
+      resolveStats("bull-centaur-renders", "Bull Centaur Renders", rs);
+    expect(renders(v15)[0].A).toBe("2");
+    expect(renders(draft)[0].A).toBe("3");
+  });
+
+  it("the draft's Demolition Rockets hit harder", () => {
+    const [v] = resolveShootingWeapons(["Demolition Rockets"], v15);
+    const [d] = resolveShootingWeapons(["Demolition Rockets"], draft);
+    expect(v.s).toBe("3(6)");
+    expect(d.s).toBe("4(8)");
+  });
+
+  it("Born of Fire resolves by name", () => {
+    expect(resolveSpecialRules("Born of Fire", v15)[0].id).not.toBeNull();
+  });
+});
+
+describe("v1.5 Renegade unit profiles", () => {
+  it("apply to a Renegade army on v1.5, not to a standard army", () => {
+    const taurus = (rs) => resolveStats("great-taurus", "Great Taurus", rs);
+    expect(taurus(getRuleset("cd-renegade", "v1.5"))[0].troopType).toEqual(
+      taurus(getRuleset("cd-renegade", "v1.5.2.2"))[0].troopType,
+    );
+    expect(taurus(getRuleset("cd-renegade", "v1.5"))).not.toEqual(
+      taurus(CORE_RULESET),
+    );
+  });
 });

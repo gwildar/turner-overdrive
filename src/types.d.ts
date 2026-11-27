@@ -103,6 +103,7 @@ export interface SpecialRule {
   aliases?: string[];
   ward?: SaveValue;
   chargeMod?: ChargeMod;
+  /** Always applied to the armour value (negative = better). Conditional bonuses go in the description. */
   armourMod?: number;
   /** Rule ids this rule also grants (e.g. The Exile's Vow → Stubborn, Veteran). */
   grantsRules?: string[];

@@ -392,8 +392,9 @@ describe("supplement index stable/draft split", () => {
     expect(ids).not.toContain("murderous-v1.5");
   });
 
-  it("STABLE_SUPPLEMENT_UNITS is empty (rlp-v1.5 has no unit overrides)", () => {
-    expect(Object.keys(STABLE_SUPPLEMENT_UNITS)).toHaveLength(0);
+  it("STABLE_SUPPLEMENT_UNITS holds the v1.5 Renegade unit profiles", () => {
+    expect(STABLE_SUPPLEMENT_UNITS).toHaveProperty("manticore-renegade");
+    expect(STABLE_SUPPLEMENT_UNITS).toHaveProperty("great-taurus-renegade");
   });
 
   it("DRAFT_SUPPLEMENT_UNITS contains de-renegade overrides", () => {

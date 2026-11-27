@@ -5,6 +5,7 @@ import {
   renderSpecialRulesForPhase,
 } from "../context/special-rules-context.js";
 import { PHASES } from "../phases.js";
+import { resolveSpecialRules } from "../parsers/resolve.js";
 import { loadArmy } from "./helpers.js";
 
 function makeVeteranArmy() {
@@ -96,5 +97,36 @@ describe("Gaze of the Gods rule data", () => {
       expect(entry.result).toBeTruthy();
       expect(entry.effect).toBeTruthy();
     }
+  });
+});
+
+describe("rule reminders added from the tow.whfb.app crawl", () => {
+  // Rules as the parser produces them from an OWB rules string.
+  const armyWithRule = (owbText) => ({
+    units: [{ name: "Test Unit", specialRules: resolveSpecialRules(owbText) }],
+  });
+  const shows = (owbText, step) =>
+    renderSpecialRulesContext(armyWithRule(owbText), { id: step });
+
+  it.each([
+    ["Indomitable (2)", "break-test", "Unstable"],
+    ["Infernal Favour (1)", "break-test", "Daemonic Instability"],
+    ["Lance Formation", "combat-result", "+1 combat result"],
+    ["Ignore Panic", "shoot", "No Panic test"],
+    ["Ignore Panic", "break-test", "No Panic test"],
+    ["Ignore Panic", "compulsory-moves", "fled through"],
+    ["Backstab", "choose-fight", "re-roll failed To Hit"],
+    ["Blood Greed", "choose-fight", "+2 Attacks"],
+    ["Blood Greed", "pursuit", "single D6"],
+  ])("%s shows at %s", (owbText, step, text) => {
+    expect(shows(owbText, step)).toContain(text);
+  });
+
+  it.each([
+    ["Lance Formation", "choose-fight"],
+    ["Backstab", "combat-result"],
+    ["Blood Greed", "break-test"],
+  ])("%s does not show at %s", (owbText, step) => {
+    expect(shows(owbText, step)).toBe("");
   });
 });

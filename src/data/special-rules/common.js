@@ -1821,6 +1821,27 @@ const RULES = [
     phases: ["command"],
     yourTurnOnly: true,
   },
+  {
+    id: "lance formation",
+    displayName: "Lance Formation",
+    description:
+      "A unit in Lance formation with Unit Strength 5+ claims +1 combat result.",
+    phases: ["combat-result"],
+  },
+  {
+    id: "ignore panic",
+    displayName: "Ignore Panic",
+    description:
+      'No Panic test when a friendly unit without Ignore Panic is destroyed or Breaks and flees within 6", or when fled through by a friendly unit without Ignore Panic.',
+    phases: ["shoot", "compulsory-moves", "break-test"],
+  },
+  {
+    id: "backstab",
+    displayName: "Backstab",
+    description:
+      "When engaged with an enemy unit's flank or rear arc, may re-roll failed To Hit rolls against that unit.",
+    phases: ["choose-fight"],
+  },
 ];
 
 export default RULES;

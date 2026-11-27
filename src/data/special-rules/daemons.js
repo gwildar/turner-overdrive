@@ -61,6 +61,13 @@ const RULES = [
       "Hatred (Daemons of Nurgle). If a Wizard with this rule, gains +1 to Casting rolls.",
     phases: ["conjuration"],
   },
+  {
+    id: "infernal favour",
+    displayName: "Infernal Favour",
+    description:
+      "Reduce the wounds suffered from Daemonic Instability by the number in brackets. Not cumulative: a unit uses the highest Infernal Favour value among its models.",
+    phases: ["break-test"],
+  },
 ];
 
 export default RULES;

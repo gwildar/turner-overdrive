@@ -23,6 +23,20 @@ const RULES = [
       'During a turn in which it made a charge move of 3" or more, gains +1 Strength.',
     phases: ["choose-fight"],
   },
+  {
+    id: "blood greed",
+    displayName: "Blood Greed",
+    phases: [
+      {
+        subPhaseId: "choose-fight",
+        description: "Whilst Frenzied, +2 Attacks (instead of the usual +1).",
+      },
+      {
+        subPhaseId: "pursuit",
+        description: "Rolls a single D6 for its Pursuit roll (instead of 2D6).",
+      },
+    ],
+  },
 ];
 
 export default RULES;

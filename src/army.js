@@ -1,5 +1,4 @@
 import { fromOwb } from "./parsers/from-owb.js";
-import { fromNewRecruit } from "./parsers/from-new-recruit.js";
 import {
   getArmy,
   getArmySource,
@@ -9,14 +8,15 @@ import {
 } from "./state.js";
 
 /**
- * Detect the army list format and delegate to the appropriate converter
- * - OWB format: has "army" and direct category arrays (characters, core, special, etc.)
- * - New Recruit format: has roster.forces nested structure
+ * Parse an Old World Builder (.owb.json) export into the canonical army.
+ * OWB files have "army" and direct category arrays (characters, core, special, etc.)
  */
 export function parseArmyList(json) {
-  // Detect New Recruit format
-  if (json?.roster?.forces && Array.isArray(json.roster.forces)) {
-    return fromNewRecruit(json);
+  // New Recruit / BattleScribe rosters were supported in earlier versions
+  if (json?.roster?.forces) {
+    throw new Error(
+      "New Recruit files are no longer supported. Export your list from Old World Builder as .owb.json instead.",
+    );
   }
 
   // Detect OWB format
@@ -29,7 +29,7 @@ export function parseArmyList(json) {
   }
 
   throw new Error(
-    "Unrecognised army list format. Expected OWB or New Recruit format.",
+    "Unrecognised army list format. Expected an Old World Builder (.owb.json) export.",
   );
 }
 

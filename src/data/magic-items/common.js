@@ -75,7 +75,7 @@ const ITEMS = [
     points: 35,
     effect: "Magical Attacks, Magic Resistance (-2).",
     phases: ["combat", "strategy", "shooting"],
-    subPhases: ["combat"],
+    subPhases: ["choose-fight"],
     s: "S",
     ap: "-1",
     mr: -2,
@@ -228,8 +228,8 @@ const ITEMS = [
     points: 25,
     effect:
       "Shield. The bearer has a 5+ Ward save against any wounds suffered that were caused by a Magic Missile, a Magical Vortex, or an Assailment spell.",
-    phases: ["shooting"],
-    subPhases: ["combat"],
+    phases: ["shooting", "combat"],
+    opponentOnly: true,
   },
   {
     name: "Armour of Meteoric Iron",

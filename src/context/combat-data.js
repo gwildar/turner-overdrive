@@ -430,6 +430,8 @@ const RIDER_ONLY_RULES = new Set(["strike first", "elven reflexes"]);
 // Troop types where rider and mount are distinct models (Elven Reflexes applies to rider only)
 const CAVALRY_TROOP_TYPES = new Set(["LC", "HC", "MCa"]);
 
+const MOUNT_CHARGE_RULES = ["Counter Charge", "Furious Charge", "First Charge"];
+
 function extractCombatRules(unit) {
   const hasMount = !!unit.mount;
   const isCavalryMount = hasMount && !(unit.mount.wBonus > 0);
@@ -458,25 +460,18 @@ function extractCombatRules(unit) {
       results.push(displayName);
     }
   }
-  if (
-    unit.mount?.counterCharge &&
-    !results.some((r) => r.toLowerCase().includes("counter charge"))
-  ) {
-    results.push("Counter Charge");
+  // Charge rules the mount brings (e.g. a Bretonnian Warhorse's Counter Charge
+  // and First Charge). Strike First is labelled because it only affects the mount.
+  const mountRules = unit.mount?.rules ?? [];
+  for (const name of MOUNT_CHARGE_RULES) {
+    if (
+      mountRules.includes(name) &&
+      !results.some((r) => r.toLowerCase().includes(name.toLowerCase()))
+    ) {
+      results.push(name);
+    }
   }
-  if (
-    unit.mount?.furiousCharge &&
-    !results.some((r) => r.toLowerCase().includes("furious charge"))
-  ) {
-    results.push("Furious Charge");
-  }
-  if (
-    unit.mount?.firstCharge &&
-    !results.some((r) => r.toLowerCase().includes("first charge"))
-  ) {
-    results.push("First Charge");
-  }
-  if (unit.mount?.strikeFirst) {
+  if (mountRules.includes("Strike First")) {
     results.push("Strike First (mount)");
   }
   return results;

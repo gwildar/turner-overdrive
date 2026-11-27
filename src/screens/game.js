@@ -47,20 +47,18 @@ const PRIORITY_RULES = {
 // Determine if any unit in the army causes Terror (directly or via mount)
 function hasTerrorUnits(army) {
   if (!army?.units) return false;
-  return army.units.some((unit) => {
-    const unitRules = unit.rules ?? [];
-    const mountRules = unit.mount?.rules ?? [];
-    return unitRules.includes("Terror") || mountRules.includes("Terror");
-  });
+  return army.units.some(
+    (unit) =>
+      (unit.specialRules ?? []).some((r) =>
+        /^terror$/i.test(r.displayName ?? ""),
+      ) || (unit.mount?.rules ?? []).includes("Terror"),
+  );
 }
 function renderPriorityRules(subPhase, army) {
   let rules = PRIORITY_RULES[subPhase.id] || [];
   // If this is charge declaration and no unit causes Terror, remove it
-  if (subPhase.id === "declare-charges") {
-    const hasTerror = hasTerrorUnits(army);
-    if (!hasTerror) {
-      rules = rules.filter((r) => r.text !== "Terror");
-    }
+  if (subPhase.id === "declare-charges" && !hasTerrorUnits(army)) {
+    rules = rules.filter((r) => r.text !== "Terror tests!");
   }
   if (rules.length === 0) return "";
   // Visual style: dark background, white bold text, slight shadow.

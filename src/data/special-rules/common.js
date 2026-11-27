@@ -766,18 +766,38 @@ const RULES = [
     id: "guardian of the sacred sites",
     displayName: "Guardian of the Sacred Sites",
     description:
-      'D6 roll of 3+ to awaken the Green Knight. If the Green Knight has not yet been awakened by the start of round five, he awakens automatically. Place within any natural terrain feature. 1" rule applies',
-    phases: ["start-of-turn"],
-    yourTurnOnly: true,
+      "Not deployed. Each Start of Turn he is off the battlefield, roll D6: 3+ awakens him (automatic from round 5).",
+    phases: [
+      {
+        subPhaseId: "start-of-turn",
+        description:
+          "If the Green Knight is not on the battlefield, roll D6: 3+ awakens him (automatic from round 5).",
+        yourTurnOnly: true,
+      },
+      {
+        subPhaseId: "compulsory-moves",
+        description:
+          'If awakened this turn, place him completely within any natural terrain feature (woods, difficult or dangerous terrain), not within 1" of an enemy.',
+        yourTurnOnly: true,
+      },
+      {
+        subPhaseId: "remaining-moves",
+        description:
+          'Instead of moving, if completely within natural terrain and not in combat, may be removed and placed completely within a different natural terrain feature (not within 1" of an enemy). Cannot move again this phase.',
+        yourTurnOnly: true,
+      },
+    ],
   },
+
   {
     id: "aura of the fay",
     displayName: "Aura of the Fay",
     description:
-      "If removed, attempt to reawaken with cumulative -1 penalty. -1 Wounds characteristic each time (min 1).",
+      "When slain he is removed but may be awakened again with Guardian of the Sacred Sites, at a cumulative -1 to the roll and -1 Wounds characteristic (min 1) each time. The enemy only scores Victory Points for him the first time.",
     phases: ["start-of-turn"],
     yourTurnOnly: true,
   },
+
   {
     id: "arcane backlash",
     displayName: "Arcane Backlash",
@@ -1134,9 +1154,10 @@ const RULES = [
     id: "martial prowess",
     displayName: "Martial Prowess",
     description:
-      "Unit can make supporting attacks to its flank or rear, as well as to its front.",
+      "+1 Weapon Skill in the first round of combat. Can make supporting attacks to its flank or rear, as well as its front.",
     phases: ["choose-fight"],
   },
+
   {
     id: "mighty constitution",
     displayName: "Mighty Constitution",
@@ -1303,11 +1324,11 @@ const RULES = [
   {
     id: "warriors of the wilderness",
     displayName: "Warriors of the Wilderness",
-    passive: true,
-    phases: [],
     description:
-      'After terrain placement, place one additional wood (3"-9" wide) on the battlefield. Cannot be in opponent deployment zone or within 6" of special features.',
+      'After terrain is placed, place one extra area of difficult terrain (3"-9" across) anywhere outside the opponent\'s deployment zone and more than 6" from special features — it may be within 12" of the centre.',
+    phases: ["deployment"],
   },
+
   {
     id: "ogre charge",
     displayName: "Ogre Charge",
@@ -2386,6 +2407,73 @@ const RULES = [
         ],
       },
     ],
+  },
+  {
+    id: "an unholy union",
+    displayName: "An Unholy Union",
+    description:
+      'Within 6" of a friendly Beastmen unit, Warriors of Chaos units (not characters) re-roll To Hit rolls of a natural 1; within 6" of a Warriors of Chaos unit, Beastmen units (not characters) re-roll To Wound rolls of a natural 1. Within 6" of a unit from the other list: -1 to Flee rolls. Not characters or units in both lists.',
+    phases: ["choose-fight", "declare-charges"],
+  },
+  {
+    id: "untrusting allies",
+    displayName: "Untrusting Allies",
+    description:
+      "Warriors of Chaos and Beastmen characters cannot join each other's units (nor Chaos Cultists), and units cannot use the Leadership of the other list's characters.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "for the dark gods!",
+    displayName: '"For the Dark Gods!"',
+    aliases: ['"for the dark gods!"', "for the dark gods"],
+    description:
+      "A character who kills their opponent in a challenge must roll on the Gaze of the Gods table. Once per game, your General may re-roll the D6 on that table.",
+    phases: ["combat-result"],
+  },
+  {
+    id: "chaos rewards",
+    displayName: "Chaos Rewards",
+    description:
+      "Narrative play: after sharing muster lists, roll 2D6 three times (plus any bought rolls) for each Champion or Chieftain of Ruin.",
+    phases: [
+      {
+        subPhaseId: "deployment",
+        description:
+          "Narrative play: after sharing muster lists, roll 2D6 three times (plus any bought rolls) for each Champion or Chieftain of Ruin.",
+        table: [
+          { "2D6": "2", Result: "Curse of Ambition: Stupidity (or -1 Ld)" },
+          { "2D6": "3", Result: "Flare of Anger: Impetuous (or -1 Ld for it)" },
+          { "2D6": "4", Result: "Deadly Precision: weapons' AP +D3 in combat" },
+          { "2D6": "5", Result: "Grisly Fortitude: +1 Wounds" },
+          { "2D6": "6", Result: "Dark Executioner: +1 WS" },
+          { "2D6": "7", Result: "Daemonic Swiftness: +1 Initiative" },
+          { "2D6": "8", Result: "Unchecked Fury: Hatred (all enemies)" },
+          { "2D6": "9", Result: "Iron Fortitude: +1 Toughness (max 7)" },
+          { "2D6": "10", Result: "Strength of Chaos: +1 Strength" },
+          { "2D6": "11", Result: "Ruinous Blessings: Regeneration (5+)" },
+          {
+            "2D6": "12",
+            Result: "Champion of the Gods: +D3 Attacks (max 7), +1 Ld",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "flee to safety",
+    displayName: "Flee To Safety",
+    description:
+      "A baggage cart that touches or crosses the board edge in the opponent's deployment zone is removed from play but not destroyed.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "non-combatant",
+    displayName: "Non-Combatant",
+    description:
+      "Cannot charge, pursue, overrun or follow up, and cannot use the General's Inspiring Presence or a Battle Standard's Hold Your Ground.",
+    phases: ["declare-charges", "break-test"],
   },
 ];
 

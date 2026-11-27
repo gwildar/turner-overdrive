@@ -10,6 +10,11 @@
 //   raw/{type}.json                 — top-level page props
 //   raw/{type}/{entry}.json         — sub-page props
 //   pages/{type}.md                 — consolidated Markdown per type
+//   meta.json                       — buildId + fetch timestamps
+//
+// If the site's buildId has changed since the last full run, the previous
+// snapshot is moved aside to {output}-{oldBuildId} so it can be diffed and
+// cached sub-pages from an older site version are never reused.
 //
 // Rate-limited to 1 req/sec. Data NOT committed to repo.
 
@@ -20,8 +25,12 @@ import os from "node:os";
 
 const BASE_URL = "https://tow.whfb.app";
 const USER_AGENT =
-  "warhammer-tracker-scraper/1.0 (personal project; https://github.com/gwildar/warhammer-tracker)";
+  "turner-overdrive-scraper/1.1 (personal project; https://github.com/gwildar/turner-overdrive)";
 const DELAY_MS = 1000;
+const MAX_RETRIES = 3;
+// Abort after this many consecutive sub-page failures (e.g. site redeployed
+// mid-crawl, so every /_next/data/{oldBuildId}/... URL now 404s).
+const MAX_CONSECUTIVE_FAILURES = 10;
 
 // ---------------------------------------------------------------------------
 // CLI args
@@ -49,7 +58,9 @@ function get(url) {
       (res) => {
         if (res.statusCode !== 200) {
           res.resume();
-          reject(new Error(`HTTP ${res.statusCode}`));
+          const err = new Error(`HTTP ${res.statusCode}`);
+          err.statusCode = res.statusCode;
+          reject(err);
           return;
         }
         let body = "";
@@ -66,6 +77,44 @@ function get(url) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Retry transient failures (network errors, timeouts, 429, 5xx) with backoff.
+// 404s and other 4xx are returned immediately — retrying won't help.
+async function getWithRetry(url) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await get(url);
+    } catch (err) {
+      const transient =
+        !err.statusCode || err.statusCode === 429 || err.statusCode >= 500;
+      if (!transient || attempt >= MAX_RETRIES) throw err;
+      const wait = DELAY_MS * 2 ** (attempt + 1);
+      console.log(
+        `    retry ${attempt + 1}/${MAX_RETRIES} in ${wait}ms (${err.message})`,
+      );
+      await sleep(wait);
+    }
+  }
+}
+
+function readMeta(outputDir) {
+  const metaFile = path.join(outputDir, "meta.json");
+  if (fs.existsSync(metaFile))
+    return JSON.parse(fs.readFileSync(metaFile, "utf8"));
+  // Older snapshots only had a .buildid file
+  const buildIdFile = path.join(outputDir, ".buildid");
+  if (fs.existsSync(buildIdFile))
+    return { buildId: fs.readFileSync(buildIdFile, "utf8").trim() };
+  return null;
+}
+
+function writeMeta(outputDir, meta) {
+  fs.writeFileSync(
+    path.join(outputDir, "meta.json"),
+    JSON.stringify(meta, null, 2),
+  );
+  fs.writeFileSync(path.join(outputDir, ".buildid"), meta.buildId);
 }
 
 // ---------------------------------------------------------------------------
@@ -293,13 +342,12 @@ async function main() {
   const { outputDir, subpagesOnly } = parseArgs(process.argv.slice(2));
   const rawDir = path.join(outputDir, "raw");
   const pagesDir = path.join(outputDir, "pages");
-  fs.mkdirSync(rawDir, { recursive: true });
-  fs.mkdirSync(pagesDir, { recursive: true });
 
   console.log(`Output: ${outputDir}`);
 
   let buildId;
   let topRoutes;
+  let meta;
 
   // ------------------------------------------------------------------
   // Phase 1: top-level pages
@@ -308,14 +356,34 @@ async function main() {
     console.log("\nPhase 1: top-level pages");
     console.log("Fetching homepage...");
 
-    const homeHtml = await get(`${BASE_URL}/`);
+    const homeHtml = await getWithRetry(`${BASE_URL}/`);
     const nextData = extractNextData(homeHtml);
     buildId = nextData.buildId;
     if (!buildId) throw new Error("Could not extract buildId");
     console.log(`buildId: ${buildId}`);
 
+    // Site redeployed since the last snapshot? Move the old one aside rather
+    // than mixing cached sub-pages from two different versions of the rules.
+    const prev = readMeta(outputDir);
+    if (prev && prev.buildId !== buildId) {
+      const archiveDir = `${outputDir}-${prev.buildId}`;
+      if (fs.existsSync(archiveDir))
+        throw new Error(`Archive dir already exists: ${archiveDir}`);
+      fs.renameSync(outputDir, archiveDir);
+      console.log(
+        `Site changed (was ${prev.buildId}) — previous snapshot moved to ${archiveDir}`,
+      );
+    }
+
+    fs.mkdirSync(rawDir, { recursive: true });
+    fs.mkdirSync(pagesDir, { recursive: true });
+
     // Save buildId for resumption
-    fs.writeFileSync(path.join(outputDir, ".buildid"), buildId);
+    meta =
+      prev && prev.buildId === buildId
+        ? prev
+        : { buildId, startedAt: new Date().toISOString() };
+    writeMeta(outputDir, meta);
 
     topRoutes = extractTopLevelRoutes(homeHtml);
     console.log(`Found ${topRoutes.length} top-level routes\n`);
@@ -324,7 +392,7 @@ async function main() {
       const url = `${BASE_URL}/_next/data/${buildId}/${route}.json`;
       try {
         process.stdout.write(`  /${route}... `);
-        const body = await get(url);
+        const body = await getWithRetry(url);
         const json = JSON.parse(body);
         fs.writeFileSync(
           path.join(rawDir, `${route}.json`),
@@ -339,12 +407,12 @@ async function main() {
     }
   } else {
     // Read saved buildId
-    const buildIdFile = path.join(outputDir, ".buildid");
-    if (!fs.existsSync(buildIdFile))
+    meta = readMeta(outputDir);
+    if (!meta)
       throw new Error(
-        "No .buildid file found — run without --subpages-only first",
+        "No meta.json/.buildid found — run without --subpages-only first",
       );
-    buildId = fs.readFileSync(buildIdFile, "utf8").trim();
+    buildId = meta.buildId;
     console.log(`Using saved buildId: ${buildId}`);
     topRoutes = fs
       .readdirSync(rawDir)
@@ -362,6 +430,7 @@ async function main() {
   const index = {};
   let savedSub = 0;
   let failedSub = 0;
+  let consecutiveFailures = 0;
 
   for (const typeSlug of topRoutes) {
     const topRawPath = path.join(rawDir, `${typeSlug}.json`);
@@ -402,11 +471,12 @@ async function main() {
 
       const url = `${BASE_URL}/_next/data/${buildId}/${typeSlug}/${entrySlug}.json`;
       try {
-        const body = await get(url);
+        const body = await getWithRetry(url);
         const json = JSON.parse(body);
         fs.writeFileSync(subRawPath, JSON.stringify(json, null, 2));
         entryPages.push({ slug: entrySlug, pageProps: json.pageProps });
         savedSub++;
+        consecutiveFailures = 0;
 
         if ((i + 1) % 50 === 0) {
           console.log(`    ... ${i + 1}/${entries.length}`);
@@ -415,6 +485,13 @@ async function main() {
         console.log(`    FAILED /${typeSlug}/${entrySlug}: ${err.message}`);
         failedSub++;
         entryPages.push({ slug: entrySlug, pageProps: null });
+        if (++consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+          throw new Error(
+            `${consecutiveFailures} failures in a row — the site may have redeployed ` +
+              `(buildId ${buildId} no longer valid). Re-run without --subpages-only.`,
+            { cause: err },
+          );
+        }
       }
 
       await sleep(DELAY_MS);
@@ -437,6 +514,11 @@ async function main() {
     path.join(outputDir, "index.json"),
     JSON.stringify(index, null, 2),
   );
+  writeMeta(outputDir, {
+    ...meta,
+    completedAt: new Date().toISOString(),
+    failedSubPages: failedSub,
+  });
 
   console.log(
     `\nDone. Sub-pages fetched: ${savedSub}${failedSub ? `, failed: ${failedSub}` : ""} → ${outputDir}`,

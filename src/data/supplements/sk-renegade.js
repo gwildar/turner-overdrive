@@ -564,7 +564,7 @@ const SUPPLEMENT = {
     },
     {
       name: "Warp Condenser",
-      type: "arcane",
+      type: "arcane-item",
       points: 50,
       effect:
         'Dispel range +3". +1 to Casting rolls for Magic Missile spells. May re-roll Miscast table result.',
@@ -572,7 +572,7 @@ const SUPPLEMENT = {
     },
     {
       name: "Storm Daemon",
-      type: "arcane",
+      type: "arcane-item",
       points: 40,
       effect:
         "Bearer can cast Warp Lightning (Lore of the Horned Rat) as a Bound spell, Power Level 2.",
@@ -580,7 +580,7 @@ const SUPPLEMENT = {
     },
     {
       name: "Warpstone Tokens",
-      type: "arcane",
+      type: "arcane-item",
       points: 15,
       extremely: true,
       maxPerModel: 3,

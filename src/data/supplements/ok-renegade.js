@@ -599,7 +599,7 @@ const SUPPLEMENT = {
   magicItems: [
     {
       name: "Tooth-Gnoblar",
-      type: "arcane",
+      type: "arcane-item",
       points: 10,
       extremely: true,
       maxPerModel: 3,

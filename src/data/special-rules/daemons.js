@@ -108,6 +108,20 @@ const RULES = [
     description: "Stomp Attacks have AP -3 (not against Behemoths).",
     phases: ["choose-fight"],
   },
+  {
+    id: "daemonic charge",
+    displayName: "Daemonic Charge",
+    description: "Impact Hits caused by this model have AP -2.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "slashing attack",
+    displayName: "Slashing Attack",
+    description:
+      "May fly over a single unengaged enemy unit during Remaining Moves. That unit suffers D3 S4 AP- hits per model that flew over it.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
 ];
 
 export default RULES;

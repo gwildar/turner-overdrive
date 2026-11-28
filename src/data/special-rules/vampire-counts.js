@@ -143,6 +143,38 @@ const RULES = [
     phases: ["conjuration"],
     yourTurnOnly: true,
   },
+  {
+    id: "invocation of nehek",
+    displayName: "Invocation of Nehek",
+    description:
+      'If not engaged, resurrect D3 + Wizard Level Wounds of Infantry, or Wizard Level Wounds of Monstrous/Cavalry, or 1 Wound of Behemoth/War Machine, in a friendly Necromantic Undead unit within 12". Requires Ld test.',
+    phases: ["command"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "wailing dirge",
+    displayName: "Wailing Dirge",
+    description:
+      'In your Shooting phase, unless it marched: target a unit within 8" (including in combat, or one it is engaged with). Ld test at -2. Wounds = margin of failure. No armour/Regen saves.',
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "bestial fury",
+    displayName: "Bestial Fury",
+    description:
+      "Enemy units cannot claim bonus combat result points for being engaged with this model's flank or rear arc.",
+    phases: ["combat-result"],
+    opponentOnly: true,
+  },
+  {
+    id: "ghoulish glamour",
+    displayName: "Ghoulish Glamour",
+    description:
+      "Enemy models must pass a Leadership test before rolling To Hit during Combat. If failed, only natural 6s hit.",
+    phases: ["choose-fight"],
+    opponentOnly: true,
+  },
 ];
 
 export default RULES;

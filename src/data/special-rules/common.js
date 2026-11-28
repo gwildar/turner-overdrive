@@ -55,14 +55,6 @@ const RULES = [
     ],
   },
   {
-    id: "invocation of nehek",
-    displayName: "Invocation of Nehek",
-    description:
-      'If not engaged, resurrect D3 + Wizard Level Wounds of Infantry, or Wizard Level Wounds of Monstrous/Cavalry, or 1 Wound of Behemoth/War Machine, in a friendly Necromantic Undead unit within 12". Requires Ld test.',
-    phases: ["command"],
-    yourTurnOnly: true,
-  },
-  {
     id: "rallying cry",
     displayName: "Rallying Cry",
     description:
@@ -246,13 +238,6 @@ const RULES = [
     yourTurnOnly: true,
   },
   {
-    id: "thunderous impact",
-    displayName: "Thunderous Impact",
-    description:
-      'Until your next Start of Turn sub-phase, any unit (friend or foe) within 2D6" of the strike point suffers -1 Movement and cannot use Swiftstride.',
-    phases: ["shoot"],
-  },
-  {
     id: "multiple shots",
     displayName: "Multiple Shots",
     description:
@@ -409,14 +394,6 @@ const RULES = [
     passive: true,
     description:
       "The unit knows one spell from Dark Magic or Daemonology (chosen before deployment). Power Level is 2 (US 10+ with Master), 1 (US ≤9 with Master), or 0 (no Master).",
-    phases: [],
-  },
-  {
-    id: "vortex of souls",
-    displayName: "Vortex of Souls",
-    passive: true,
-    description:
-      'May cast Light of Death (Magic Missile, 7+, 36") or Light of Protection (Enchantment, 8+, Self, Remains in Play) as bound spells with Power Level 2. Light of Protection immediately expires if Light of Death is cast.',
     phases: [],
   },
   {
@@ -610,14 +587,6 @@ const RULES = [
     description:
       "When a behemoth is slain, roll off to determine fall direction. Units in base contact in that arc suffer D6 hits at model's S with AP -1.",
     phases: ["choose-fight"],
-  },
-  {
-    id: "wailing dirge",
-    displayName: "Wailing Dirge",
-    description:
-      'In your Shooting phase, unless it marched: target a unit within 8" (including in combat, or one it is engaged with). Ld test at -2. Wounds = margin of failure. No armour/Regen saves.',
-    phases: ["shoot"],
-    yourTurnOnly: true,
   },
   {
     id: "poisoned attacks",
@@ -1499,52 +1468,6 @@ const RULES = [
       "Ogre musicians are Bellowers who use their voice instead of instruments. Function as standard musicians.",
   },
   {
-    id: "arise!",
-    displayName: "Arise!",
-    description:
-      'If not engaged, take a Leadership test. Pass: a single friendly Nehekharan Undead unit within 12" recovers Wounds — Infantry/Swarms: Wizard Level + D3; Cavalry/War Beasts: Wizard Level + 1; Monstrous Infantry/Cavalry/Light Chariot: Wizard Level; Behemoth/Heavy Chariot/War Machine: 1 Wound.',
-    phases: ["command"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "the terrors below",
-    displayName: "The Terrors Below",
-    description:
-      "When this unit enters via From Beneath the Sands, nominate one enemy regular or heavy infantry unit within 8\". That unit makes Initiative tests equal to this unit's Unit Strength — each failed test removes one model as a casualty.",
-    phases: ["compulsory-moves"],
-  },
-  {
-    id: "from beneath the sands",
-    displayName: "From Beneath the Sands",
-    description:
-      'If not engaged, choose a friendly unit with Nehekharan Undead and Ambushers in reserve and take a Leadership test. Pass: place the unit within 12" of this model and outside 6" of enemies — it cannot charge this turn and counts as having moved. Fail: unit is delayed until your next turn. Ambushers units still arrive automatically at Round 5.',
-    phases: ["command"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "my will be done",
-    displayName: "My Will Be Done",
-    description:
-      'Take a Leadership test. Pass: choose one bonus lasting until next Start of Turn for this model, its mount, and joined unit — "Forward to Glory!": +D3 Movement; "My Worthy Champions!": +1 Weapon Skill; "Strike like the Cobra!": +D3 Initiative. Not cumulative (no effect if used again on same unit this turn).',
-    phases: ["command"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "eternal taskmaster",
-    displayName: "Eternal Taskmaster",
-    description:
-      "Once per Command sub-phase, take a Leadership test. Pass: character and joined unit gain Extra Attacks (+1) and Hatred (all enemies) until next Start of Turn.",
-    phases: ["command"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "nehekharan phalanx",
-    displayName: "Nehekharan Phalanx",
-    description:
-      "Units in Close Order with shields may choose not to Give Ground when losing combat. This protection fails if the winner's Unit Strength exceeds twice the loser's.",
-    phases: ["combat-result"],
-  },
-  {
     id: "grind them down!",
     displayName: "Grind Them Down!",
     aliases: ["grind them down"],
@@ -1552,35 +1475,6 @@ const RULES = [
       "Friendly Chariot-type models within General's Command range may re-roll dice when determining Impact Hits.",
     phases: ["choose-fight"],
     yourTurnOnly: true,
-  },
-  {
-    id: "steadfast discipline",
-    displayName: "Steadfast Discipline",
-    description:
-      "Unit may perform Volley Fire even after moving this turn, or while performing a Stand & Shoot charge reaction.",
-    phases: ["shoot"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "arrows of asaph",
-    displayName: "Arrows of Asaph",
-    description: "Disregard all modifiers when making ranged attack rolls.",
-    phases: ["shoot"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "dry as dust",
-    displayName: "Dry as Dust",
-    description:
-      "When this model suffers an unsaved Wound from a Flaming Attack, opponent rolls D6: 1–3 wound is harmless; 4+ model suffers 1 additional Wound. Excess wounds don't spill over to the unit.",
-    phases: ["shoot", "choose-fight"],
-  },
-  {
-    id: "curse of the necropolis",
-    displayName: "Curse of the Necropolis",
-    description:
-      "When this model loses its final Wound to an enemy attack, the enemy unit that dealt the killing blow must immediately take a Leadership test. If failed, that unit suffers D3 Strength 2 hits with AP −.",
-    phases: ["choose-fight"],
   },
   {
     id: "daughters of eternity",
@@ -1621,157 +1515,14 @@ const RULES = [
       "Armour Bane (1). May re-roll failed To Hit rolls during a challenge.",
     phases: [],
   },
-  {
-    id: "nehekharan undead",
-    displayName: "Nehekharan Undead",
-    phases: [
-      {
-        subPhaseId: "remaining-moves",
-        description:
-          "Cannot march (unless possessing Fly and choosing to fly). Immune to Psychology. Unbreakable — gives ground instead of breaking.",
-      },
-      {
-        subPhaseId: "combat-result",
-        description:
-          "Unstable: if combat is lost, unit suffers additional Wounds equal to the combat result points lost (no saves of any kind allowed). Characters with this rule cannot join units without it.",
-      },
-    ],
-  },
-  {
-    id: "bonegrinder giant attacks",
-    displayName: "Bonegrinder Giant Attacks",
-    phases: [
-      {
-        subPhaseId: "choose-fight",
-        description: "Instead of normal attacks, roll a D6:",
-        table: [
-          {
-            roll: "1",
-            result: "'Eadbutt",
-            effect: "D6+1 wounds, no armour or regeneration saves.",
-          },
-          {
-            roll: "2",
-            result: "Belly Flop",
-            effect: '5" blast, Strength, AP -2.',
-          },
-          {
-            roll: "3-4",
-            result: "Mighty Swing",
-            effect: "2D6 attacks, S+2, AP -3.",
-          },
-          {
-            roll: "5",
-            result: "Grind its Bones",
-            effect:
-              "Each base-contact infantry model tests Strength or is removed as a casualty; repeat on 4+.",
-          },
-          {
-            roll: "6",
-            result: "Crush Underfoot",
-            effect: "All base-contact models suffer D6 hits at S+3, AP -3.",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "choppas",
-    displayName: "Choppas",
-    description:
-      "During a turn in which it charged, a model with this special rule may re-roll any rolls To Wound of a natural 1, and improves the Armour Piercing characteristic of its weapon(s) by 1.",
-    phases: ["choose-fight"],
-  },
-  {
-    id: "da troll calla",
-    displayName: "Da Troll Calla",
-    description:
-      "Unless he is fleeing, friendly Troll Mobs within Ogdruz's Command range may use his Leadership characteristic instead of their own.",
-    phases: ["command"],
-  },
-  {
-    id: "ignore goblin panic",
-    displayName: "Ignore Goblin Panic",
-    passive: true,
-    phases: [],
-    description:
-      "Does not take Panic tests caused by friendly Goblinoid units being destroyed or fleeing through the unit.",
-  },
-  {
-    id: "indiscriminate hunger",
-    displayName: "Indiscriminate Hunger",
-    description:
-      'At Start of Turn, if within 1" of a friendly unit, take a Leadership test. If failed, the unit attacks the nearest friendly unit this turn instead of the nearest enemy.',
-    phases: ["start-of-turn"],
-    yourTurnOnly: true,
-  },
-  {
-    id: "motherly love",
-    displayName: "Motherly Love",
-    passive: true,
-    phases: [],
-    description:
-      "Friendly Troll units within Command range may use this model's Leadership for Leadership tests and may re-roll failed Regeneration saves.",
-  },
-  {
-    id: "protect da boss",
-    displayName: "Protect Da Boss",
-    description:
-      "A character joined to this unit improves their armour save by 1 (max 1+). The character may use Look Out, Sir! with only 2 rank-and-file models present (instead of 5).",
-    phases: ["choose-fight"],
-  },
-  {
-    id: "slimy shanks",
-    displayName: "Slimy Shanks",
-    passive: true,
-    phases: [],
-    description:
-      "Unit ignores the movement penalties for difficult terrain. Enemy models moving into base contact with this unit treat that movement as difficult terrain.",
-  },
 
   // ─── Universal combat ─────────────────────────────────────────────────
 
-  {
-    id: "daemonic charge",
-    displayName: "Daemonic Charge",
-    description: "Impact Hits caused by this model have AP -2.",
-    phases: ["choose-fight"],
-  },
   {
     id: "stampede",
     displayName: "Stampede",
     description: "Impact Hits caused by this model have AP -2.",
     phases: ["choose-fight"],
-  },
-  {
-    id: "bestial fury",
-    displayName: "Bestial Fury",
-    description:
-      "Enemy units cannot claim bonus combat result points for being engaged with this model's flank or rear arc.",
-    phases: ["combat-result"],
-    opponentOnly: true,
-  },
-  {
-    id: "slayer",
-    displayName: "Slayer",
-    description:
-      "To Wound rolls of 4+ always succeed, regardless of target's Toughness.",
-    phases: ["choose-fight"],
-  },
-  {
-    id: "slayer of dragons",
-    displayName: "Slayer of Dragons",
-    description:
-      "To Wound rolls of 4+ always succeed. Each unsaved wound against a behemoth has Multiple Wounds (D3).",
-    phases: ["choose-fight"],
-  },
-  {
-    id: "ghoulish glamour",
-    displayName: "Ghoulish Glamour",
-    description:
-      "Enemy models must pass a Leadership test before rolling To Hit during Combat. If failed, only natural 6s hit.",
-    phases: ["choose-fight"],
-    opponentOnly: true,
   },
   {
     id: "blood frenzy",
@@ -1781,25 +1532,10 @@ const RULES = [
     phases: ["choose-fight"],
   },
   {
-    id: "slashing attack",
-    displayName: "Slashing Attack",
-    description:
-      "May fly over a single unengaged enemy unit during Remaining Moves. That unit suffers D3 S4 AP- hits per model that flew over it.",
-    phases: ["remaining-moves"],
-    yourTurnOnly: true,
-  },
-  {
     id: "too horrible to die",
     displayName: "Too Horrible To Die",
     description:
       "First time this model loses its last Wound, roll D6: 1-3 removed; 4-5 replaced with a Rat Swarm (Skaven) or equivalent; 6 recovers D3 Wounds.",
-    phases: ["shoot", "choose-fight"],
-  },
-  {
-    id: "enhanced regeneration",
-    displayName: "Enhanced Regeneration",
-    description:
-      "Models with Regeneration (X+) may re-roll failed Regeneration saves against Wounds caused by non-magical attacks.",
     phases: ["shoot", "choose-fight"],
   },
   {
@@ -1848,13 +1584,6 @@ const RULES = [
     description:
       "A unit in Lance formation with Unit Strength 5+ claims +1 combat result.",
     phases: ["combat-result"],
-  },
-  {
-    id: "ignore panic",
-    displayName: "Ignore Panic",
-    description:
-      'No Panic test when a friendly unit without Ignore Panic is destroyed or Breaks and flees within 6", or when fled through by a friendly unit without Ignore Panic.',
-    phases: ["shoot", "compulsory-moves", "break-test"],
   },
   {
     id: "backstab",
@@ -2505,6 +2234,105 @@ const RULES = [
       "If it shot last turn, roll D6 before shooting: on 1-2 it does not shoot this turn (+1 with an Ogre Loader).",
     phases: ["shoot"],
     yourTurnOnly: true,
+  },
+  {
+    id: "razor tusks",
+    displayName: "Razor Tusks",
+    description:
+      "In a turn it charged, the AP of its tusks (hand weapon) improves by 1. Not the chariot or crew.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "crown of antlers",
+    displayName: "Crown of Antlers",
+    description:
+      "Impact Hits caused by this model have Armour Bane (1) and AP -1.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "resolute",
+    displayName: "Resolute",
+    description: "-1 to Flee rolls and Pursuit rolls (minimum 1).",
+    phases: ["pursuit", "break-test"],
+  },
+  {
+    id: "gaze of the gods",
+    displayName: "Gaze of the Gods",
+    phases: [
+      {
+        subPhaseId: "command",
+        yourTurnOnly: true,
+        description:
+          "May roll on the Gaze of the Gods table. Applies to the Champion only, not any mount:",
+        table: [
+          {
+            roll: "1",
+            result: "Damned by Chaos",
+            effect:
+              "Gains Stupidity for the remainder of the game. If already affected, suffers -1 Leadership (minimum 2).",
+          },
+          {
+            roll: "2",
+            result: "Unnatural Quickness",
+            effect:
+              "+1 Initiative until the next Start of Turn sub-phase (maximum 10).",
+          },
+          {
+            roll: "3",
+            result: "Iron Skin",
+            effect:
+              "+1 Toughness until the next Start of Turn sub-phase (maximum 10).",
+          },
+          {
+            roll: "4",
+            result: "Murderous Mutation",
+            effect:
+              "+1 Weapon Skill for the remainder of the game (maximum 10).",
+          },
+          {
+            roll: "5",
+            result: "Dark Fury",
+            effect: "+1 Attacks for the remainder of the game (maximum 10).",
+          },
+          {
+            roll: "6",
+            result: "Apotheosis",
+            effect:
+              "+1 Strength and +1 Leadership for the remainder of the game (maximum 10).",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "explosive demise",
+    displayName: "Explosive Demise",
+    description:
+      'When this model loses its last Wound, before it is removed from play, every unit (friend or foe) within 6" suffers D6 Strength 5 hits, each with AP -2.',
+    phases: ["choose-fight"],
+  },
+  {
+    id: "warpfire aura",
+    displayName: "Warpfire Aura",
+    description:
+      'Other models (friend and foe) cannot make Ward saves while within 3" of this model.',
+    phases: ["choose-fight", "shoot"],
+  },
+  {
+    id: "fire and chaos",
+    displayName: "Fire and Chaos",
+    aliases: ["fire & chaos"],
+    description:
+      "5+ Ward save against wounds caused by attacks with the Magical Attacks or Flaming Attacks special rule.",
+    phases: ["choose-fight"],
+    ward: "5+ (Magical or Flaming Attacks)",
+  },
+  {
+    id: "indomitable",
+    displayName: "Indomitable",
+    description:
+      "Reduce the wounds suffered from Unstable by the number in brackets. Not cumulative: a unit uses the highest Indomitable value among its models.",
+    phases: ["break-test"],
   },
 ];
 

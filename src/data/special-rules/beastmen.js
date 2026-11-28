@@ -54,13 +54,6 @@ const RULES = [
     fromRound: 2,
   },
   {
-    id: "razor tusks",
-    displayName: "Razor Tusks",
-    description:
-      "In a turn it charged, the AP of its tusks (hand weapon) improves by 1. Not the chariot or crew.",
-    phases: ["choose-fight"],
-  },
-  {
     id: "bull-gors",
     displayName: "Bull-gors",
     description: "Impact Hits caused by this model have AP -1.",
@@ -141,13 +134,6 @@ const RULES = [
       "If engaged with regular or heavy infantry: nominate one such unit; it takes an Initiative test. Fail = one model removed as a casualty and the Ghorgon recovers a Wound.",
     phases: ["command"],
     yourTurnOnly: true,
-  },
-  {
-    id: "crown of antlers",
-    displayName: "Crown of Antlers",
-    description:
-      "Impact Hits caused by this model have Armour Bane (1) and AP -1.",
-    phases: ["choose-fight"],
   },
   {
     id: "endless malice",

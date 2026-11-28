@@ -335,84 +335,19 @@ const RULES = [
     yourTurnOnly: true,
   },
   {
-    id: "gaze of the gods",
-    displayName: "Gaze of the Gods",
-    phases: [
-      {
-        subPhaseId: "command",
-        yourTurnOnly: true,
-        description:
-          "May roll on the Gaze of the Gods table. Applies to the Champion only, not any mount:",
-        table: [
-          {
-            roll: "1",
-            result: "Damned by Chaos",
-            effect:
-              "Gains Stupidity for the remainder of the game. If already affected, suffers -1 Leadership (minimum 2).",
-          },
-          {
-            roll: "2",
-            result: "Unnatural Quickness",
-            effect:
-              "+1 Initiative until the next Start of Turn sub-phase (maximum 10).",
-          },
-          {
-            roll: "3",
-            result: "Iron Skin",
-            effect:
-              "+1 Toughness until the next Start of Turn sub-phase (maximum 10).",
-          },
-          {
-            roll: "4",
-            result: "Murderous Mutation",
-            effect:
-              "+1 Weapon Skill for the remainder of the game (maximum 10).",
-          },
-          {
-            roll: "5",
-            result: "Dark Fury",
-            effect: "+1 Attacks for the remainder of the game (maximum 10).",
-          },
-          {
-            roll: "6",
-            result: "Apotheosis",
-            effect:
-              "+1 Strength and +1 Leadership for the remainder of the game (maximum 10).",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "explosive demise",
-    displayName: "Explosive Demise",
-    description:
-      'When this model loses its last Wound, before it is removed from play, every unit (friend or foe) within 6" suffers D6 Strength 5 hits, each with AP -2.',
-    phases: ["choose-fight"],
-  },
-  {
-    id: "warpfire aura",
-    displayName: "Warpfire Aura",
-    description:
-      'Other models (friend and foe) cannot make Ward saves while within 3" of this model.',
-    phases: ["choose-fight", "shoot"],
-  },
-  {
-    id: "fire and chaos",
-    displayName: "Fire and Chaos",
-    aliases: ["fire & chaos"],
-    description:
-      "5+ Ward save against wounds caused by attacks with the Magical Attacks or Flaming Attacks special rule.",
-    phases: ["choose-fight"],
-    ward: "5+ (Magical or Flaming Attacks)",
-  },
-  {
     id: "warriors duel",
     displayName: "Warriors' Duel",
     passive: true,
     phases: [],
     description:
       "Before the first-turn roll-off, either player may propose a Warriors' Duel. Each side nominates one champion (infantry or cavalry, exactly 1 Wound). Champions fight in a challenge until one falls — the winner's army takes the first turn. If both fall simultaneously, revert to a standard roll-off. If the opponent declines, Wolves of the Sea automatically takes the first turn.",
+  },
+  {
+    id: "thunderous impact",
+    displayName: "Thunderous Impact",
+    description:
+      'Until your next Start of Turn sub-phase, any unit (friend or foe) within 2D6" of the strike point suffers -1 Movement and cannot use Swiftstride.',
+    phases: ["shoot"],
   },
 ];
 

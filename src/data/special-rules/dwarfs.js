@@ -40,12 +40,6 @@ const RULES = [
     opponentOnly: true,
   },
   {
-    id: "resolute",
-    displayName: "Resolute",
-    description: "-1 to Flee rolls and Pursuit rolls (minimum 1).",
-    phases: ["pursuit", "break-test"],
-  },
-  {
     id: "dwarf crafted",
     displayName: "Dwarf Crafted",
     description:
@@ -250,6 +244,20 @@ const RULES = [
       'May attempt a Wizardly Dispel as if a Wizard: Dispel range 21", +1 to Dispel rolls.',
     phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
     opponentOnly: true,
+  },
+  {
+    id: "slayer",
+    displayName: "Slayer",
+    description:
+      "To Wound rolls of 4+ always succeed, regardless of target's Toughness.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "slayer of dragons",
+    displayName: "Slayer of Dragons",
+    description:
+      "To Wound rolls of 4+ always succeed. Each unsaved wound against a behemoth has Multiple Wounds (D3).",
+    phases: ["choose-fight"],
   },
 ];
 

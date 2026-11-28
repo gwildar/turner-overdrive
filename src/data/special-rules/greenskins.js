@@ -219,6 +219,14 @@ const RULES = [
     passive: true,
     phases: [],
   },
+  {
+    id: "doom diver",
+    displayName: "Doom Diver",
+    description:
+      "Fires by Bombardment. After the Scatter step, you may roll D3 and move the 3\" template that many inches in any direction. Fired indirectly: on a Hit! the template scatters the Artillery dice minus D3 (min 0) in the small arrow's direction.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
 ];
 
 export default RULES;

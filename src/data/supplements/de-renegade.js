@@ -17,6 +17,7 @@ const SUPPLEMENT = {
         BS: "-",
         Ld: "-",
         WS: "-",
+        troopType: ["HCh"],
         Name: "Cauldron of Blood",
         "Impact-Hits": "D6+1",
         AS: "4",

@@ -128,21 +128,30 @@ const MOUNT_KEY_OVERRIDES = {
   "ancient stegadon": "ancient-stegadon-mount",
 };
 
+// Unit Strength per model, from the Troop Type table (rulebook p. 105).
+// "W" = as the model's starting Wounds.
 const TROOP_STRENGTH_PER_MODEL = {
   RI: 1, // Regular Infantry
   HI: 1, // Heavy Infantry
+  MI: 3, // Monstrous Infantry
+  Sw: 3, // Swarms
   LC: 2, // Light Cavalry
   HC: 2, // Heavy Cavalry
-  WB: 1, // War Beasts
-  MI: 2, // Monstrous Infantry
   MCa: 3, // Monstrous Cavalry
-  Be: 3, // Monstrous Beasts
-  HCh: 3, // Heavy Chariot
-  LCh: 3, // Light Chariot
-  MCr: 5, // Monsters
-  WM: 0, // War Machines
-  Sw: 3, // Swarms
+  WB: 1, // War Beasts
+  LCh: 3, // Light Chariots
+  HCh: 5, // Heavy Chariots
+  MCr: "W", // Monstrous Creatures
+  Be: "W", // Behemoths
+  WM: "W", // War Machines
 };
+
+/** Unit Strength per model for a troop type and the model's profile. */
+function usPerModelFor(troopType, profile) {
+  const us = TROOP_STRENGTH_PER_MODEL[troopType] ?? 1;
+  if (us !== "W") return us;
+  return parseInt(profile?.W, 10) || 1;
+}
 
 const TROOP_TYPE_MARKERS = new Set(["Ch", "NCh"]);
 
@@ -155,8 +164,12 @@ const TROOP_TYPE_MARKERS = new Set(["Ch", "NCh"]);
 export function computeUnitStrength(unit) {
   const mount = unit.mount;
 
-  // Character on a monster mount: combined wounds = character W + mount wBonus
-  if (mount?.wBonus > 0) {
+  // Character on a ridden monster (or a mount of unknown type that adds
+  // Wounds): Unit Strength is its starting Wounds, the rider's W plus the
+  // mount's bonus. Chariots and monstrous cavalry use the table instead.
+  const woundBased =
+    !mount?.troopType || TROOP_STRENGTH_PER_MODEL[mount.troopType] === "W";
+  if (mount?.wBonus > 0 && woundBased) {
     const baseW = parseInt(unit.stats?.[0]?.W) || 1;
     return baseW + mount.wBonus;
   }
@@ -167,14 +180,12 @@ export function computeUnitStrength(unit) {
 
   // Character on a cavalry mount (wBonus = 0): use mount's troop type US
   if (mount?.troopType && isCharacter) {
-    const mountUS = TROOP_STRENGTH_PER_MODEL[mount.troopType] ?? 1;
+    const mountUS = usPerModelFor(mount.troopType, null);
     return mountUS * (unit.strength || 1);
   }
 
   const usPerModel =
-    primaryType !== undefined
-      ? (TROOP_STRENGTH_PER_MODEL[primaryType] ?? 1)
-      : 1;
+    primaryType !== undefined ? usPerModelFor(primaryType, unit.stats?.[0]) : 1;
 
   let baseUS = usPerModel * (unit.strength || 1);
 
@@ -183,7 +194,7 @@ export function computeUnitStrength(unit) {
     const dTypeArr = d.stats?.[0]?.troopType ?? [];
     const dPrimary = dTypeArr.find((t) => !TROOP_TYPE_MARKERS.has(t));
     const dUsPerModel =
-      dPrimary !== undefined ? (TROOP_STRENGTH_PER_MODEL[dPrimary] ?? 1) : 1;
+      dPrimary !== undefined ? usPerModelFor(dPrimary, d.stats?.[0]) : 1;
     baseUS += dUsPerModel * (d.strength || 1);
   }
 

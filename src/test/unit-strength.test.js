@@ -27,32 +27,36 @@ describe("computeUnitStrength", () => {
   it("HC unit of 5 has US 10", () => {
     expect(computeUnitStrength(makeUnit(["HC"], 5))).toBe(10);
   });
-  it("MI unit of 3 has US 6", () => {
-    expect(computeUnitStrength(makeUnit(["MI"], 3))).toBe(6);
+  // Unit Strength per model: Troop Type table, rulebook p. 105
+  it("MI unit of 3 has US 9", () => {
+    expect(computeUnitStrength(makeUnit(["MI"], 3))).toBe(9);
   });
   it("MCa unit of 5 has US 15", () => {
     expect(computeUnitStrength(makeUnit(["MCa"], 5))).toBe(15);
   });
-  it("Be unit of 2 has US 6", () => {
-    expect(computeUnitStrength(makeUnit(["Be"], 2))).toBe(6);
+  it("Behemoth (W5) has US 5 — as its starting Wounds", () => {
+    expect(computeUnitStrength(makeUnit(["Be"], 1, null, 5))).toBe(5);
   });
-  it("HCh (heavy chariot) of 1 has US 3", () => {
-    expect(computeUnitStrength(makeUnit(["HCh"], 1))).toBe(3);
+  it("two Behemoths (W6) have US 12", () => {
+    expect(computeUnitStrength(makeUnit(["Be"], 2, null, 6))).toBe(12);
+  });
+  it("HCh (heavy chariot) of 1 has US 5", () => {
+    expect(computeUnitStrength(makeUnit(["HCh"], 1))).toBe(5);
   });
   it("LCh (light chariot) of 1 has US 3", () => {
     expect(computeUnitStrength(makeUnit(["LCh"], 1))).toBe(3);
   });
-  it("MCr (monster) of 1 has US 5", () => {
-    expect(computeUnitStrength(makeUnit(["MCr"], 1))).toBe(5);
+  it("Monstrous Creature (W4) has US 4 — as its starting Wounds", () => {
+    expect(computeUnitStrength(makeUnit(["MCr"], 1, null, 4))).toBe(4);
   });
-  it("WM (war machine) has US 0", () => {
-    expect(computeUnitStrength(makeUnit(["WM"], 1))).toBe(0);
+  it("War Machine (W3) has US 3 — as its starting Wounds", () => {
+    expect(computeUnitStrength(makeUnit(["WM"], 1, null, 3))).toBe(3);
   });
   it("character [RI, Ch] has US 1", () => {
     expect(computeUnitStrength(makeUnit(["RI", "Ch"], 1))).toBe(1);
   });
-  it("character [MI, Ch] has US 2", () => {
-    expect(computeUnitStrength(makeUnit(["MI", "Ch"], 1))).toBe(2);
+  it("character [MI, Ch] has US 3", () => {
+    expect(computeUnitStrength(makeUnit(["MI", "Ch"], 1))).toBe(3);
   });
   it("NCh marker is ignored, primary type used", () => {
     expect(computeUnitStrength(makeUnit(["HI", "NCh"], 1))).toBe(1);
@@ -60,6 +64,14 @@ describe("computeUnitStrength", () => {
   it("character (W3) on monster mount (wBonus 3) has US 6", () => {
     const mount = { troopType: "MCr", wBonus: 3 };
     expect(computeUnitStrength(makeUnit(["RI", "Ch"], 1, mount, 3))).toBe(6);
+  });
+  it("character (W3) on a heavy chariot mount (wBonus 4) has US 5, not combined Wounds", () => {
+    const mount = { troopType: "HCh", wBonus: 4 };
+    expect(computeUnitStrength(makeUnit(["RI", "Ch"], 1, mount, 3))).toBe(5);
+  });
+  it("character (W3) on a monstrous cavalry mount (wBonus 1) has US 3", () => {
+    const mount = { troopType: "MCa", wBonus: 1 };
+    expect(computeUnitStrength(makeUnit(["RI", "Ch"], 1, mount, 3))).toBe(3);
   });
   it("character (W3) on Forest Dragon (wBonus 6) has US 9", () => {
     const mount = { troopType: "Be", wBonus: 6 };

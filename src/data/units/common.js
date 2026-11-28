@@ -450,7 +450,7 @@ const UNITS = {
       Name: "Warhorse",
       rules: [],
       equipment: [],
-      troopType: [],
+      troopType: ["LC"],
       magic: [],
       optionalRules: [],
     },

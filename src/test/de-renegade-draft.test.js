@@ -177,8 +177,8 @@ describe("Death Hag on Cauldron of Blood", () => {
     expect(deathHag.mount.name).toBe("Cauldron of Blood");
   });
 
-  it("Cauldron mount has wBonus > 0 (isRiddenMonster)", () => {
-    expect(deathHag.mount.wBonus).toBeGreaterThan(0);
+  it("Cauldron of Blood is a chariot mount", () => {
+    expect(deathHag.mount.kind).toBe("chariot");
   });
 
   it("Death Hag combat entry shows T5 from Cauldron and W7 (cauldron W5 + character W2)", () => {
@@ -303,8 +303,8 @@ describe("High Beastmaster on Scourgerunner Chariot", () => {
     expect(highBeastmaster.mount.name).toBe("Scourgerunner Chariot");
   });
 
-  it("Scourgerunner Chariot mount has wBonus > 0 (isRiddenMonster)", () => {
-    expect(highBeastmaster.mount.wBonus).toBeGreaterThan(0);
+  it("Scourgerunner Chariot is a chariot mount", () => {
+    expect(highBeastmaster.mount.kind).toBe("chariot");
   });
 
   it("High Beastmaster shows T4 W7 from Scourgerunner Chariot", () => {

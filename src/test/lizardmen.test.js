@@ -21,8 +21,8 @@ describe("Skink Priest on Ancient Stegadon (Howdah chariot split profile)", () =
     expect(skinkPriest.mount.name).toBe("Ancient Stegadon");
   });
 
-  it("Ancient Stegadon mount has wBonus > 0 (chariot split profile)", () => {
-    expect(skinkPriest.mount.wBonus).toBeGreaterThan(0);
+  it("Ancient Stegadon is a howdah mount (chariot split profile)", () => {
+    expect(skinkPriest.mount.kind).toBe("howdah");
   });
 
   it("Skink Priest combat entry shows T6 from Stegadon", () => {

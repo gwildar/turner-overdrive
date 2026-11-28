@@ -972,6 +972,8 @@ const UNITS = {
       Ld: "4",
       WS: "3",
       Name: "Terrorgheist",
+      mountT: "(+1)",
+      mountW: "(+5)",
       as: 6,
       Regen: "5+",
       Stomps: "D6",

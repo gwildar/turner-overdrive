@@ -6,14 +6,14 @@
 /** @type {import("../../types").Supplement} */
 const SUPPLEMENT = {
   units: {
-    "cauldron-of-blood-mount": [
+    "cauldron-of-blood-renegade": [
       {
         A: "-",
         I: "-",
         M: "5",
         S: "5",
-        T: "(+2)",
-        W: "(+5)",
+        T: "5",
+        W: "5",
         BS: "-",
         Ld: "-",
         WS: "-",

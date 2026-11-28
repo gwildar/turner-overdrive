@@ -418,6 +418,8 @@ export interface Unit {
   /** OWB unit id, e.g. "dark-elf-dreadlord.abc123". Stable across re-parses. */
   id: string;
   name: string;
+  /** The name is the player's own (shown as written, not pluralised). */
+  customName?: boolean;
   category: UnitCategory;
   /** Number of models. */
   strength: number;

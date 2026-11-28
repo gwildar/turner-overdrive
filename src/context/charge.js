@@ -1,3 +1,5 @@
+import { panel } from "./panel.js";
+import { joinedCharacters } from "../utils/characters.js";
 import { SPECIAL_RULES } from "../data/special-rules.js";
 import {
   randomMovement,
@@ -6,8 +8,7 @@ import {
   extractFlyMovement,
   resolveBaseMv,
 } from "../helpers.js";
-import { getCharacterAssignments } from "../state.js";
-import { displayUnitName } from "../utils/unit-name.js";
+import { unitLabel } from "../utils/unit-name.js";
 
 // Build lookup: normalised rule name → chargeMod object
 const CHARGE_MOD_RULES = new Map();
@@ -62,28 +63,13 @@ export function renderChargeContext(army) {
   const units = army.units;
   if (units.length === 0) return "";
 
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, uid]) => uid)
-      .map(([cid]) => cid),
-  );
-
-  // Build reverse map: unitId → assigned character units
-  const charsByUnitId = new Map();
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    const charUnit = units.find((u) => u.id === charId);
-    if (!charUnit) continue;
-    if (!charsByUnitId.has(unitId)) charsByUnitId.set(unitId, []);
-    charsByUnitId.get(unitId).push(charUnit);
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
   // Exclude assigned characters, war machines and random movers (none can
   // declare a charge). Chariots (HCh, Ch, etc.) can charge.
   const unitsToRender = units.filter(
     (u) =>
-      !assignedCharIds.has(u.id) &&
+      !isJoined(u.id) &&
       !u.stats?.[0]?.troopType?.includes("WM") &&
       !randomMovement(u),
   );
@@ -100,7 +86,7 @@ export function renderChargeContext(army) {
 
     // Merge chargeMods from assigned characters' magic items
     const seenTags = new Set(chargeMods.map((m) => m.tag));
-    for (const char of charsByUnitId.get(u.id) || []) {
+    for (const char of joinedTo(u.id)) {
       for (const item of char.magicItems || []) {
         if (item.chargeMod && !seenTags.has(item.chargeMod.tag)) {
           seenTags.add(item.chargeMod.tag);
@@ -115,7 +101,7 @@ export function renderChargeContext(army) {
     const groundCharge = baseMv != null ? baseMv + 6 + rangeBonus : null;
     const flyCharge = hasFly ? flyMv + 6 + rangeBonus : null;
     const maxCharge = Math.max(groundCharge || 0, flyCharge || 0);
-    const assignedChars = charsByUnitId.get(u.id) || [];
+    const assignedChars = joinedTo(u.id);
     return {
       u,
       groundCharge,
@@ -129,9 +115,10 @@ export function renderChargeContext(army) {
 
   rows.sort((a, b) => b.maxCharge - a.maxCharge);
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-combat/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-combat mb-3">Max Declarable Charge</h3>
+  return panel(
+    "combat",
+    "Max Declarable Charge",
+    `
       <div class="space-y-1">
         ${rows
           .map(
@@ -146,8 +133,7 @@ export function renderChargeContext(army) {
             <div class="text-sm py-1 px-2 rounded bg-wh-card">
               <div class="flex justify-between items-center">
                 <div class="flex flex-wrap items-center gap-1">
-                  <span class="text-wh-text">${displayUnitName(u.name, u.strength)}</span>
-                  ${u.strength > 1 ? `<span class="text-wh-muted">x${u.strength}</span>` : ""}
+                  <span class="text-wh-text">${unitLabel(u)}</span>
                   ${chargeMods
                     .map((m) => {
                       const colors = {
@@ -187,6 +173,6 @@ export function renderChargeContext(army) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseArmyList } from "../army.js";
-import { displayUnitName } from "../utils/unit-name.js";
+import { displayUnitName, unitLabel } from "../utils/unit-name.js";
 import darkElvesJson from "./fixtures/dark-elves.owb.json";
 import bretonniaChargeJson from "./fixtures/bretonnia-charge.owb.json";
 import lizardmenJson from "./fixtures/lizardmen.owb.json";
@@ -87,5 +87,66 @@ describe("displayUnitName", () => {
     expect(displayUnitName("Knight of the Realm", 12)).toBe(
       "Knights of the Realm",
     );
+  });
+});
+
+describe("plural rules for Warhammer unit names", () => {
+  it.each([
+    ["Witch Elf", "Witch Elves"],
+    ["Giant Wolf", "Giant Wolves"],
+    ["Temple Guard", "Temple Guard"],
+    ["Black Guard", "Black Guard"],
+    ["Man-at-Arms", "Men-at-Arms"],
+    ["Sergeant-at-Arms", "Sergeants-at-Arms"],
+    ["Knight Errant", "Knights Errant"],
+    ["Sister of the Thorns", "Sisters of the Thorns"],
+    ["Flamespyre Phoenix", "Flamespyre Phoenixes"],
+    ["Pegasus", "Pegasus"],
+    ["Repeater Crossbowman", "Repeater Crossbowmen"],
+  ])("%s → %s, and back", (one, many) => {
+    expect(displayUnitName(one, 5)).toBe(many);
+    expect(displayUnitName(many, 1)).toBe(one);
+  });
+});
+
+describe("unitLabel", () => {
+  const text = (html) => html.replace(/<[^>]+>/g, "");
+
+  it("plural name, mount, then the model count", () => {
+    expect(
+      text(unitLabel({ name: "Witch Elf", strength: 24, mount: "Cold One" })),
+    ).toBe("Witch Elves (Cold One) x24");
+  });
+
+  it("leaves the count off a row that stands for several units", () => {
+    expect(
+      text(unitLabel({ name: "Dark Rider", strength: 5, merged: true })),
+    ).toBe("Dark Riders");
+  });
+
+  it("keeps a player's own name as written", () => {
+    expect(
+      text(
+        unitLabel({
+          name: "Les Navets victorieux",
+          strength: 11,
+          customName: true,
+        }),
+      ),
+    ).toBe("Les Navets victorieux x11");
+  });
+
+  it("ignores a parsed unit's mount object", () => {
+    expect(
+      text(
+        unitLabel(
+          /** @type {any} */ ({
+            name: "Baron",
+            strength: 1,
+            mount: { name: "Pegasus" },
+          }),
+        ),
+      ),
+    ).toBe("Baron");
   });
 });

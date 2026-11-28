@@ -1,15 +1,10 @@
+import { isCharacter, joinedCharacters } from "../utils/characters.js";
 import { getCharacterAssignments, saveCharacterAssignments } from "../state.js";
 import { navigate } from "../navigate.js";
 import { displayUnitName } from "../utils/unit-name.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
 import { getCasters } from "../army.js";
 import { getApp, renderScreen } from "./_app.js";
-
-const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
-
-function isCharacter(unit) {
-  return CHARACTER_CATEGORIES.has(unit.category);
-}
 
 function renderMagicItemNames(unit) {
   if (!unit.magicItems?.length) return "";
@@ -64,31 +59,11 @@ function renderUnitCard(unit, assignedChars) {
 
 export function renderUnitAssignmentScreen(army) {
   renderScreen(() => {
-    const assignments = getCharacterAssignments();
-    const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-
-    const charsByUnitId = {};
-    for (const unit of army.units.filter((u) => !isCharacter(u))) {
-      charsByUnitId[unit.id] = [];
-    }
-    for (const [charId, unitId] of Object.entries(assignments)) {
-      if (unitId && charsByUnitId[unitId]) {
-        const charUnit = unitById[charId];
-        if (charUnit) charsByUnitId[unitId].push(charUnit);
-      }
-    }
-
-    const assignedCharIds = new Set(
-      Object.entries(assignments)
-        .filter(([, unitId]) => unitId)
-        .map(([charId]) => charId),
-    );
+    const { isJoined, joinedTo } = joinedCharacters(army);
 
     const characters = army.units.filter(isCharacter);
     const regularUnits = army.units.filter((u) => !isCharacter(u));
-    const unassignedChars = characters.filter(
-      (c) => !assignedCharIds.has(c.id),
-    );
+    const unassignedChars = characters.filter((c) => !isJoined(c.id));
 
     getApp().innerHTML = `
       <div class="min-h-dvh flex flex-col">
@@ -112,9 +87,7 @@ export function renderUnitAssignmentScreen(army) {
               <h3 class="text-xs font-bold text-wh-muted mb-2 uppercase tracking-wide">Units</h3>
               <div id="units-list">
                 ${regularUnits
-                  .map((unit) =>
-                    renderUnitCard(unit, charsByUnitId[unit.id] || []),
-                  )
+                  .map((unit) => renderUnitCard(unit, joinedTo(unit.id)))
                   .join("")}
               </div>
             </div>

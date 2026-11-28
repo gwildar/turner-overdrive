@@ -1,4 +1,5 @@
-import { displayUnitName } from "../utils/unit-name.js";
+import { panel } from "./panel.js";
+import { displayUnitName, unitLabel } from "../utils/unit-name.js";
 import {
   HAND_WEAPON,
   buildMountWeaponTags,
@@ -451,16 +452,17 @@ export function renderCombatWeaponsContext(army) {
   const rows = buildCombatEntries(army);
   if (rows.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-combat/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-combat mb-3">Combat Units</h3>
+  return panel(
+    "combat",
+    "Combat Units",
+    `
       <div class="space-y-2">
         ${rows
           .map(
             (r) => `
           <div class="p-2 rounded bg-wh-card">
             <div class="flex justify-between items-start">
-              <div class="text-wh-text font-semibold text-sm">${displayUnitName(r.unitName, r.strength)}${r.mount ? ` (${r.mount})` : ""}${!r.merged && r.strength > 1 ? ` x${r.strength}` : ""}</div>
+              <div class="text-wh-text font-semibold text-sm">${unitLabel({ name: r.unitName, strength: r.strength, merged: r.merged, mount: r.mount, customName: r.customName })}</div>
               <div class="text-right shrink-0 ml-2">
                 <div class="text-wh-muted text-[10px] font-mono">${r.points}pts</div>
                 <div class="text-wh-muted text-[10px] font-mono">US:${r.unitStrength}</div>
@@ -513,8 +515,8 @@ export function renderCombatWeaponsContext(army) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }
 
 /** @param {import("../types").Army} army */
@@ -522,16 +524,17 @@ export function renderCombatResultContext(army) {
   const rows = buildCombatResultEntries(army);
   if (rows.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-combat/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-combat mb-3">Static Combat Bonuses</h3>
+  return panel(
+    "combat",
+    "Static Combat Bonuses",
+    `
       <div class="space-y-1">
         ${rows
           .map(
             (r) => `
           <div class="p-2 rounded bg-wh-card text-sm">
             <div class="flex items-center gap-2">
-              <span class="text-wh-text">${r.name}${!r.merged && r.strength > 1 ? ` x${r.strength}` : ""}</span>
+              <span class="text-wh-text">${unitLabel(r)}</span>
               <span class="text-wh-phase-combat font-mono text-xs ml-auto">+${r.total}</span>
             </div>
             ${r.bonuses.length > 0 ? `<p class="text-xs text-wh-muted mt-0.5">${r.bonuses.join(", ")}</p>` : ""}
@@ -540,8 +543,8 @@ export function renderCombatResultContext(army) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }
 
 /** @param {import("../types").Army} army */
@@ -561,9 +564,10 @@ export function renderCombatLeadershipContext(
   if (rows.length === 0) return "";
   if (!unitList && !general) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-combat/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-combat mb-3">${title}</h3>
+  return panel(
+    "combat",
+    title,
+    `
       ${
         general
           ? `
@@ -578,15 +582,15 @@ export function renderCombatLeadershipContext(
           .map(
             (r) => `
           <div class="p-2 rounded bg-wh-card flex justify-between items-center">
-            <span class="text-wh-text text-sm">${r.name}${!r.merged && r.strength > 1 ? ` x${r.strength}` : ""}</span>
+            <span class="text-wh-text text-sm">${unitLabel(r)}</span>
             <span class="text-wh-muted font-mono text-xs">Ld${r.ld}${r.ldAlt ? `<span class="text-wh-muted/60">/${r.ldAlt}</span>` : ""}</span>
           </div>
         `,
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }
 
 /** @param {import("../types").Army} army */
@@ -594,16 +598,17 @@ export function renderDefensiveStatsContext(army) {
   const rows = buildDefensiveStatsEntries(army);
   if (rows.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-shooting/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-shooting mb-3">Your Units</h3>
+  return panel(
+    "shooting",
+    "Your Units",
+    `
       <div class="space-y-1">
         ${rows
           .map(
             (r) => `
           <div class="p-2 rounded bg-wh-card">
             <div class="flex items-center gap-2 flex-wrap text-sm">
-              <span class="text-wh-text font-semibold">${r.name}${r.mount ? ` (${r.mount})` : ""}${!r.merged && r.strength > 1 ? ` <span class="text-wh-muted font-normal">x${r.strength}</span>` : ""}</span>
+              <span class="text-wh-text font-semibold">${unitLabel(r)}</span>
               <span class="text-wh-muted font-mono text-xs">T:${r.t}</span>
               <span class="text-wh-muted font-mono text-xs">W:${r.w}</span>
               ${r.as ? `<span class="text-blue-400 font-mono text-xs">\u{1F6E1}\uFE0FAS:${r.as}</span>` : ""}
@@ -627,6 +632,6 @@ export function renderDefensiveStatsContext(army) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }

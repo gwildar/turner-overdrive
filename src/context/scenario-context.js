@@ -1,7 +1,9 @@
+import { panel } from "./panel.js";
 export function renderSpecialFeaturesTable() {
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-accent/20 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-accent mb-2">Special Features</h3>
+  return panel(
+    "rules",
+    "Special Features",
+    `
       <p class="text-wh-muted text-xs mb-2">Core unit within 6″, US10+, not fleeing — roll D6 for property until turn end.</p>
       <table class="w-full text-xs mt-2">
         <thead>
@@ -29,6 +31,7 @@ export function renderSpecialFeaturesTable() {
           </tr>
         </tbody>
       </table>
-    </div>
-  `;
+  `,
+    { titleGap: "mb-2" },
+  );
 }

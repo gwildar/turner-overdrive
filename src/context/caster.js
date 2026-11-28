@@ -1,3 +1,4 @@
+import { panel } from "./panel.js";
 import { blastTemplateButton } from "../tools/launchers.js";
 import { LORES, getSpellTypeLabel } from "../data/spells.js";
 import { getCasters } from "../army.js";
@@ -58,9 +59,10 @@ export function renderCasterContext(army, allowedTypes) {
       ? getSpellTypeLabel(allowedTypes[0]) + " Spells"
       : "Spells";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-purple/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-purple mb-3">${label}</h3>
+  return panel(
+    "magic",
+    label,
+    `
       ${castersWithSpells
         .map(
           ({ caster: c, spells }) => `
@@ -91,6 +93,6 @@ export function renderCasterContext(army, allowedTypes) {
         )
         .join("")}
       ${renderMiscastTable()}
-    </div>
-  `;
+  `,
+  );
 }

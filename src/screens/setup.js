@@ -5,7 +5,7 @@ import {
   loadStoredArmy,
   getCasters,
 } from "../army.js";
-import { displayUnitName } from "../utils/unit-name.js";
+import { unitLabel } from "../utils/unit-name.js";
 import {
   clearArmy,
   saveSpellSelections,
@@ -362,8 +362,7 @@ function renderUnitList(army) {
         <div class="py-1 px-2 rounded hover:bg-wh-card text-sm">
           <div class="flex justify-between items-center">
             <div>
-              <span class="text-wh-text">${displayUnitName(u.name, u.strength)}</span>
-              ${u.strength > 1 ? `<span class="text-wh-muted ml-1">x${u.strength}</span>` : ""}
+              <span class="text-wh-text">${unitLabel(u)}</span>
               ${u.mount ? `<span class="text-wh-muted ml-1">(${u.mount.name})</span>` : ""}
               ${u.isGeneral ? '<span class="text-wh-phase-combat ml-1 text-xs">GENERAL</span>' : ""}
               ${u.isBSB ? '<span class="text-wh-phase-combat ml-1 text-xs">BSB</span>' : ""}
@@ -373,7 +372,7 @@ function renderUnitList(army) {
             </div>
             <span class="text-wh-muted font-mono text-xs shrink-0 ml-2">${u.points}pts</span>
           </div>
-          ${(u.detachments || []).map((d) => `<div class="text-wh-muted text-xs pl-2">${d.name}${d.strength > 1 ? ` x${d.strength}` : ""}</div>`).join("")}
+          ${(u.detachments || []).map((d) => `<div class="text-wh-muted text-xs pl-2">${unitLabel(d)}</div>`).join("")}
         </div>
       `;
         })

@@ -85,6 +85,19 @@ describe("Battle Builder (.bb.json) import", () => {
     expect(stored?.army).toBe("dark-elves");
   });
 
+  it("maps units Battle Builder names differently", () => {
+    const owb = battleBuilderToOwb(
+      {
+        factionId: "tow/beastmen-brayherds",
+        forceTemplateId: "tow/beastmen-brayherds/wild-herd",
+        units: [{ unitEntryId: "tow/beastmen-brayherds/centigor-chieftain" }],
+      },
+      catalog,
+    );
+    const [unit] = parseArmyList(owb).units;
+    expect(unit.stats[0].Name).toBe("Warhoof");
+  });
+
   it("names units the catalog doesn't have", () => {
     expect(() =>
       battleBuilderToOwb(

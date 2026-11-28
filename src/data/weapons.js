@@ -1164,6 +1164,18 @@ export const RANGED_WEAPONS = {
     ],
     range: '18"',
   },
+  "root eruption": {
+    name: "Root Eruption",
+    range: '24"',
+    s: "3(6)",
+    ap: "-1",
+    rules: [
+      "Bombardment (blast: see Root Eruption)",
+      "Move & Shoot",
+      "Multiple Wounds (D3+1) on central model",
+    ],
+    noBS: true,
+  },
   strangleroots: {
     name: "Strangleroots",
     s: "S",
@@ -1979,6 +1991,12 @@ export const COMBAT_WEAPONS = {
     rules: ["Armour Bane (1)", "Killing Blow"],
   },
   "oaken fists": { name: "Oaken Fists", s: "S", ap: "-2", rules: [] },
+  "huge oaken fists": {
+    name: "Huge Oaken Fists",
+    s: "S",
+    ap: "-2",
+    rules: ["Armour Bane (2)"],
+  },
   "piercing claws": {
     name: "Piercing Claws",
     s: "S",

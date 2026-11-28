@@ -9,6 +9,8 @@
  * needed at import.
  */
 
+import { LORES, LORE_NAME_TO_KEY } from "../data/spells.js";
+
 /** @param {any} json */
 export function isBattleBuilderList(json) {
   return (
@@ -80,6 +82,13 @@ const UNIT_KEYS = {
 const UNIT_NAMES = {
   "tow/dark-elves/dark-elf-crossbowmen": "Repeater Crossbowmen",
 };
+
+/** The app's lore key for a lore option ("lore-of-the-wilds" → "the-wilds") */
+function loreKey(id, name) {
+  if (LORES[id]) return id;
+  const n = name.toLowerCase();
+  return LORE_NAME_TO_KEY[n] ?? LORE_NAME_TO_KEY[`lore of ${n}`] ?? id;
+}
 
 /** Armour and shields can sit in "equipment" groups */
 const ARMOUR_RE = /armour|shield|barding|armor/i;
@@ -186,8 +195,10 @@ export function battleBuilderToOwb(json, catalog) {
           break;
         case "magic":
           if (group.lore) {
-            raw.lores = Object.keys(group.o);
-            raw.activeLore = sel.optionId;
+            raw.lores = Object.entries(group.o).map(([id, o]) =>
+              loreKey(id, o.n),
+            );
+            raw.activeLore = loreKey(sel.optionId, opt.n);
           } else if (/^level \d+ wizard/i.test(opt.n)) {
             // as OWB has it: an active "Wizard" option holding the level
             raw.options.push({
@@ -203,6 +214,21 @@ export function battleBuilderToOwb(json, catalog) {
           raw.options.push({ name_en: opt.n, ...priced });
           rules.push(...optRules);
       }
+    }
+
+    // Default equipment outside the option groups (a Gargantuan Treeman's
+    // fists and root eruption), unless an option already gave it
+    const has = (name) =>
+      [...raw.equipment, ...raw.armor].some((e) =>
+        e.name_en.toLowerCase().includes(name.toLowerCase()),
+      );
+    for (const name of entry.e || []) {
+      if (has(name)) continue;
+      (ARMOUR_RE.test(name) ? raw.armor : raw.equipment).push({
+        name_en: name,
+        points: 0,
+        active: true,
+      });
     }
 
     // A hand weapon swapped for another weapon is still carried

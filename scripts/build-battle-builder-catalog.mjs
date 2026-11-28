@@ -104,6 +104,10 @@ for (const u of data.unitEntries) {
     b: u.baseCost ?? 0,
     ...(u.minQuantity > 1 || u.maxQuantity !== 1 ? { pm: 1 } : {}),
     r: rulesFrom(u.tags || []),
+    // equipment every model has, outside any option group
+    ...(u.defaultEquipmentRefs?.length
+      ? { e: u.defaultEquipmentRefs.map((id) => equipmentNames.get(id) ?? id) }
+      : {}),
     g: groups,
   };
 }

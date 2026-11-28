@@ -123,6 +123,38 @@ describe("Battle Builder (.bb.json) import", () => {
     expect(getSupplementVersion("de-renegade")).toBe("v1.5.2.2");
   });
 
+  it("imports Gargantuan Treemen with their default weapons and lore", () => {
+    const owb = battleBuilderToOwb(
+      {
+        factionId: "tow/wood-elf-realms",
+        forceTemplateId: "tow/wood-elf-realms/grand-army",
+        units: [
+          {
+            unitEntryId: "tow/wood-elf-realms/gargantuan-treeman-ancient",
+            selectedOptions: [
+              {
+                groupId: "gargantuan-treeman-ancient-lore",
+                optionId: "lore-of-the-wilds",
+              },
+            ],
+          },
+          { unitEntryId: "tow/wood-elf-realms/gargantuan-treeman" },
+        ],
+      },
+      catalog,
+    );
+    const [ancient, treeman] = parseArmyList(owb).units;
+    expect(ancient.stats[0].Name).toBe("Gargantuan Treeman Ancient");
+    expect(ancient.activeLore).toBe("the-wilds");
+    expect(ancient.unitStrength).toBe(7);
+    expect(treeman.weapons.map((w) => w.name)).toContain("Huge Oaken Fists");
+    expect(treeman.shootingWeapons.map((w) => w.name)).toEqual([
+      "Root Eruption",
+    ]);
+    expect(treeman.armourSave).toBe("4+");
+    expect(treeman.points).toBe(300);
+  });
+
   it("names units the catalog doesn't have", () => {
     expect(() =>
       battleBuilderToOwb(

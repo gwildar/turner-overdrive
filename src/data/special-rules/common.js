@@ -1624,6 +1624,14 @@ const RULES = [
     phases: [],
   },
   {
+    id: "root eruption",
+    displayName: "Root Eruption",
+    description:
+      'Root eruption shoots like a stone thrower (Bombardment) with the blast template shown (3" Gargantuan Treeman, 5" Gargantuan Treeman Ancient). On a Misfire this model loses a single Wound instead of rolling on a Misfire table. Multiple Wounds (D3+1) applies only to a model under the template\'s central hole.',
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
     id: "tree whack",
     displayName: "Tree Whack",
     description:

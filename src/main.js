@@ -113,3 +113,7 @@ try {
 } catch (err) {
   showErrorOverlay(err);
 }
+
+// Offline cache and automatic updates (see pwa.js); not in dev or tests
+if (import.meta.env.PROD)
+  import("./pwa.js").then((pwa) => pwa.setupAutoUpdate());

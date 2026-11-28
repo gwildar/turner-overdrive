@@ -1,3 +1,4 @@
+import { panel } from "./panel.js";
 import { subPhaseIdsFor } from "../phases.js";
 import { getRound } from "../state.js";
 import { normaliseRuleName } from "../helpers.js";
@@ -107,9 +108,10 @@ function buildUnitRules(unit) {
 function renderRulesBlock(grouped, title) {
   const entries = Object.values(grouped);
   if (entries.length === 0) return "";
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-accent/20 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-accent mb-3">${title}</h3>
+  return panel(
+    "rules",
+    title,
+    `
       <div class="space-y-2">
         ${entries
           .map(
@@ -154,8 +156,8 @@ function renderRulesBlock(grouped, title) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }
 
 /**
@@ -171,122 +173,85 @@ function findRulesForName(normName, resolvedRules, ruleset) {
   return rule?.phases?.length ? [withPhaseEntries(rule)] : [];
 }
 
-/** @param {import("../types").Army} army */
+/**
+ * Every step entry of every special rule in the army, with the unit that
+ * has it: `{ unit, rule, phase }`, where `phase` is a `{ subPhaseId,
+ * description, … }` entry. The screens below filter this one walk.
+ * @param {import("../types").Army} army
+ */
+function* ruleEntries(army) {
+  const ruleset = armyRuleset(army);
+  for (const unit of army.units) {
+    const { unitRules, resolvedRules } = buildUnitRules(unit);
+    for (const ruleName of unitRules) {
+      const normName = normaliseRuleName(ruleName);
+      for (const rule of findRulesForName(normName, resolvedRules, ruleset))
+        for (const phase of rule.phases) yield { unit, rule, phase };
+    }
+  }
+}
+
+/** Entries grouped by rule and text, listing the units that have each */
+function groupByRule(entries) {
+  const grouped = {};
+  for (const { unit, rule, phase } of entries) {
+    const key = `${rule.displayName}||${phase.description}`;
+    grouped[key] ??= {
+      ruleName: rule.displayName,
+      description: phase.description,
+      table: phase.table ?? null,
+      units: [],
+    };
+    if (!grouped[key].units.includes(unit.name))
+      grouped[key].units.push(unit.name);
+  }
+  return grouped;
+}
+
+/** Whether a step would show any special rules (steps with none are skipped) */
 export function hasSpecialRulesForSubPhase(army, subPhaseId) {
-  const ruleset = armyRuleset(army);
-  for (const unit of army.units) {
-    const { unitRules, resolvedRules } = buildUnitRules(unit);
-    for (const ruleName of unitRules) {
-      const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
-        const ids = subPhaseIdsFor(subPhaseId);
-        if (rule.phases.some((p) => ids.includes(p.subPhaseId))) return true;
-      }
-    }
-  }
+  const ids = subPhaseIdsFor(subPhaseId);
+  for (const { phase } of ruleEntries(army))
+    if (ids.includes(phase.subPhaseId)) return true;
   return false;
 }
 
-/** @param {import("../types").Army} army */
+/** Whether your Start of Turn step has special rules this round */
 export function hasStartOfTurnRules(army, round) {
-  const ruleset = armyRuleset(army);
-  for (const unit of army.units) {
-    const { unitRules, resolvedRules } = buildUnitRules(unit);
-    for (const ruleName of unitRules) {
-      const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
-        for (const phase of rule.phases) {
-          if (phase.subPhaseId !== "start-of-turn") continue;
-          if (phase.fromRound && round < phase.fromRound) continue;
-          if (phase.opponentOnly) continue;
-          return true;
-        }
-      }
-    }
-  }
+  for (const { phase } of ruleEntries(army))
+    if (
+      phase.subPhaseId === "start-of-turn" &&
+      !(phase.fromRound && round < phase.fromRound) &&
+      !phase.opponentOnly
+    )
+      return true;
   return false;
 }
 
-/** @param {import("../types").Army} army */
+/** Special rules for one of your steps */
 export function renderSpecialRulesContext(army, subPhase) {
-  const ruleset = armyRuleset(army);
   const round = getRound();
-  const matches = [];
   const ids = subPhaseIdsFor(subPhase.id).filter(
     (id) => !(army.skipPhases || []).includes(id),
   );
-
-  for (const unit of army.units) {
-    const { unitRules, resolvedRules } = buildUnitRules(unit);
-
-    for (const ruleName of unitRules) {
-      const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
-        for (const phase of rule.phases) {
-          if (!ids.includes(phase.subPhaseId)) continue;
-          if (phase.fromRound && round < phase.fromRound) continue;
-          if (phase.opponentOnly) continue;
-          matches.push({
-            unitName: unit.name,
-            ruleName: rule.displayName,
-            description: phase.description,
-            table: phase.table ?? null,
-          });
-        }
-      }
-    }
-  }
-
-  const grouped = {};
-  for (const m of matches) {
-    const key = `${m.ruleName}||${m.description}`;
-    if (!grouped[key])
-      grouped[key] = {
-        ruleName: m.ruleName,
-        description: m.description,
-        table: m.table,
-        units: [],
-      };
-    if (!grouped[key].units.includes(m.unitName))
-      grouped[key].units.push(m.unitName);
-  }
-
-  return renderRulesBlock(grouped, "Special Rules This Step");
+  const entries = [...ruleEntries(army)].filter(
+    ({ phase }) =>
+      ids.includes(phase.subPhaseId) &&
+      !(phase.fromRound && round < phase.fromRound) &&
+      !phase.opponentOnly,
+  );
+  return renderRulesBlock(groupByRule(entries), "Special Rules This Step");
 }
 
-/** @param {import("../types").Army} army */
+/** Special rules for a whole phase of the opponent's turn, step by step */
 export function renderSpecialRulesForPhase(army, phase) {
-  const ruleset = armyRuleset(army);
   const round = getRound();
-  const grouped = {};
-
-  for (const sub of phase.subPhases) {
-    for (const unit of army.units) {
-      const { unitRules, resolvedRules } = buildUnitRules(unit);
-
-      for (const ruleName of unitRules) {
-        const normName = normaliseRuleName(ruleName);
-        for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
-          for (const rulePhase of rule.phases) {
-            if (!subPhaseIdsFor(sub.id).includes(rulePhase.subPhaseId))
-              continue;
-            if (rulePhase.fromRound && round < rulePhase.fromRound) continue;
-            if (rulePhase.yourTurnOnly) continue;
-            const key = `${rule.displayName}||${rulePhase.description}`;
-            if (!grouped[key])
-              grouped[key] = {
-                ruleName: rule.displayName,
-                description: rulePhase.description,
-                table: rulePhase.table ?? null,
-                units: [],
-              };
-            if (!grouped[key].units.includes(unit.name))
-              grouped[key].units.push(unit.name);
-          }
-        }
-      }
-    }
-  }
-
-  return renderRulesBlock(grouped, "Special Rules This Phase");
+  const all = [...ruleEntries(army)].filter(
+    ({ phase: p }) => !(p.fromRound && round < p.fromRound) && !p.yourTurnOnly,
+  );
+  const inStepOrder = phase.subPhases.flatMap((sub) => {
+    const ids = subPhaseIdsFor(sub.id);
+    return all.filter(({ phase: p }) => ids.includes(p.subPhaseId));
+  });
+  return renderRulesBlock(groupByRule(inStepOrder), "Special Rules This Phase");
 }

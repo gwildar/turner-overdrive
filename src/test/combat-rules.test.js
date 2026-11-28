@@ -253,7 +253,7 @@ describe("renderCombatLeadershipContext — character assignment grouping", () =
     const knights = army.units.find((u) => u.name === "Knight of the Realm");
     saveCharacterAssignments({ [baron.id]: knights.id });
     const html = renderCombatLeadershipContext(army);
-    expect(html).toContain("Knight of the Realm");
+    expect(html).toContain("Knights of the Realm");
     expect(html).toContain("Ld9");
   });
 

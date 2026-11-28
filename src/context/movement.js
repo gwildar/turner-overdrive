@@ -1,43 +1,23 @@
+import { panel } from "./panel.js";
+import { joinedCharacters, isCharacter } from "../utils/characters.js";
 import {
   randomMovement,
   resolveMovement,
   extractFlyMovement,
   resolveBaseMv,
 } from "../helpers.js";
-import { displayUnitName } from "../utils/unit-name.js";
-import { getCharacterAssignments } from "../state.js";
-
-const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
+import { unitLabel } from "../utils/unit-name.js";
 
 /** @param {import("../types").Army} army */
 export function renderMovementStatsContext(army) {
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, unitId]) => unitId)
-      .map(([charId]) => charId),
-  );
-  const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-  const charsByUnitId = {};
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    const charUnit = unitById[charId];
-    if (charUnit) {
-      if (!charsByUnitId[unitId]) charsByUnitId[unitId] = [];
-      charsByUnitId[unitId].push(charUnit);
-    }
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
   // Random movers move in Compulsory Moves (see Random Movers), not here
   const rows = army.units
-    .filter(
-      (u) =>
-        !(CHARACTER_CATEGORIES.has(u.category) && assignedCharIds.has(u.id)) &&
-        !randomMovement(u),
-    )
+    .filter((u) => !(isCharacter(u) && isJoined(u.id)) && !randomMovement(u))
     .map((u) => {
       const mountData = u.mount ?? null;
-      const chars = (charsByUnitId[u.id] || []).map((c) => c.name);
+      const chars = joinedTo(u.id).map((c) => c.name);
 
       // Crewed units: use crew M stat; war machines (WM) cannot march, others can
       const isWM = u.stats?.[0]?.troopType?.includes("WM");
@@ -86,9 +66,10 @@ export function renderMovementStatsContext(army) {
 
   if (rows.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-movement/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-movement mb-3">Movement</h3>
+  return panel(
+    "movement",
+    "Movement",
+    `
       <div class="space-y-1">
         ${rows
           .map(
@@ -97,8 +78,7 @@ export function renderMovementStatsContext(army) {
             <div class="flex justify-between items-start">
               <div>
                 <div class="flex flex-wrap items-center gap-1">
-                  <span class="text-wh-text">${displayUnitName(u.name, u.strength)}</span>
-                  ${u.strength > 1 ? `<span class="text-wh-muted">x${u.strength}</span>` : ""}
+                  <span class="text-wh-text">${unitLabel(u)}</span>
                 </div>
                 ${chars.map((c) => `<div class="text-wh-muted text-xs">${c}</div>`).join("")}
               </div>
@@ -121,6 +101,6 @@ export function renderMovementStatsContext(army) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }

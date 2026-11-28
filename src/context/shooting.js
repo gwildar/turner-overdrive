@@ -1,8 +1,10 @@
+import { panel } from "./panel.js";
+import { mergeDuplicates } from "../utils/merge-duplicates.js";
 import { blastTemplateButton } from "../tools/launchers.js";
 import { usesBlastTemplate, weaponBlastSize } from "../tools/blast-template.js";
 import { getShootingUnits } from "../army.js";
 import { RANGED_WEAPONS, MISFIRE_TABLES, getWeapon } from "../data/weapons.js";
-import { displayUnitName } from "../utils/unit-name.js";
+import { unitLabel } from "../utils/unit-name.js";
 
 /** @param {import("../types").Unit} unit */
 function getBS(unit) {
@@ -76,6 +78,7 @@ export function renderShootingContext(army) {
         if (weapon) {
           entries.push({
             unitName: u.name,
+            customName: u.customName,
             strength: u.strength,
             bs: null,
             unitS,
@@ -97,6 +100,7 @@ export function renderShootingContext(army) {
       const weaponCrewName = weapon.crewName || null;
       const entryFor = (w) => ({
         unitName: u.name,
+        customName: u.customName,
         strength: u.strength,
         bs: weaponBS,
         unitS,
@@ -121,6 +125,7 @@ export function renderShootingContext(army) {
     if (!matched) {
       entries.push({
         unitName: u.name,
+        customName: u.customName,
         strength: u.strength,
         bs,
         unitS,
@@ -131,19 +136,11 @@ export function renderShootingContext(army) {
     }
   }
 
-  // Deduplicate by unitName + weaponName + bs
-  const deduped = {};
-  for (const e of entries) {
-    const weaponName = e.weapon?.name || "other";
-    const key = `${e.unitName}||${weaponName}||${e.bs}`;
-    if (!deduped[key]) {
-      deduped[key] = { ...e, merged: false };
-    } else {
-      deduped[key].merged = true;
-    }
-  }
-
-  const rows = Object.values(deduped);
+  // One row per unit, weapon and BS
+  const rows = mergeDuplicates(
+    entries,
+    (e) => `${e.unitName}||${e.weapon?.name || "other"}||${e.bs}`,
+  );
   const weaponRows = rows.filter((r) => r.weapon);
   const otherRows = rows.filter((r) => !r.weapon);
 
@@ -156,6 +153,7 @@ export function renderShootingContext(army) {
       groups.set(r.unitName, {
         strength: r.strength,
         merged: r.merged,
+        customName: r.customName,
         championBS: r.championBS,
         hasArrowsOfIsha: r.hasArrowsOfIsha,
         weapons: [],
@@ -164,16 +162,17 @@ export function renderShootingContext(army) {
     groups.get(r.unitName).weapons.push(r);
   }
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-shooting/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-shooting mb-3">Shooting Units</h3>
+  return panel(
+    "shooting",
+    "Shooting Units",
+    `
       <div class="space-y-2">
         ${[...groups.entries()]
           .map(
             ([unitName, group]) => `
           <div class="p-2 rounded bg-wh-card">
             <div class="text-sm font-semibold text-wh-text mb-1">
-              ${displayUnitName(unitName, group.strength)}${!group.merged && group.strength > 1 ? ` <span class="text-wh-muted font-normal">x${group.strength}</span>` : ""}
+              ${unitLabel({ name: unitName, strength: group.strength, merged: group.merged, customName: group.customName })}
             </div>
             <div class="space-y-1">
               ${group.weapons
@@ -207,15 +206,15 @@ export function renderShootingContext(army) {
             ? `
           <div class="p-2 rounded bg-wh-card">
             <div class="text-sm font-semibold text-wh-text mb-1">Other</div>
-            <p class="text-xs text-wh-text">${otherRows.map((r) => displayUnitName(r.unitName, r.strength) + (!r.merged && r.strength > 1 ? ` x${r.strength}` : "") + (r.bs ? ` BS${r.bs}` : "")).join(", ")}</p>
+            <p class="text-xs text-wh-text">${otherRows.map((r) => unitLabel({ name: r.unitName, strength: r.strength, merged: r.merged, customName: r.customName }) + (r.bs ? ` BS${r.bs}` : "")).join(", ")}</p>
           </div>
         `
             : ""
         }
       </div>
       ${renderMisfireTables(weaponRows)}
-    </div>
-  `;
+  `,
+  );
 }
 
 function renderMisfireTables(weaponRows) {

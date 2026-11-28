@@ -1,3 +1,4 @@
+import { panel } from "./panel.js";
 import { getScenarioOptions } from "../state.js";
 
 const MISCAST_TABLE = [
@@ -125,10 +126,12 @@ export function renderMiscastTable() {
 // Always-visible panel — used on the opponent turn screen
 export function renderMiscastPanel() {
   const { title, rows } = activeTable();
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-purple/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-purple mb-1">${title}</h3>
+  return panel(
+    "magic",
+    title,
+    `
       ${miscastTableHtml(rows)}
-    </div>
-  `;
+  `,
+    { titleGap: "mb-1" },
+  );
 }

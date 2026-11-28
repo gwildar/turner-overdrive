@@ -1,17 +1,12 @@
+import { mergeDuplicates } from "../utils/merge-duplicates.js";
+import { isCharacter, joinedCharacters } from "../utils/characters.js";
 import { hasRule } from "../helpers.js";
 import { COMBAT_WEAPONS, getWeapon } from "../data/weapons.js";
 import { findMount, isBigMount, mountedTW } from "../parsers/resolve.js";
-import { getCharacterAssignments } from "../state.js";
 
 export const HAND_WEAPON = { name: "Hand Weapon", s: "S", ap: "—", rules: [] };
 
-const CHARACTER_CATEGORIES = new Set(["characters", "lords", "heroes"]);
-
 /** @param {import("../types").Unit} unit */
-function isCharacter(unit) {
-  return CHARACTER_CATEGORIES.has(unit.category);
-}
-
 /** @param {import("../types").Unit} unit */
 function findVirtueAttacks(unit) {
   for (const item of unit.magicItems || []) {
@@ -544,28 +539,13 @@ export function buildCombatLeadershipData(army) {
     };
   }
 
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, unitId]) => unitId)
-      .map(([charId]) => charId),
-  );
-  const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-  const charsByUnitId = {};
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    const charUnit = unitById[charId];
-    if (charUnit) {
-      if (!charsByUnitId[unitId]) charsByUnitId[unitId] = [];
-      charsByUnitId[unitId].push(charUnit);
-    }
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
-  const deduped = {};
+  const entries = [];
   for (const u of army.units) {
-    if (isCharacter(u) && assignedCharIds.has(u.id)) continue;
+    if (isCharacter(u) && isJoined(u.id)) continue;
 
-    const assignedChars = charsByUnitId[u.id] || [];
+    const assignedChars = joinedTo(u.id);
     const crewedLds = getCrewedLds(u);
     const allLds = [
       ...(crewedLds
@@ -576,18 +556,20 @@ export function buildCombatLeadershipData(army) {
     const maxLd = allLds.length > 0 ? String(Math.max(...allLds)) : "?";
     const ldAlt = crewedLds && !assignedChars.length ? crewedLds.alt : null;
 
-    const key = `${u.name}||${maxLd}`;
-    if (!deduped[key])
-      deduped[key] = {
-        name: u.name,
-        ld: maxLd,
-        ldAlt,
-        ldNum: parseInt(maxLd) || 0,
-        chars: assignedChars.map((c) => c.name),
-      };
+    entries.push({
+      name: u.name,
+      customName: u.customName,
+      strength: u.strength,
+      ld: maxLd,
+      ldAlt,
+      ldNum: parseInt(maxLd) || 0,
+      chars: assignedChars.map((c) => c.name),
+    });
   }
 
-  const rows = Object.values(deduped).sort((a, b) => b.ldNum - a.ldNum);
+  const rows = mergeDuplicates(entries, (e) => `${e.name}||${e.ld}`).sort(
+    (a, b) => b.ldNum - a.ldNum,
+  );
 
   const general = army.units.find((u) => u.isGeneral) ?? null;
   const bsb = army.units.find((u) => u.isBSB) ?? null;
@@ -618,26 +600,11 @@ export function buildCombatLeadershipData(army) {
 export function buildCombatResultEntries(army) {
   if (army.units.length === 0) return [];
 
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, uid]) => uid)
-      .map(([cid]) => cid),
-  );
-  const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-  const charsByUnitId = {};
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    const charUnit = unitById[charId];
-    if (charUnit) {
-      if (!charsByUnitId[unitId]) charsByUnitId[unitId] = [];
-      charsByUnitId[unitId].push(charUnit);
-    }
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
   const entries = [];
   for (const u of army.units) {
-    if (isCharacter(u) && assignedCharIds.has(u.id)) continue;
+    if (isCharacter(u) && isJoined(u.id)) continue;
 
     const bonuses = [];
     let total = 0;
@@ -655,7 +622,7 @@ export function buildCombatResultEntries(army) {
       bonuses.push("Musician");
     }
 
-    const assignedChars = charsByUnitId[u.id] || [];
+    const assignedChars = joinedTo(u.id);
     const allUnits = [u, ...assignedChars];
     for (const unit of allUnits) {
       for (const item of unit.magicItems || []) {
@@ -668,45 +635,34 @@ export function buildCombatResultEntries(army) {
 
     if (total === 0 && !u.hasMusician) continue;
 
-    entries.push({ name: u.name, strength: u.strength, total, bonuses });
+    entries.push({
+      name: u.name,
+      customName: u.customName,
+      strength: u.strength,
+      total,
+      bonuses,
+    });
   }
 
-  const deduped = {};
-  for (const e of entries) {
-    const key = `${e.name}||${e.total}||${e.bonuses.join(",")}`;
-    if (!deduped[key]) deduped[key] = { ...e, merged: false };
-    else deduped[key].merged = true;
-  }
-
-  return Object.values(deduped).sort((a, b) => b.total - a.total);
+  return mergeDuplicates(
+    entries,
+    (e) => `${e.name}||${e.total}||${e.bonuses.join(",")}`,
+  ).sort((a, b) => b.total - a.total);
 }
 
 /** @param {import("../types").Army} army */
 export function buildCombatEntries(army) {
   if (army.units.length === 0) return [];
 
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, unitId]) => unitId)
-      .map(([charId]) => charId),
-  );
-  const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-  const charsByUnitId = {};
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    if (!charsByUnitId[unitId]) charsByUnitId[unitId] = [];
-    const charUnit = unitById[charId];
-    if (charUnit) charsByUnitId[unitId].push(charUnit);
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
   const entries = [];
 
   for (const u of army.units) {
     // Skip characters that are assigned to a host unit
-    if (isCharacter(u) && assignedCharIds.has(u.id)) continue;
+    if (isCharacter(u) && isJoined(u.id)) continue;
 
-    const assignedChars = charsByUnitId[u.id] || [];
+    const assignedChars = joinedTo(u.id);
     const allUnitsForBonuses = [u, ...assignedChars];
     const charBannerNames = assignedChars.flatMap((char) =>
       (char.magicItems || [])
@@ -803,6 +759,7 @@ export function buildCombatEntries(army) {
       } = buildFilteredItems(u);
       entries.push({
         unitName: u.name,
+        customName: u.customName,
         points: u.points,
         strength: u.strength,
         mount: null,
@@ -1008,6 +965,7 @@ export function buildCombatEntries(army) {
     } = buildFilteredItems(u);
     entries.push({
       unitName: u.name,
+      customName: u.customName,
       points: u.points,
       strength: u.strength,
       mount: isRiddenMonster || (mount && mount.a) ? mount.name : null,
@@ -1137,51 +1095,32 @@ export function buildCombatEntries(army) {
     });
   }
 
-  // Deduplicate
-  const deduped = {};
-  for (const e of entries) {
-    const riderWKey = e.riderWeapons
-      .map((w) => w.name)
+  // Same unit, profile, weapons and items: one card
+  const names = (list) =>
+    list
+      .map((x) => x.name)
       .sort()
       .join(",");
-    const mountWKey = e.mountWeapons
-      .map((w) => w.name)
-      .sort()
-      .join(",");
-    const itemKey = [...e.itemNames, ...e.singleUseItems.map((i) => i.name)]
-      .sort()
-      .join(",");
-    const key = `${e.unitName}||${e.riderI}||${e.riderA}||${e.t}||${e.w}||${e.as}||${riderWKey}||${mountWKey}||${itemKey}`;
-    if (!deduped[key]) {
-      deduped[key] = { ...e, merged: false };
-    } else {
-      deduped[key].merged = true;
-    }
-  }
-
-  return Object.values(deduped).sort((a, b) => b.iNum - a.iNum);
+  return mergeDuplicates(entries, (e) =>
+    [
+      e.unitName,
+      e.riderI,
+      e.riderA,
+      e.t,
+      e.w,
+      e.as,
+      names(e.riderWeapons),
+      names(e.mountWeapons),
+      [...e.itemNames, ...e.singleUseItems.map((i) => i.name)].sort().join(","),
+    ].join("||"),
+  ).sort((a, b) => b.iNum - a.iNum);
 }
 
 /** @param {import("../types").Army} army */
 export function buildDefensiveStatsEntries(army) {
   if (army.units.length === 0) return [];
 
-  const assignments = getCharacterAssignments();
-  const assignedCharIds = new Set(
-    Object.entries(assignments)
-      .filter(([, unitId]) => unitId)
-      .map(([charId]) => charId),
-  );
-  const unitById = Object.fromEntries(army.units.map((u) => [u.id, u]));
-  const charsByUnitId = {};
-  for (const [charId, unitId] of Object.entries(assignments)) {
-    if (!unitId) continue;
-    const charUnit = unitById[charId];
-    if (charUnit) {
-      if (!charsByUnitId[unitId]) charsByUnitId[unitId] = [];
-      charsByUnitId[unitId].push(charUnit);
-    }
-  }
+  const { isJoined, joinedTo } = joinedCharacters(army);
 
   function extractStats(u) {
     const stats = u.stats?.[0];
@@ -1219,36 +1158,21 @@ export function buildDefensiveStatsEntries(army) {
     };
   }
 
-  const deduped = {};
+  const entries = [];
   for (const u of army.units) {
-    if (isCharacter(u) && assignedCharIds.has(u.id)) continue;
-
-    const { t, w, as, ward, regen, mr, ld, hasEvasive, mount } =
-      extractStats(u);
-    const assignedChars = charsByUnitId[u.id] || [];
-
-    const key = `${u.name}||${t}||${w}||${as}`;
-    if (!deduped[key]) {
-      deduped[key] = {
-        name: u.name,
-        strength: u.strength,
-        mount,
-        t,
-        w,
-        as,
-        ward,
-        regen,
-        mr,
-        ld,
-        ldNum: parseInt(ld) || 0,
-        hasEvasive,
-        merged: false,
-        chars: assignedChars.map((c) => ({ name: c.name, ...extractStats(c) })),
-      };
-    } else {
-      deduped[key].merged = true;
-    }
+    if (isCharacter(u) && isJoined(u.id)) continue;
+    const stats = extractStats(u);
+    entries.push({
+      name: u.name,
+      customName: u.customName,
+      strength: u.strength,
+      ...stats,
+      ldNum: parseInt(stats.ld) || 0,
+      chars: joinedTo(u.id).map((c) => ({ name: c.name, ...extractStats(c) })),
+    });
   }
-
-  return Object.values(deduped).sort((a, b) => b.ldNum - a.ldNum);
+  return mergeDuplicates(
+    entries,
+    (e) => `${e.name}||${e.t}||${e.w}||${e.as}`,
+  ).sort((a, b) => b.ldNum - a.ldNum);
 }

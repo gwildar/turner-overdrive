@@ -1,3 +1,4 @@
+import { panel } from "./panel.js";
 import { subPhaseIdsFor } from "../phases.js";
 /** @param {import("../types").Army} army */
 export function renderVirtuesContext(army, phaseId, subPhaseId) {
@@ -26,9 +27,10 @@ export function renderVirtuesContext(army, phaseId, subPhaseId) {
   const entries = Object.values(grouped);
   if (entries.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-blue-400/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-blue-400 mb-3">Virtues</h3>
+  return panel(
+    "virtues",
+    "Virtues",
+    `
       <div class="space-y-2">
         ${entries
           .map(
@@ -42,6 +44,6 @@ export function renderVirtuesContext(army, phaseId, subPhaseId) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }

@@ -1,4 +1,5 @@
-import { displayUnitName } from "../utils/unit-name.js";
+import { panel } from "./panel.js";
+import { unitLabel } from "../utils/unit-name.js";
 import { randomMovement } from "../helpers.js";
 
 /** @param {import("../types").Army} army */
@@ -9,9 +10,10 @@ export function renderRandomMoverContext(army) {
 
   if (movers.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-phase-movement/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-phase-movement mb-3">Random Movers</h3>
+  return panel(
+    "movement",
+    "Random Movers",
+    `
       <div class="space-y-1">
         ${movers
           .map(({ unit: u, move }) => {
@@ -27,9 +29,7 @@ export function renderRandomMoverContext(army) {
           <div class="text-sm py-1 px-2 rounded bg-wh-card">
             <div class="flex justify-between items-center gap-2">
               <div class="flex items-center gap-1">
-                <span class="text-wh-text">${displayUnitName(u.name, u.strength)}</span>
-                ${u.strength > 1 ? `<span class="text-wh-muted">x${u.strength}</span>` : ""}
-                ${u.mount?.mDice ? `<span class="text-wh-muted text-xs">(${u.mount.name})</span>` : ""}
+                <span class="text-wh-text">${unitLabel({ ...u, mount: u.mount?.mDice ? u.mount.name : null })}</span>
               </div>
               <span class="flex items-center gap-1 shrink-0" title="Roll for the maximum distance moved">${dice}</span>
             </div>
@@ -38,7 +38,6 @@ export function renderRandomMoverContext(army) {
         `;
           })
           .join("")}
-      </div>
-    </div>
-  `;
+      </div>`,
+  );
 }

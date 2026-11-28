@@ -1,3 +1,4 @@
+import { panel } from "./panel.js";
 import { subPhaseIdsFor } from "../phases.js";
 import { TEMPLATE_SPELL_NAMES, spellTemplateSize } from "../data/spells.js";
 import { blastTemplateButton } from "../tools/launchers.js";
@@ -58,9 +59,10 @@ export function renderMagicItemsContext(army, phaseId, subPhaseId) {
   const entries = Object.values(grouped);
   if (entries.length === 0) return "";
 
-  return `
-    <div class="bg-wh-surface rounded-lg border border-wh-purple/30 p-4 mb-4">
-      <h3 class="text-sm font-bold text-wh-purple mb-3">Magic Items</h3>
+  return panel(
+    "magic",
+    "Magic Items",
+    `
       <div class="space-y-2">
         ${entries
           .map(
@@ -76,6 +78,6 @@ export function renderMagicItemsContext(army, phaseId, subPhaseId) {
           )
           .join("")}
       </div>
-    </div>
-  `;
+  `,
+  );
 }

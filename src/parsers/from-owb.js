@@ -536,6 +536,8 @@ function parseCanonicalUnit(
   const unit = {
     id,
     name: displayName,
+    // a name the player gave the unit, shown as written (not pluralised)
+    customName: Boolean(raw.name),
     category,
     strength,
     points: calculateUnitPoints(raw),

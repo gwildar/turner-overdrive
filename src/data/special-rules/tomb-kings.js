@@ -1,7 +1,5 @@
 /** @type {import("../../types").SpecialRule[]} */
 const RULES = [
-  // ─── Tomb Kings ───────────────────────────────────────────────────────
-
   {
     id: "khopesh",
     displayName: "Khopesh",
@@ -229,6 +227,15 @@ const RULES = [
       'Settra must be the General and the Hierophant. Command range 18".',
     passive: true,
     phases: [],
+  },
+  {
+    id: "grind them down!",
+    displayName: "Grind Them Down!",
+    aliases: ["grind them down"],
+    description:
+      "Friendly Chariot-type models within General's Command range may re-roll dice when determining Impact Hits.",
+    phases: ["choose-fight"],
+    yourTurnOnly: true,
   },
 ];
 

@@ -1,7 +1,5 @@
 /** @type {import("../../types").SpecialRule[]} */
 const RULES = [
-  // ─── Daemons of Chaos ────────────────────────────────────────────────
-
   {
     id: "daemonic",
     displayName: "Daemonic",

@@ -1,7 +1,5 @@
 /** @type {import("../../types").SpecialRule[]} */
 const RULES = [
-  // ─── Marks of Chaos ──────────────────────────────────────────────────
-
   {
     id: "mark of chaos undivided",
     displayName: "Mark of Chaos Undivided",

@@ -1,32 +1,53 @@
 /**
  * Special rules registry.
- * Universal rules live in special-rules/common.js.
- * Faction-specific rules live in their own files under special-rules/.
+ * Universal rules (and rules several armies share) live in
+ * special-rules/common.js; each army's own rules in special-rules/<army>.js,
+ * sorted by the army tow.whfb.app gives for the rule.
  */
 
 import { SUPPLEMENT_RULES } from "./supplements/index.js";
 import COMMON from "./special-rules/common.js";
-import UNDEAD from "./special-rules/undead.js";
-import BEASTMEN from "./special-rules/beastmen.js";
-import GREENSKINS from "./special-rules/greenskins.js";
 import CHAOS_MARKS from "./special-rules/chaos-marks.js";
+import BEASTMEN from "./special-rules/beastmen.js";
+import BRETONNIA from "./special-rules/bretonnia.js";
+import CHAOS_DWARFS from "./special-rules/chaos-dwarfs.js";
 import DAEMONS from "./special-rules/daemons.js";
+import DARK_ELVES from "./special-rules/dark-elves.js";
 import DWARFS from "./special-rules/dwarfs.js";
-import VAMPIRE_COUNTS from "./special-rules/vampire-counts.js";
-import TOMB_KINGS from "./special-rules/tomb-kings.js";
+import EMPIRE from "./special-rules/empire.js";
 import GRAND_CATHAY from "./special-rules/grand-cathay.js";
+import GREENSKINS from "./special-rules/greenskins.js";
+import HIGH_ELVES from "./special-rules/high-elves.js";
+import LIZARDMEN from "./special-rules/lizardmen.js";
+import OGRE_KINGDOMS from "./special-rules/ogre-kingdoms.js";
+import SKAVEN from "./special-rules/skaven.js";
+import TOMB_KINGS from "./special-rules/tomb-kings.js";
+import VAMPIRE_COUNTS from "./special-rules/vampire-counts.js";
+import WARRIORS_OF_CHAOS from "./special-rules/warriors-of-chaos.js";
+import WOOD_ELVES from "./special-rules/wood-elves.js";
 
+// Universal rules first, then each army's own (one file per army; the
+// Marks of Chaos are shared by Warriors, Beastmen and Daemons)
 export const CORE_RULES = [
   ...COMMON,
-  ...UNDEAD,
-  ...BEASTMEN,
-  ...GREENSKINS,
   ...CHAOS_MARKS,
+  ...BEASTMEN,
+  ...BRETONNIA,
+  ...CHAOS_DWARFS,
   ...DAEMONS,
+  ...DARK_ELVES,
   ...DWARFS,
-  ...VAMPIRE_COUNTS,
-  ...TOMB_KINGS,
+  ...EMPIRE,
   ...GRAND_CATHAY,
+  ...GREENSKINS,
+  ...HIGH_ELVES,
+  ...LIZARDMEN,
+  ...OGRE_KINGDOMS,
+  ...SKAVEN,
+  ...TOMB_KINGS,
+  ...VAMPIRE_COUNTS,
+  ...WARRIORS_OF_CHAOS,
+  ...WOOD_ELVES,
 ];
 
 export const SPECIAL_RULES = [...CORE_RULES, ...SUPPLEMENT_RULES];

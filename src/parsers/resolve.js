@@ -877,34 +877,45 @@ export function computeMR(magicItems, specialRules, mount) {
   return maxMR === -Infinity ? null : `${maxMR}`;
 }
 
-const RANGED_WEAPON_NAMES = [
-  "javelin",
-  "bow",
-  "crossbow",
-  "handgun",
-  "pistol",
-  "sling",
-  "throwing",
-  "bolt thrower",
-  "cannon",
-  "mortar",
-  "catapult",
-  "harpoon",
-  "breath",
-];
+/**
+ * Whether a weapon name ("javelins", "shortbows") is a ranged weapon,
+ * judged by the ruleset's own weapon tables: the longest key it contains,
+ * across ranged and combat weapons, decides (as in resolveShootingWeapons,
+ * so "throwing spear" counts as combat and "great throwing spear" as ranged).
+ * @param {string} part - lower-case
+ * @param {Ruleset} ruleset
+ */
+function isRangedWeaponName(part, ruleset) {
+  const longest = (table) =>
+    Object.keys(table)
+      .filter((key) => part.includes(key))
+      .reduce((a, b) => (b.length > a.length ? b : a), "");
+  const ranged = longest(ruleset.rangedWeapons);
+  return (
+    ranged !== "" && ranged.length >= longest(ruleset.combatWeapons).length
+  );
+}
 
 /**
- * Compute whether a unit has poisoned attacks for combat (not ranged-only)
+ * Whether a unit has Poisoned Attacks in combat. A qualifier naming only
+ * ranged weapons — "Poisoned Attacks (javelins and shortbows only)" — means
+ * it doesn't; one naming models ("Necroserpent only") still counts.
+ * @param {Ruleset} [ruleset]
  */
-export function computePoisonedAttacks(specialRules) {
+export function computePoisonedAttacks(specialRules, ruleset = CORE_RULESET) {
   for (const rule of specialRules) {
     const match = rule.displayName?.match(
       /Poisoned Attacks(?:\s*\(([^)]+)\))?/i,
     );
     if (!match) continue;
     if (!match[1]) return true;
-    const qualifier = match[1].toLowerCase();
-    return !RANGED_WEAPON_NAMES.some((w) => qualifier.includes(w));
+    const parts = match[1]
+      .toLowerCase()
+      .replace(/\s+only$/, "")
+      .split(/,|\band\b/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+    return !parts.every((p) => isRangedWeaponName(p, ruleset));
   }
   return false;
 }

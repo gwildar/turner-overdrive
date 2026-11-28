@@ -1828,3 +1828,14 @@ describe("blast template tool on the game screens", () => {
     ).toBe("3");
   });
 });
+
+describe("weapons from unit names and rule qualifiers", () => {
+  it("Doomfire Warlocks don't get the Hellcannon's Doomfire", () => {
+    const army = loadArmy("dark-elves");
+    const warlocks = army.units.find((u) => /Doomfire Warlock/.test(u.name));
+    expect(warlocks).toBeTruthy();
+    expect(warlocks.shootingWeapons.map((w) => w.name)).not.toContain(
+      "Doomfire",
+    );
+  });
+});

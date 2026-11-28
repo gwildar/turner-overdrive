@@ -198,10 +198,22 @@ function parseCanonicalUnit(
 
   // Resolve weapons and items (composition-aware for supplement overrides)
   const weapons = resolveWeapons(equipment, magicItemNames, ruleset);
-  const shootingWeapons = resolveShootingWeapons(
-    [...equipment, specialRulesText || "", raw.name_en || ""],
+  // A war machine's list entry may name only the machine ("Bolt Thrower"),
+  // so its name stands in for equipment — but only then: other units'
+  // names aren't weapons ("Pistoliers" don't carry a lone Pistol)
+  // Rules can grant shooting attacks (breath weapons), but their bracketed
+  // qualifiers name units: "Poisoned Attacks (Doomfire Warlocks and Master
+  // only)" doesn't arm anyone with Doomfire
+  const rulesForWeapons = (specialRulesText || "").replace(/\([^)]*\)/g, "");
+  const kitShooting = resolveShootingWeapons(
+    [...equipment, rulesForWeapons],
     ruleset,
   );
+  const isWarMachine = (stats[0]?.troopType ?? []).includes("WM");
+  const shootingWeapons =
+    kitShooting.length > 0 || !isWarMachine
+      ? kitShooting
+      : resolveShootingWeapons([raw.name_en || ""], ruleset);
   const magicItems = resolveMagicItems(magicItemNames, ruleset).map((item) =>
     commandItemNames.has(item.name.toLowerCase()) && item.type !== "banner"
       ? { ...item, championOnly: true }

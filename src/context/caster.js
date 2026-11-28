@@ -1,3 +1,4 @@
+import { blastTemplateButton } from "../tools/launchers.js";
 import { LORES, getSpellTypeLabel } from "../data/spells.js";
 import { getCasters } from "../army.js";
 import { getSpellSelections } from "../state.js";
@@ -72,7 +73,10 @@ export function renderCasterContext(army, allowedTypes) {
               .map(
                 (s) => `
               <div class="flex justify-between text-xs">
-                <span class="spell-type-${s.type}">${s.name}</span>
+                <span class="flex items-center gap-1.5">
+                  <span class="spell-type-${s.type}">${s.name}</span>
+                  ${s.template && s.type !== "magical-vortex" ? blastTemplateButton({ size: s.template }) : ""}
+                </span>
                 <div class="flex gap-2">
                   ${s.range ? `<span class="text-wh-muted font-mono">${s.range}</span>` : ""}
                   <span class="text-wh-accent font-mono">${s.cv}</span>

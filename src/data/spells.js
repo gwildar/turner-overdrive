@@ -118,6 +118,8 @@ export const LORES = {
       {
         num: "S",
         name: "Doombolt",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "magic-missile",
         cv: "8+",
         range: '24"',
@@ -216,6 +218,8 @@ export const LORES = {
       {
         num: 2,
         name: "Fiery Convocation",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 5,
         type: "magic-missile",
         cv: "10+",
         range: '18"',
@@ -304,6 +308,8 @@ export const LORES = {
       {
         num: "S",
         name: "The Dwellers Below",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "assailment",
         cv: "7+",
         range: "Combat",
@@ -346,6 +352,8 @@ export const LORES = {
       {
         num: "S",
         name: "Fist of Gork (or Mork)",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 5,
         type: "assailment",
         cv: "8+",
         range: "Combat",
@@ -418,6 +426,8 @@ export const LORES = {
       {
         num: 3,
         name: "Flock of Doom",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "assailment",
         cv: "8+",
         range: "Combat",
@@ -452,6 +462,8 @@ export const LORES = {
       {
         num: "S",
         name: "Maelstrom of Chaos",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "magic-missile",
         cv: "7+",
         range: '15"',
@@ -514,6 +526,8 @@ export const LORES = {
       {
         num: 1,
         name: "Acidic Bile",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "magic-missile",
         cv: "8+",
         range: '18"',
@@ -622,6 +636,8 @@ export const LORES = {
       {
         num: "S",
         name: "Flock of Doom",
+        // blast template (tow.whfb.app): the template tool opens at this size
+        template: 3,
         type: "magic-missile",
         cv: "8+",
         range: '18"',
@@ -1085,6 +1101,35 @@ export const LORES = {
 // (e.g. "lore of naggaroth" → "naggaroth", not "naggaroth-renegade").
 // The lore remap system in from-owb.js then converts base keys to the correct
 // supplement variant for the army's chosen supplement version.
+/**
+ * The blast template a spell uses (3 or 5), by spell name, or null.
+ * Magical vortexes are left out: they move about and are judged by eye.
+ * @param {string} name
+ * @returns {3 | 5 | null}
+ */
+export function spellTemplateSize(name) {
+  for (const lore of Object.values(LORES))
+    for (const spell of lore.spells || [])
+      if (
+        spell.name === name &&
+        spell.template &&
+        spell.type !== "magical-vortex"
+      )
+        return spell.template;
+  return null;
+}
+
+/** Spells using a blast template, for finding them in item text */
+export const TEMPLATE_SPELL_NAMES = [
+  ...new Set(
+    Object.values(LORES).flatMap((lore) =>
+      (lore.spells || [])
+        .filter((s) => s.template && s.type !== "magical-vortex")
+        .map((s) => s.name),
+    ),
+  ),
+];
+
 export const LORE_NAME_TO_KEY = {};
 for (const [key, lore] of Object.entries(LORES)) {
   const name = lore.name.toLowerCase();

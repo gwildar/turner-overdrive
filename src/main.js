@@ -15,7 +15,7 @@ import {
 } from "./state.js";
 import { showErrorOverlay } from "./error-overlay.js";
 import { getAllSubPhases, PHASES, subPhaseToIndex } from "./phases.js";
-import { router, navigate } from "./navigate.js";
+import { router, navigate, redirectLegacyHashRoute } from "./navigate.js";
 import { loadStoredArmy } from "./army.js";
 
 import { renderSetupScreen } from "./screens/setup.js";
@@ -108,6 +108,7 @@ window.addEventListener("unhandledrejection", (e) => {
 });
 
 try {
+  redirectLegacyHashRoute();
   router.resolve();
 } catch (err) {
   showErrorOverlay(err);

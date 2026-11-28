@@ -26,6 +26,14 @@ describe("Setup Screen", () => {
       expect(summary.textContent).toContain("no longer supported");
     });
 
+    it("links to report an issue, without the testers call-out", () => {
+      renderSetupScreen();
+      const app = getApp();
+      expect(app.textContent).not.toContain("Help improve coverage");
+      const link = app.querySelector('a[href$="/turner-overdrive/issues"]');
+      expect(link?.textContent).toContain("Report an issue");
+    });
+
     it("links to Old World Builder at its real address", () => {
       renderSetupScreen();
       const app = getApp();

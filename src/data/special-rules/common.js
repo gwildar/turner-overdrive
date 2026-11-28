@@ -711,7 +711,7 @@ const RULES = [
   {
     id: "exile's vow",
     displayName: "The Exile's Vow",
-    aliases: ["the exile's vow (replaces the knight's vow)"],
+    aliases: ["the exile's vow", "the exile's vow (replaces the knight's vow)"],
     passive: true,
     phases: [],
     description: "Replaces The Knight's Vow. Grants Stubborn and Veteran.",

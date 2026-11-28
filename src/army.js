@@ -1,5 +1,9 @@
 import { fromOwb } from "./parsers/from-owb.js";
 import {
+  isBattleBuilderList,
+  battleBuilderToOwb,
+} from "./parsers/from-battle-builder.js";
+import {
   getArmy,
   getArmySource,
   saveArmySource,
@@ -15,7 +19,13 @@ export function parseArmyList(json) {
   // New Recruit / BattleScribe rosters were supported in earlier versions
   if (json?.roster?.forces) {
     throw new Error(
-      "New Recruit files are no longer supported. Export your list from Old World Builder as .owb.json instead.",
+      "New Recruit files are no longer supported. Export your list from Old World Builder (.owb.json) or Battle Builder (.bb.json) instead.",
+    );
+  }
+
+  if (isBattleBuilderList(json)) {
+    throw new Error(
+      "Battle Builder lists must be converted first (convertArmyFile).",
     );
   }
 
@@ -29,8 +39,20 @@ export function parseArmyList(json) {
   }
 
   throw new Error(
-    "Unrecognised army list format. Expected an Old World Builder (.owb.json) export.",
+    "Unrecognised army list format. Expected an Old World Builder (.owb.json) or Battle Builder (.bb.json) export.",
   );
+}
+
+/**
+ * An uploaded army file in the shape parseArmyList reads: Old World Builder
+ * exports as they are; Battle Builder (.bb.json) exports converted with its
+ * catalog, which is loaded only here. The converted list is what's stored.
+ */
+export async function convertArmyFile(json) {
+  if (!isBattleBuilderList(json)) return json;
+  const { default: catalog } =
+    await import("./data/battle-builder-catalog.json");
+  return battleBuilderToOwb(json, catalog);
 }
 
 /**

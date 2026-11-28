@@ -1,0 +1,294 @@
+{
+  "id": "a4daedef-6e6f-47be-8b15-8620ce9ed042",
+  "name": "Monster Mash",
+  "builderEditedAt": "2026-11-28T12:50:41.563Z",
+  "factionId": "tow/dark-elves",
+  "forceTemplateId": "tow/dark-elves/de-renegade",
+  "ruleset": {
+    "gameSystemId": "the-old-world",
+    "gameVersionId": "tow-1.5.3"
+  },
+  "compositionRuleIds": ["tow/combined-arms", "tow/grand-melee"],
+  "pointsLimit": 2400,
+  "units": [
+    {
+      "id": "da2f7a6a-ddbe-43ce-9e89-17f416844960",
+      "unitEntryId": "tow/dark-elves/dark-elf-dreadlord",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "dark-elf-dreadlord-general",
+          "optionId": "general"
+        },
+        {
+          "groupId": "dark-elf-dreadlord-weapon",
+          "optionId": "lance"
+        },
+        {
+          "groupId": "dark-elf-dreadlord-armour",
+          "optionId": "full-plate-armour"
+        },
+        {
+          "groupId": "dark-elf-dreadlord-mount",
+          "optionId": "black-dragon"
+        }
+      ],
+      "traitIds": [
+        "tow/dark-elves-magic-items/pendant-of-khaeleth",
+        "tow/dark-elves-magic-items/shield-of-ghrond"
+      ]
+    },
+    {
+      "id": "13803349-cd2e-4928-8cbb-d044b524819e",
+      "unitEntryId": "tow/dark-elves/high-beastmaster",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "high-beastmaster-equipment",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "high-beastmaster-equipment",
+          "optionId": "whip"
+        },
+        {
+          "groupId": "high-beastmaster-mount",
+          "optionId": "scourgerunner-chariot"
+        },
+        {
+          "groupId": "high-beastmaster-armour",
+          "optionId": "light-armour"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "e3ee3a87-d0e2-435c-9ad7-60948506e7dd",
+      "unitEntryId": "tow/dark-elves/supreme-sorceress",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "supreme-sorceress-default-equipment",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "supreme-sorceress-mount",
+          "optionId": "black-dragon"
+        },
+        {
+          "groupId": "supreme-sorceress-lore",
+          "optionId": "dark-magic"
+        },
+        {
+          "groupId": "supreme-sorceress-wizard-level",
+          "optionId": "level-3-wizard"
+        }
+      ],
+      "traitIds": ["tow/common/talisman-of-protection"]
+    },
+    {
+      "id": "823df4f3-25ee-41d3-87fa-1ee347772542",
+      "unitEntryId": "tow/dark-elves/dark-elf-crossbowmen",
+      "quantity": 18,
+      "selectedOptions": [
+        {
+          "groupId": "dark-elf-crossbowmen-default-equipment",
+          "optionId": "hand-weapons"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-default-equipment",
+          "optionId": "repeater-crossbows"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-default-equipment",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-command",
+          "optionId": "lordling"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-command",
+          "optionId": "standard-bearer"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-command",
+          "optionId": "musician"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-equipment",
+          "optionId": "shields"
+        },
+        {
+          "groupId": "dark-elf-crossbowmen-special-rules",
+          "optionId": "veteran"
+        }
+      ],
+      "traitIds": ["tow/common/monster-hunter-s-tapestry"]
+    },
+    {
+      "id": "d4d8e528-f554-4436-ac14-9cbe63b01484",
+      "unitEntryId": "tow/dark-elves/dark-riders",
+      "quantity": 8,
+      "selectedOptions": [
+        {
+          "groupId": "dark-riders-default-armour",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "dark-riders-default-equipment",
+          "optionId": "hand-weapons-cavalry-spears"
+        },
+        {
+          "groupId": "dark-riders-command",
+          "optionId": "herald"
+        },
+        {
+          "groupId": "dark-riders-command",
+          "optionId": "musician"
+        },
+        {
+          "groupId": "dark-riders-equipment",
+          "optionId": "repeater-crossbow"
+        },
+        {
+          "groupId": "dark-riders-equipment",
+          "optionId": "shield"
+        },
+        {
+          "groupId": "dark-riders-special-rules",
+          "optionId": "fire-flee"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "8949a705-1a09-4bc7-ba04-ea8397df7fa2",
+      "unitEntryId": "tow/dark-elves/dark-riders",
+      "quantity": 8,
+      "selectedOptions": [
+        {
+          "groupId": "dark-riders-default-armour",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "dark-riders-default-equipment",
+          "optionId": "hand-weapons-cavalry-spears"
+        },
+        {
+          "groupId": "dark-riders-command",
+          "optionId": "herald"
+        },
+        {
+          "groupId": "dark-riders-command",
+          "optionId": "musician"
+        },
+        {
+          "groupId": "dark-riders-equipment",
+          "optionId": "repeater-crossbow"
+        },
+        {
+          "groupId": "dark-riders-equipment",
+          "optionId": "shield"
+        },
+        {
+          "groupId": "dark-riders-special-rules",
+          "optionId": "fire-flee"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "f504979e-8072-4568-b91c-9af5073e4157",
+      "unitEntryId": "tow/dark-elves/war-hydra",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "war-hydra-default-armour",
+          "optionId": "4"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "wicked-claws-serrated-maws-fiery-breath-hand-weapons-whips"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "serrated-maws"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "fiery-breath"
+        },
+        {
+          "groupId": "war-hydra-handler-equipment",
+          "optionId": "whips"
+        }
+      ],
+      "traitIds": [],
+      "categoryOverride": "special"
+    },
+    {
+      "id": "35150746-991a-4622-8d74-357b7c6b072c",
+      "unitEntryId": "tow/dark-elves/war-hydra",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "war-hydra-default-armour",
+          "optionId": "4"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "wicked-claws-serrated-maws-fiery-breath-hand-weapons-whips"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "serrated-maws"
+        },
+        {
+          "groupId": "war-hydra-default-equipment",
+          "optionId": "fiery-breath"
+        },
+        {
+          "groupId": "war-hydra-handler-equipment",
+          "optionId": "whips"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "538086d6-73c3-4dc1-8177-c171e9780e7b",
+      "unitEntryId": "tow/dark-elves/kharibdyss",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "kharibdyss-default-armour",
+          "optionId": "4"
+        },
+        {
+          "groupId": "kharibdyss-default-equipment",
+          "optionId": "cavernous-maw-writhing-tentacles-hand-weapons-whips"
+        },
+        {
+          "groupId": "kharibdyss-default-equipment",
+          "optionId": "writhing-tentacles"
+        },
+        {
+          "groupId": "kharibdyss-default-equipment",
+          "optionId": "whips"
+        },
+        {
+          "groupId": "kharibdyss-handler-equipment",
+          "optionId": "handler-whips"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "a09fa403-25f8-4533-a399-cc5c5fe8acab",
+      "unitEntryId": "tow/high-elf-realms/merwyrm",
+      "quantity": 1,
+      "selectedOptions": [],
+      "traitIds": []
+    }
+  ]
+}

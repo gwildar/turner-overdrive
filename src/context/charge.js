@@ -1,5 +1,6 @@
 import { SPECIAL_RULES } from "../data/special-rules.js";
 import {
+  randomMovement,
   resolveMovement,
   normaliseRuleName,
   extractFlyMovement,
@@ -78,12 +79,15 @@ export function renderChargeContext(army) {
     charsByUnitId.get(unitId).push(charUnit);
   }
 
-  // Exclude assigned characters and war machines (cannot charge).
-  // Chariots (HCh, Ch, etc.) can charge; only units with troopType "WM" cannot.
+  // Exclude assigned characters, war machines and random movers (none can
+  // declare a charge). Chariots (HCh, Ch, etc.) can charge.
   const unitsToRender = units.filter(
     (u) =>
-      !assignedCharIds.has(u.id) && !u.stats?.[0]?.troopType?.includes("WM"),
+      !assignedCharIds.has(u.id) &&
+      !u.stats?.[0]?.troopType?.includes("WM") &&
+      !randomMovement(u),
   );
+  if (unitsToRender.length === 0) return "";
 
   const rows = unitsToRender.map((u) => {
     const rawMv = resolveMovement(u);

@@ -181,6 +181,25 @@ const RULES = [
       'Special feature (impassable, up to 6" across), placed after terrain outside the opponent\'s deployment zone and more than 6" from the centre. Controlled by the closest non-fleeing unit of US 5+ within 6". Controller gains Magic Resistance (-1). If a Beastmen unit controls it: Beastmen within 12" re-roll To Wound 1s in combat, Beastmen Wizards within 12" get +1 to cast (enemy Wizards -1), and enemies within 12" have -1 Ld for Fear, Panic and Terror tests.',
     phases: ["deployment", "choose-fight", "conjuration"],
   },
+  {
+    id: "blessings of chaos",
+    displayName: "Blessings of Chaos",
+    aliases: ["blessing of chaos"],
+    description:
+      "When this unit's combat is chosen, roll D6 for its blessing, lasting this Combat phase.",
+    phases: [
+      {
+        subPhaseId: "choose-fight",
+        description:
+          "When this unit's combat is chosen, roll D6 for its blessing, lasting this Combat phase.",
+        table: [
+          { D6: "1-2", Result: "Stinging Barbs: Poisoned Attacks" },
+          { D6: "3-4", Result: "Scything Talons: all attacks AP -2" },
+          { D6: "5-6", Result: "Chitinous Hide: +1 Toughness" },
+        ],
+      },
+    ],
+  },
 ];
 
 export default RULES;

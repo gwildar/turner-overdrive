@@ -518,10 +518,13 @@ async function compareItems() {
 async function compareRules(since) {
   const { CORE_RULES } = await appModule("src/data/special-rules.js");
   const { SUPPLEMENT_RULES } = await appModule("src/data/supplements/index.js");
+  // Names differ in plurals between pages and units ("Blessings of Chaos" /
+  // "Blessing of Chaos"), so compare without each word's trailing s.
   const ruleKey = (s) =>
     key(s)
       .replace(/\s*\(.*?\)\s*$/, "")
-      .replace(/\*$/, "");
+      .replace(/\*$/, "")
+      .replace(/s\b/g, "");
   const known = new Set();
   for (const r of [...CORE_RULES, ...SUPPLEMENT_RULES])
     for (const n of [r.id, r.displayName, ...(r.aliases || [])])
@@ -555,9 +558,9 @@ async function compareRules(since) {
   // Not reminders: the combat panels compute these from the unit's data, the
   // spell screens handle lores, and "Daemons of X" are alignment labels.
   const handledElsewhere = (n) =>
-    ["impact hits", "stomp attacks", "armour bane"].includes(n) ||
+    ["impact hits", "stomp attacks", "armour bane"].map(ruleKey).includes(n) ||
     /^lore of /.test(n) ||
-    /^daemons of /.test(n);
+    /^daemon of /.test(n);
   const unknown = [...usage]
     .filter(([n]) => !known.has(n) && !handledElsewhere(n))
     .sort((a, b) => b[1].count - a[1].count)

@@ -70,6 +70,15 @@ const RULES = [
     description: "Grants the Magic Resistance (-3) special rule.",
     phases: [],
   },
+  {
+    id: "marks of chaos",
+    displayName: "Marks of Chaos",
+    aliases: ["mark of chaos"],
+    description:
+      "One Mark per model, the same for every model in a unit. A character with a god's Mark can only join a unit with the same Mark, Chaos Undivided or no Mark. A Mark benefits only its bearer, not its mount — except a Daemonic Mount, which shares its rider's Mark.",
+    passive: true,
+    phases: [],
+  },
 ];
 
 export default RULES;

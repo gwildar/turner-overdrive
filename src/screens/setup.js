@@ -172,37 +172,36 @@ function renderWhatsNew() {
       </summary>
       <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
         <div class="pt-3">
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">One Combat Step</p>
-          <p class="text-xs">Calculate Combat Result, Break Test and Follow Up &amp; Pursuit are now part of Choose &amp; Fight: one screen with your combat units, static combat bonuses and Break Test ranges. Each combat card shows its Leadership.</p>
-        </div>
-        <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Battle Builder Lists</p>
-          <p class="text-xs">You can now import lists from <span class="text-wh-text">Battle Builder</span> (oldworldrankings.com/builder): export as <span class="font-mono text-wh-text">.bb.json</span> and upload it here.</p>
+          <p class="text-xs">Import lists from <span class="text-wh-text">Battle Builder</span> (oldworldrankings.com/builder) as <span class="font-mono text-wh-text">.bb.json</span>, as well as Old World Builder <span class="font-mono text-wh-text">.owb.json</span>. Composition costs and the Renegade rules version come across with the list. New Recruit files are no longer supported.</p>
         </div>
         <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Old World Builder and Battle Builder</p>
-          <p class="text-xs">New Recruit files are no longer supported. Export your list from <span class="text-wh-text">Old World Builder</span> as <span class="font-mono text-wh-text">.owb.json</span> or from Battle Builder as <span class="font-mono text-wh-text">.bb.json</span>. A previously saved New Recruit army will need re-uploading.</p>
-        </div>
-        <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Updates Apply Straight Away</p>
-          <p class="text-xs">Rules updates and the Renegade rules version now apply to your saved army without re-importing it.</p>
-        </div>
-        <div>
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Disastrous Miscasts</p>
-          <p class="text-xs">Scenario Setup has a new Game Options section: turn on Disastrous Miscasts to use that table instead of the Miscast table during the game.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">One Combat Step</p>
+          <p class="text-xs">Choose &amp; Fight now covers Combat Result, Break Test and Follow Up &amp; Pursuit: one screen with your combat units, static combat bonuses and Break Test ranges. Each combat card shows its Leadership.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Versions Per Army</p>
-          <p class="text-xs">A Renegade army now has a rules version picker on its army card: the v1.5 PDF or the latest community draft. Draft rules only ever apply to that Renegade army, never to a standard army.</p>
+          <p class="text-xs">A Renegade army has a rules version picker on its army card: the v1.5 PDF or the latest community draft, now including Chaos Dwarfs, Lizardmen, Vampire Counts and Daemons of Chaos. Draft rules only apply to that army.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Disastrous Miscasts</p>
+          <p class="text-xs">Scenario Setup has a Game Options section: turn on Disastrous Miscasts to use that table instead of the Miscast table.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Reminders</p>
+          <p class="text-xs">"Terror tests!" and "Dispel remains in play" now pop up in the phase colour, then fade away.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Rules Data</p>
+          <p class="text-xs">Units, rules, weapons and magic items checked against tow.whfb.app, with hundreds of rules added. New: Great Stag, Doom Diver, Marks and Blessings of Chaos, Gargantuan Treemen.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Fixes</p>
           <ul class="text-xs list-disc list-inside space-y-0.5">
-            <li>Units with more than one ward save now show the best one.</li>
-            <li>Thrown weapons show the correct Strength (e.g. S4 for a Throwing Axe on S3).</li>
-            <li>Swiftstride is no longer counted twice in charge ranges.</li>
-            <li>The "Terror tests!" reminder only appears if your army causes Terror.</li>
-            <li>Your turn no longer starts on a step your army doesn't use.</li>
+            <li>Behemoths' Unit Strength is their starting Wounds (e.g. War Hydra 5).</li>
+            <li>Characters on chariots, howdahs and monsters get the right Toughness, Wounds and armour.</li>
+            <li>Magic missile weapons (e.g. Hunter's Scorn) appear as shooting attacks, and bound spells from items (e.g. Ring of Doom) show up.</li>
+            <li>Renegade units such as Repeater Crossbowmen have their stats.</li>
           </ul>
         </div>
       </div>
@@ -246,12 +245,10 @@ function renderUploadSection() {
         </ol>
       </div>
 
-      <div class="mt-4 p-3 rounded-lg border border-wh-border bg-wh-surface">
-        <p class="text-xs text-wh-accent font-semibold mb-1">Help improve coverage</p>
-        <p class="text-xs text-wh-muted mb-2">Looking for testers playing: <span class="text-wh-text">Dwarves</span>, <span class="text-wh-text">Wolves of the Sea</span>, <span class="text-wh-text">Cathay</span></p>
+      <p class="mt-4 text-center">
         <a href="https://github.com/gwildar/turner-overdrive/issues" target="_blank" rel="noopener noreferrer"
           class="text-xs text-wh-accent hover:underline">Report an issue or missing rules &rarr;</a>
-      </div>
+      </p>
     </div>
   `;
 }

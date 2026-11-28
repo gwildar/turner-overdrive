@@ -236,6 +236,9 @@ export interface UnitProfile {
   "Magic-Res"?: string;
   "Impact-Hits"?: string;
   Stomps?: string;
+  /** Toughness/Wounds this model adds to a character riding it ("(+1)"), when its own profile shows plain T/W. */
+  mountT?: string;
+  mountW?: string;
 }
 
 /**
@@ -351,8 +354,15 @@ export interface MountCrew {
   equipment: string[];
 }
 
+/** How a mount changes its rider: see mountKindOf() in parsers/resolve.js. */
+export type MountKind = "cavalry" | "monster" | "chariot" | "howdah";
+
 /** A mount resolved by findMount(). Characteristics are as in UnitProfile. */
 export interface Mount {
+  kind: MountKind;
+  /** The mount's own Toughness/Wounds (chariots, howdahs); null for "(+N)" profiles. */
+  t: number | null;
+  w: number | null;
   name: string;
   /** Movement in inches. */
   m: number;

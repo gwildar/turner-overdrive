@@ -118,15 +118,52 @@ const MOUNT_KEY_OVERRIDES = {
   griffon: "griffon-empire",
   manticore: "manticore-dark-elves",
   "skeletal steed": "skeletal-steed-vampire-counts",
-  // Cauldron of Blood: use dedicated mount entry with bonus T/W and crew profiles
-  "cauldron of blood": "cauldron-of-blood-mount",
-  "cauldron of blood {renegade}": "cauldron-of-blood-mount",
-  // Scourgerunner Chariot: use dedicated mount entry with crew profiles
-  "scourgerunner chariot": "scourgerunner-chariot-mount",
-  // Stegadons with Howdah: chariot split profile when ridden by a character
-  stegadon: "stegadon-mount",
-  "ancient stegadon": "ancient-stegadon-mount",
 };
+
+/**
+ * What a mount is, from its troop type: it decides how the rider's
+ * characteristics change (rulebook, Characters: split profiles).
+ * - cavalry (incl. monstrous cavalry): add the (+N) printed on the mount;
+ *   armour value is the rider's
+ * - monster (ridden monster): add the (+N) printed on the mount; better
+ *   armour value of the two
+ * - chariot, and howdah (a behemoth with Howdah follows the chariot split
+ *   profile): Wounds = rider's + chariot's, Toughness = the higher, better
+ *   armour value of the two
+ * @returns {import("../types").MountKind}
+ */
+function mountKindOf(troopType, rules) {
+  if (troopType === "LCh" || troopType === "HCh") return "chariot";
+  if ((rules || []).some((r) => /^howdah\b/i.test(r))) return "howdah";
+  if (troopType === "MCr" || troopType === "Be") return "monster";
+  return "cavalry";
+}
+
+/**
+ * The rider's Toughness and Wounds once mounted.
+ * @param {number} riderT
+ * @param {number} riderW
+ * @param {import("../types").Mount | null | undefined} mount
+ */
+export function mountedTW(riderT, riderW, mount) {
+  if (!mount) return { t: riderT, w: riderW };
+  const kind = mount.kind ?? mountKindOf(mount.troopType, mount.rules);
+  if (kind === "chariot" || kind === "howdah")
+    return { t: Math.max(riderT, mount.t ?? 0), w: riderW + (mount.w ?? 0) };
+  return { t: riderT + (mount.tBonus || 0), w: riderW + (mount.wBonus || 0) };
+}
+
+/**
+ * A mount that is its own fighting model (monster, chariot, howdah) or that
+ * improves the rider's characteristics: the rider and mount are shown as one
+ * big model with the mount's attacks and crew.
+ * @param {import("../types").Mount | null | undefined} mount
+ */
+export function isBigMount(mount) {
+  if (!mount) return false;
+  const kind = mount.kind ?? mountKindOf(mount.troopType, mount.rules);
+  return kind !== "cavalry" || mount.wBonus > 0 || mount.tBonus > 0;
+}
 
 // Unit Strength per model, from the Troop Type table (rulebook p. 105).
 // "W" = as the model's starting Wounds.
@@ -164,14 +201,16 @@ const TROOP_TYPE_MARKERS = new Set(["Ch", "NCh"]);
 export function computeUnitStrength(unit) {
   const mount = unit.mount;
 
-  // Character on a ridden monster (or a mount of unknown type that adds
-  // Wounds): Unit Strength is its starting Wounds, the rider's W plus the
-  // mount's bonus. Chariots and monstrous cavalry use the table instead.
-  const woundBased =
-    !mount?.troopType || TROOP_STRENGTH_PER_MODEL[mount.troopType] === "W";
-  if (mount?.wBonus > 0 && woundBased) {
+  // A mounted character takes the mount's troop type. A ridden monster or a
+  // howdah behemoth has Unit Strength as its starting Wounds (rider and mount
+  // combined); a chariot uses the Troop Type table.
+  if (mount) {
+    const kind = mount.kind ?? mountKindOf(mount.troopType, mount.rules);
     const baseW = parseInt(unit.stats?.[0]?.W) || 1;
-    return baseW + mount.wBonus;
+    if (kind === "monster" || kind === "howdah")
+      return mountedTW(0, baseW, { ...mount, kind }).w;
+    if (kind === "chariot")
+      return usPerModelFor(mount.troopType ?? "HCh", null);
   }
 
   const typeArr = unit.stats?.[0]?.troopType ?? [];
@@ -273,7 +312,22 @@ export function findMount(name, ruleset = CORE_RULESET) {
   const lower = name.toLowerCase();
   const normalised = lower.replace(/[{}]/g, "");
   const key = MOUNT_KEY_OVERRIDES[lower] ?? normalised.replace(/\s+/g, "-");
-  const entry = ruleset.units[key] ?? UNIT_STATS[key];
+  // "Flamespyre Phoenix {mount}" → the Flamespyre Phoenix entry, whose
+  // mountT/mountW give the ridden bonus; "Cauldron of Blood {renegade}" → the
+  // version's own entry, else the plain one. A version's variant of a mount
+  // ("carnosaur-renegade") comes before the core entry.
+  const candidates = [
+    ...new Set([
+      key,
+      key.replace(/-mount$/, ""),
+      key.replace(/-renegade$/, ""),
+    ]),
+  ];
+  let entry = null;
+  for (const c of candidates) {
+    entry = ruleset.units[c + "-renegade"] ?? ruleset.units[c] ?? UNIT_STATS[c];
+    if (entry) break;
+  }
   if (!entry) return null;
 
   const profiles = resolveUnitEntry(entry);
@@ -308,12 +362,21 @@ export function findMount(name, ruleset = CORE_RULESET) {
     }));
 
   return {
-    name: profile.Name,
+    // The army list's name ("Scourgerunner Chariot", not the profile line's
+    // "Chariot"; "Flamespyre Phoenix", not "Flamespyre Phoenix (Mount)")
+    name: name.replace(/\s*\{[^}]*\}/g, "").trim(),
     m: parseInt(motiveProfile.M, 10),
     stomp: profile.Stomps ?? null,
     impactHits: profile["Impact-Hits"] ?? null,
-    tBonus: parseBonusInt(profile.T),
-    wBonus: parseBonusInt(profile.W),
+    tBonus: parseBonusInt(profile.mountT ?? profile.T),
+    wBonus: parseBonusInt(profile.mountW ?? profile.W),
+    // The mount's own Toughness and Wounds (chariots and howdahs)
+    t: /^\d+$/.test(String(profile.T)) ? parseInt(profile.T, 10) : null,
+    w: /^\d+$/.test(String(profile.W)) ? parseInt(profile.W, 10) : null,
+    kind: mountKindOf(
+      profile.troopType?.find((t) => !TROOP_TYPE_MARKERS.has(t)),
+      profile.rules,
+    ),
     ws: profile.WS,
     s: profile.S,
     i: profile.I,
@@ -678,10 +741,13 @@ export function computeArmourSave(
     }
   }
 
-  // Ridden monster: use mount's natural armour save if it's better than the rider's
-  // (including any shield or equipment bonus already accumulated in modifier).
+  // Ridden monster, chariot or howdah: use the mount's armour value if it's
+  // better than the rider's (including any shield or equipment bonus already
+  // accumulated in modifier). A cavalry mount uses the rider's armour value.
   // Exception: magic armour items provide a specific save that takes precedence.
-  if (mount?.as) {
+  const mountKind =
+    mount && (mount.kind ?? mountKindOf(mount.troopType, mount.rules));
+  if (mount?.as && mountKind !== "cavalry") {
     const hasMagicArmourItem = magicItems.some(
       (item) => item.armourBase !== undefined,
     );

@@ -1,5 +1,5 @@
 import { COMBAT_WEAPONS, getWeapon } from "../data/weapons.js";
-import { findMount } from "../parsers/resolve.js";
+import { findMount, isBigMount, mountedTW } from "../parsers/resolve.js";
 import { getCharacterAssignments } from "../state.js";
 
 export const HAND_WEAPON = { name: "Hand Weapon", s: "S", ap: "—", rules: [] };
@@ -450,7 +450,7 @@ const MOUNT_CHARGE_RULES = ["Counter Charge", "Furious Charge", "First Charge"];
 /** @param {import("../types").Unit} unit */
 function extractCombatRules(unit) {
   const hasMount = !!unit.mount;
-  const isCavalryMount = hasMount && !(unit.mount.wBonus > 0);
+  const isCavalryMount = hasMount && !isBigMount(unit.mount);
   // Regular cavalry units store their type in stats.troopType with no explicit mount object
   const hasCavalryTroopType = (unit.stats?.[0]?.troopType ?? []).some((t) =>
     CAVALRY_TROOP_TYPES.has(t),
@@ -736,7 +736,7 @@ export function buildCombatEntries(army) {
         matchRiderWeapons(char);
       const charMountWeapons = matchMountWeapons(char, charMatched);
       const charMount = char.mount ?? null;
-      const charIsRiddenMonster = charMount && charMount.wBonus > 0;
+      const charIsRiddenMonster = isBigMount(charMount);
       let charMountA = null,
         charMountS = null,
         charMountI = null,
@@ -751,6 +751,7 @@ export function buildCombatEntries(army) {
       }
       const charBaseT = parseInt(cStats?.T) || 0;
       const charBaseW = parseInt(cStats?.W) || 0;
+      const charTW = mountedTW(charBaseT, charBaseW, charMount);
       const charCrew =
         charIsRiddenMonster && charMount.crew
           ? charMount.crew.map((c) => ({
@@ -771,12 +772,8 @@ export function buildCombatEntries(army) {
         ws: cStats?.WS || "?",
         s: cStats?.S || "?",
         a: cStats?.A ? `${cStats.A}${extraAttackBonus(char) ?? ""}` : "?",
-        t: charIsRiddenMonster
-          ? `${charBaseT + charMount.tBonus}`
-          : cStats?.T || "?",
-        w: charIsRiddenMonster
-          ? `${charBaseW + charMount.wBonus}`
-          : cStats?.W || "?",
+        t: charIsRiddenMonster ? `${charTW.t}` : cStats?.T || "?",
+        w: charIsRiddenMonster ? `${charTW.w}` : cStats?.W || "?",
         as: char.armourSave ?? null,
         mr: char.magicResistance ? parseInt(char.magicResistance) : null,
         ward: char.ward ?? null,
@@ -860,7 +857,7 @@ export function buildCombatEntries(army) {
     }
 
     const mount = u.mount ?? null;
-    const isRiddenMonster = mount && mount.wBonus > 0;
+    const isRiddenMonster = isBigMount(mount);
 
     // Check for embedded mount profile in unit stats (e.g. Knights Errant, Pegasus Knights)
     // Skip for crewed units — their creature weapons come from stat line weapons field
@@ -1018,13 +1015,15 @@ export function buildCombatEntries(army) {
       riderWS,
       riderS,
       t: isRiddenMonster
-        ? `${baseT + mount.tBonus}`
+        ? `${mountedTW(baseT, baseW, mount).t}`
         : stats.crewed &&
             stats.A === "-" &&
             !stats.troopType?.some((t) => t.endsWith("Ch"))
           ? crew[0]?.T || "?"
           : stats.T || "?",
-      w: isRiddenMonster ? `${baseW + mount.wBonus}` : stats.W || "?",
+      w: isRiddenMonster
+        ? `${mountedTW(baseT, baseW, mount).w}`
+        : stats.W || "?",
       as: u.armourSave ?? null,
       mr: mergedMR,
       ward: u.ward ?? null,
@@ -1186,11 +1185,12 @@ export function buildDefensiveStatsEntries(army) {
   function extractStats(u) {
     const stats = u.stats?.[0];
     const mount = u.mount ?? null;
-    const isRiddenMonster = mount && mount.wBonus > 0;
+    const isRiddenMonster = isBigMount(mount);
     const baseT = parseInt(stats?.T) || 0;
     const baseW = parseInt(stats?.W) || 0;
-    const t = isRiddenMonster ? `${baseT + mount.tBonus}` : stats?.T || "?";
-    const w = isRiddenMonster ? `${baseW + mount.wBonus}` : stats?.W || "?";
+    const tw = mountedTW(baseT, baseW, mount);
+    const t = isRiddenMonster ? `${tw.t}` : stats?.T || "?";
+    const w = isRiddenMonster ? `${tw.w}` : stats?.W || "?";
     const as = u.armourSave ?? null;
     const ward = u.ward ?? null;
     const regen = u.regen ?? null;

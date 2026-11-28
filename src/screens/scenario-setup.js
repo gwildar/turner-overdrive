@@ -31,6 +31,16 @@ const CONDITIONS = [
   },
 ];
 
+// Rules options for the game, saved with the scenario options.
+const GAME_OPTIONS = [
+  {
+    id: "disastrousMiscasts",
+    name: "Disastrous Miscasts",
+    description:
+      "Use the Disastrous Miscast table instead of the Miscast table (required with Channelling or Arcane Magic; otherwise by agreement).",
+  },
+];
+
 function renderCard(condition, opts) {
   const checked = condition.hasCount
     ? opts.strategicLocations.enabled
@@ -93,9 +103,13 @@ export function renderScenarioSetupScreen(army) {
         <main class="flex-1 p-4 max-w-4xl mx-auto w-full">
           <div class="mb-4">
             <h2 class="text-2xl font-bold text-wh-text">Scenario Setup</h2>
-            <p class="text-sm text-wh-muted mt-1">Select any secondary objectives for this game.</p>
+            <p class="text-sm text-wh-muted mt-1">Select any secondary objectives and rules options for this game.</p>
           </div>
           ${CONDITIONS.map((c) => renderCard(c, opts)).join("")}
+          <div class="mt-6 mb-3">
+            <h3 class="text-lg font-bold text-wh-text">Game Options</h3>
+          </div>
+          ${GAME_OPTIONS.map((o) => renderCard(o, opts)).join("")}
         </main>
         <footer class="sticky bottom-0 bg-wh-surface border-t border-wh-border p-3">
           <div class="max-w-2xl mx-auto flex gap-3">
@@ -160,6 +174,7 @@ export function renderScenarioSetupScreen(army) {
           count: currentCount,
         },
         specialFeatures: isChecked("toggle-specialFeatures"),
+        disastrousMiscasts: isChecked("toggle-disastrousMiscasts"),
       };
       saveScenarioOptions(newOpts);
       navigate("/deployment");

@@ -26,6 +26,8 @@ const DEFAULT_SCENARIO = {
   baggageTrains: false,
   strategicLocations: { enabled: false, count: 3 },
   specialFeatures: false,
+  // Use the Disastrous Miscast table instead of the Miscast table
+  disastrousMiscasts: false,
 };
 
 export const SCHEMA_VERSION = "9";
@@ -248,7 +250,8 @@ export function canGoBackToPreviousTurn() {
 
 // Scenario options
 export function getScenarioOptions() {
-  return load(KEYS.scenario, DEFAULT_SCENARIO);
+  // Options saved before a setting existed get its default
+  return { ...DEFAULT_SCENARIO, ...load(KEYS.scenario, DEFAULT_SCENARIO) };
 }
 
 export function saveScenarioOptions(opts) {

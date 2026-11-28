@@ -1,7 +1,5 @@
 /** @type {import("../../types").SpecialRule[]} */
 const RULES = [
-  // ─── Dwarfs ───────────────────────────────────────────────────────────
-
   {
     id: "ancestral grudge",
     displayName: "Ancestral Grudge",

@@ -1,7 +1,5 @@
 /** @type {import("../../types").SpecialRule[]} */
 const RULES = [
-  // ─── Beastmen ────────────────────────────────────────────────────────
-
   {
     id: "primal fury",
     displayName: "Primal Fury",

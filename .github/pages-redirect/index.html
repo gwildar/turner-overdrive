@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Turner Overdrive has moved</title>
+    <script>
+      // Old links were /turner-overdrive/#/game/...; the new app turns the
+      // hash into the matching path, so carry it across.
+      location.replace("__TARGET__/" + location.hash);
+    </script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #111;
+        color: #ddd;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      a {
+        color: #d4a84b;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Turner Overdrive has moved</h1>
+      <p>It now lives at <a href="__TARGET__/">__TARGET__</a>.</p>
+      <p>
+        Saved armies stay with the old address, so upload your army again there.
+      </p>
+    </main>
+  </body>
+</html>

@@ -33,6 +33,8 @@ const CATEGORIES = [
  * carries the app's key.
  */
 const UNIT_KEYS = {
+  // Wild Herd's Centigor Chieftain is the Warhoof
+  "tow/beastmen-brayherds/centigor-chieftain": "warhoof",
   "tow/daemons-of-chaos/herald-of-khorne": "daemonic-herald-of-khorne",
   "tow/daemons-of-chaos/herald-of-nurgle": "daemonic-herald-of-nurgle",
   "tow/daemons-of-chaos/herald-of-slaanesh": "daemonic-herald-of-slaanesh",

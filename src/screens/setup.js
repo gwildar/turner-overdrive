@@ -15,10 +15,9 @@ import {
   saveSupplementVersion,
 } from "../state.js";
 import {
-  SUPPLEMENT_VERSIONS,
+  supplementVersions,
   findSupplementVersion,
 } from "../data/supplements/index.js";
-import { ARMY_COMPOSITIONS } from "../data/army-compositions.js";
 import { getAllSubPhases, PHASES } from "../phases.js";
 import { formatSlug } from "../helpers.js";
 import { navigate } from "../navigate.js";
@@ -83,11 +82,6 @@ export function renderSetupScreen() {
             <span class="block text-xs font-normal mt-0.5 ${currentMode === "lightweight" ? "text-wh-accent/70" : "text-wh-muted"}">Spells, items &amp; rules only</span>
           </button>
         </div>
-        <div class="mt-6 border-t border-wh-border pt-4">
-          <h2 class="text-lg font-bold text-wh-text mb-1">Community Supplements</h2>
-          <p class="text-xs text-wh-muted mb-3">Rules version for each Renegade army. Default: Renegade Legacy Pack v1.5 (PDF). Applies to your current army straight away.</p>
-          ${renderSupplementVersions()}
-        </div>
         <button id="settings-close" class="mt-4 w-full py-2 text-sm text-wh-muted hover:text-wh-text transition-colors">Close</button>
       </dialog>
     `;
@@ -131,41 +125,35 @@ export function renderSetupScreen() {
         const el = /** @type {HTMLSelectElement} */ (e.target);
         saveSupplementVersion(el.dataset.supplementComposition, el.value);
         renderSetupScreen();
-        settingsModal()?.showModal();
       });
     }
   });
 }
 
-/** One row per Renegade army: a version picker, or the only version on offer. */
-function renderSupplementVersions() {
-  const rows = Object.entries(SUPPLEMENT_VERSIONS).map(
-    ([composition, versions]) => {
-      const name = ARMY_COMPOSITIONS[composition]?.name ?? composition;
-      const chosen = findSupplementVersion(
-        composition,
-        getSupplementVersion(composition),
-      );
-      const control =
-        versions.length > 1
-          ? `<select data-supplement-composition="${composition}" aria-label="${name} rules version"
-              class="bg-wh-card border border-wh-border rounded px-2 py-1 text-sm text-wh-text">
-              ${versions
-                .map(
-                  (v) =>
-                    `<option value="${v.id}" ${v.id === chosen?.id ? "selected" : ""}>${v.label}</option>`,
-                )
-                .join("")}
-            </select>`
-          : `<span class="text-sm text-wh-muted">${versions[0].label}</span>`;
-      return `
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-sm text-wh-text">${name}</span>
-          ${control}
-        </div>`;
-    },
+/**
+ * Rules version picker for a Renegade (legacy army) list, shown on the army
+ * card. Nothing for armies without a choice of community supplement versions.
+ */
+function renderSupplementVersionPicker(army) {
+  const versions = supplementVersions(army.composition);
+  if (versions.length < 2) return "";
+  const chosen = findSupplementVersion(
+    army.composition,
+    getSupplementVersion(army.composition),
   );
-  return `<div class="flex flex-col gap-2">${rows.join("")}</div>`;
+  return `
+    <label class="flex items-center gap-2 mt-2 text-sm text-wh-muted">
+      Rules version
+      <select data-supplement-composition="${army.composition}" aria-label="Rules version"
+        class="bg-wh-card border border-wh-border rounded px-2 py-1 text-sm text-wh-text">
+        ${versions
+          .map(
+            (v) =>
+              `<option value="${v.id}" ${v.id === chosen?.id ? "selected" : ""}>${v.label}</option>`,
+          )
+          .join("")}
+      </select>
+    </label>`;
 }
 
 function renderWhatsNew() {
@@ -184,11 +172,11 @@ function renderWhatsNew() {
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Updates Apply Straight Away</p>
-          <p class="text-xs">Rules updates and the community supplements setting now apply to your saved army without re-importing it.</p>
+          <p class="text-xs">Rules updates and the Renegade rules version now apply to your saved army without re-importing it.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Versions Per Army</p>
-          <p class="text-xs">Settings now has a rules version for each Renegade army: the v1.5 PDF or a community draft. Draft rules only ever apply to that Renegade army, never to a standard army.</p>
+          <p class="text-xs">A Renegade army now has a rules version picker on its army card: the v1.5 PDF or the latest community draft. Draft rules only ever apply to that Renegade army, never to a standard army.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Fixes</p>
@@ -283,6 +271,7 @@ export function renderArmySummary(army, warnings = []) {
             <h2 class="text-xl font-bold text-wh-accent">${army.name}</h2>
             <p class="text-wh-muted text-sm">${army.faction}${army.composition ? " — " + formatSlug(army.composition) : ""}</p>
             <p class="text-wh-muted text-sm">Total Army Unit Strength ${totalUS}</p>
+            ${renderSupplementVersionPicker(army)}
           </div>
           <div class="text-right">
             <div class="text-wh-accent font-mono text-lg">${totalPts} pts</div>

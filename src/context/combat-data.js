@@ -521,6 +521,16 @@ function getCrewedLds(u) {
   return { primary: crewLd, alt: beastLd };
 }
 
+/**
+ * Leadership to show for a unit's own profile: "7", or "8/4" for a crewed
+ * monster (crew's Ld while they live / the beast's own).
+ * @param {import("../types").Unit} u
+ */
+function unitLdLabel(u) {
+  const crewed = getCrewedLds(u);
+  return crewed ? `${crewed.primary}/${crewed.alt}` : getUnitLd(u);
+}
+
 // Large Target (own rule or from the mount) extends General/BSB range to 18".
 /** @param {import("../types").Unit} unit */
 function hasLargeTarget(unit) {
@@ -774,6 +784,7 @@ export function buildCombatEntries(army) {
         a: cStats?.A ? `${cStats.A}${extraAttackBonus(char) ?? ""}` : "?",
         t: charIsRiddenMonster ? `${charTW.t}` : cStats?.T || "?",
         w: charIsRiddenMonster ? `${charTW.w}` : cStats?.W || "?",
+        ld: unitLdLabel(char),
         as: char.armourSave ?? null,
         mr: char.magicResistance ? parseInt(char.magicResistance) : null,
         ward: char.ward ?? null,
@@ -812,6 +823,7 @@ export function buildCombatEntries(army) {
         riderS: "?",
         t: "?",
         w: "?",
+        ld: unitLdLabel(u),
         as: u.armourSave ?? null,
         mr: mergedMR,
         ward: u.ward ?? null,
@@ -1024,6 +1036,7 @@ export function buildCombatEntries(army) {
       w: isRiddenMonster
         ? `${mountedTW(baseT, baseW, mount).w}`
         : stats.W || "?",
+      ld: unitLdLabel(u),
       as: u.armourSave ?? null,
       mr: mergedMR,
       ward: u.ward ?? null,

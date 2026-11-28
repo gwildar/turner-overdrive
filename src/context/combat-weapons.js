@@ -393,7 +393,7 @@ function renderSingleUseItems(r) {
   return `<div class="mt-1">${r.singleUseItems.map((item) => `<div class="text-xs"><span class="text-wh-accent">\u{1F6E1} ${item.name}</span> <span class="text-wh-muted">(single use)</span></div>`).join("")}</div>`;
 }
 
-function statRow(t, w, as_, mr, ward, regen) {
+function statRow(t, w, ld, as_, mr, ward, regen) {
   // as_ avoids shadowing the reserved word 'as'
   return `<div class="flex items-center gap-2 flex-wrap mt-0.5 pb-1 border-b border-wh-border">
       <span class="text-wh-text font-mono text-sm">T:${t}</span>
@@ -402,6 +402,7 @@ function statRow(t, w, as_, mr, ward, regen) {
       ${mr ? `<span class="text-wh-phase-combat font-mono text-xs">\u2728MR:${mr}</span>` : ""}
       ${ward ? `<span class="text-purple-400 font-mono text-xs">\u{1F52E}Ward:${ward}</span>` : ""}
       ${regen ? `<span class="text-green-400 font-mono text-xs">\u{1F49A}Regen:${regen}</span>` : ""}
+      ${ld ? `<span class="ml-auto shrink-0 rounded-full border border-wh-accent/40 bg-wh-accent/10 px-2 py-px font-mono text-xs text-wh-accent" title="Leadership"><span class="text-[9px] uppercase tracking-wide text-wh-accent-dim mr-1">Ld</span>${ld}</span>` : ""}
     </div>`;
 }
 
@@ -468,7 +469,7 @@ export function renderCombatWeaponsContext(army) {
             ${
               (r.assignedCharProfiles || []).length === 0
                 ? `
-                ${statRow(r.t, r.w, r.as, r.mr, r.ward, r.regen)}
+                ${statRow(r.t, r.w, r.ld, r.as, r.mr, r.ward, r.regen)}
                 ${renderBanners(r)}
                 ${renderSingleUseItems(r)}
                 <div class="mt-1">
@@ -481,7 +482,7 @@ export function renderCombatWeaponsContext(army) {
                 ${renderSingleUseItems(r)}
                 <div class="mt-1">
                   <div class="text-[9px] uppercase tracking-wide text-wh-muted mb-0.5">${displayUnitName(r.unitName, r.strength)}</div>
-                  ${statRow(r.t, r.w, r.as, r.mr, r.ward, r.regen)}
+                  ${statRow(r.t, r.w, r.ld, r.as, r.mr, r.ward, r.regen)}
                   ${renderBanners(r)}
                   ${renderUnitWeapons(r)}
                   ${renderCombatRulesHtml(r.combatRules)}
@@ -493,7 +494,7 @@ export function renderCombatWeaponsContext(army) {
                         <div class="text-[9px] uppercase tracking-wide text-wh-muted">${ch.name}</div>
                         <div class="text-[9px] text-wh-muted font-mono">${ch.points}pts</div>
                       </div>
-                      ${statRow(ch.t, ch.w, ch.as, ch.mr, ch.ward, ch.regen)}
+                      ${statRow(ch.t, ch.w, ch.ld, ch.as, ch.mr, ch.ward, ch.regen)}
                       ${renderWeaponTable(collectCharWeaponRows(ch, r.apMod))}
                       ${ch.impactHits ? `<div class="text-xs text-wh-phase-combat mt-0.5">💥 Impact ${ch.impactHits}</div>` : ""}
                       ${renderCombatRulesHtml(ch.combatRules)}
@@ -544,10 +545,21 @@ export function renderCombatResultContext(army) {
 }
 
 /** @param {import("../types").Army} army */
-export function renderCombatLeadershipContext(army, title = "Break Test") {
+/**
+ * @param {import("../types").Army} army
+ * @param {string} [title]
+ * @param {{ unitList?: boolean }} [opts] - unitList false: only the
+ *   General/BSB ranges (each combat card already shows its Ld)
+ */
+export function renderCombatLeadershipContext(
+  army,
+  title = "Break Test",
+  { unitList = true } = {},
+) {
   const { rows, general, generalLd, generalRange, bsb, bsbRange } =
     buildCombatLeadershipData(army);
   if (rows.length === 0) return "";
+  if (!unitList && !general) return "";
 
   return `
     <div class="bg-wh-surface rounded-lg border border-wh-phase-combat/30 p-4 mb-4">
@@ -562,7 +574,7 @@ export function renderCombatLeadershipContext(army, title = "Break Test") {
           : ""
       }
       <div class="space-y-1">
-        ${rows
+        ${(unitList ? rows : [])
           .map(
             (r) => `
           <div class="p-2 rounded bg-wh-card flex justify-between items-center">
@@ -606,7 +618,7 @@ export function renderDefensiveStatsContext(army) {
                 (c) => `
               <div class="flex items-center gap-2 flex-wrap text-sm mt-1 ml-2 border-l border-wh-border pl-2">
                 <span class="text-wh-muted font-semibold">${c.name}${c.mount ? ` (${c.mount})` : ""}</span>
-                ${statRow(c.t, c.w, c.as, c.mr, c.ward, c.regen)}
+                ${statRow(c.t, c.w, c.ld ?? null, c.as, c.mr, c.ward, c.regen)}
               </div>`,
               )
               .join("")}

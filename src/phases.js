@@ -128,6 +128,9 @@ export const PHASES = [
       {
         id: "choose-fight",
         name: "Choose & Fight Combat",
+        // Calculate Combat Result and Break Test happen on this step too:
+        // rules and items tagged with those ids show here
+        merges: ["combat-result", "break-test"],
         rules: [
           "Active player picks a combat to resolve.",
           "Models fight in Initiative order (highest first).",
@@ -135,13 +138,7 @@ export const PHASES = [
           "Defender makes Armour and Ward saves, then remove casualties.",
           "Regeneration: roll each wound from Multiple Wounds separately.",
           "All engaged models must fight \u2014 no opting out.",
-        ],
-      },
-      {
-        id: "combat-result",
-        name: "Calculate Combat Result",
-        rules: [
-          "Each side totals combat result points:",
+          "Combat result \u2014 each side totals:",
           "\u2022 Wounds caused (unsaved)",
           "\u2022 Overkill caused (unsaved) max +5",
           "\u2022 Rank bonus (up to +3 for additional ranks)",
@@ -151,17 +148,10 @@ export const PHASES = [
           "\u2022 Close order +1",
           "\u2022 Massed Infantry +1 if higher Unit Strength",
           "The side with the higher total wins the combat.",
-        ],
-      },
-      {
-        id: "break-test",
-        name: "Break Test",
-        rules: [
-          "Each unit on the losing side takes a Break test.",
-          "Roll 2D6 vs Ld (modified by combat result difference).",
-          'Gives Ground: modified roll \u2264 Ld (or natural double 1) \u2014 moves 2" back, maintains formation.',
-          "Falls Back in Good Order: natural roll \u2264 Ld but modified roll > Ld \u2014 controlled retreat, auto-rallies.",
-          "Breaks and Flees: natural roll > Ld \u2014 unit routs and flees.",
+          "Break test \u2014 each unit on the losing side rolls 2D6 vs Ld (modified by the combat result difference):",
+          '\u2022 Gives Ground: modified roll \u2264 Ld (or natural double 1) \u2014 moves 2" back, maintains formation.',
+          "\u2022 Falls Back in Good Order: natural roll \u2264 Ld but modified roll > Ld \u2014 controlled retreat, auto-rallies.",
+          "\u2022 Breaks and Flees: natural roll > Ld \u2014 unit routs and flees.",
         ],
       },
       {
@@ -207,6 +197,29 @@ export function getAllSubPhases() {
 
 export function subPhaseToIndex(phaseId, subPhaseId) {
   return getAllSubPhases().findIndex(
-    (s) => s.phase.id === phaseId && s.subPhase.id === subPhaseId,
+    (s) =>
+      s.phase.id === phaseId &&
+      (s.subPhase.id === subPhaseId ||
+        (s.subPhase.merges || []).includes(subPhaseId)),
   );
 }
+
+/**
+ * The ids a step covers: its own and those of steps merged into it
+ * ("choose-fight" also covers "combat-result" and "break-test").
+ * @param {string | null} subPhaseId
+ * @returns {import("./types").SubPhaseId[]}
+ */
+export function subPhaseIdsFor(subPhaseId) {
+  if (!subPhaseId) return [];
+  const step = getAllSubPhases().find((s) => s.subPhase.id === subPhaseId);
+  return /** @type {import("./types").SubPhaseId[]} */ ([
+    subPhaseId,
+    ...(step?.subPhase.merges || []),
+  ]);
+}
+
+/** Every sub-phase id rules and items may name, merged ones included */
+export const ALL_SUB_PHASE_IDS = PHASES.flatMap((p) =>
+  p.subPhases.flatMap((s) => [s.id, ...(s.merges || [])]),
+);

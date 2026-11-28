@@ -1,3 +1,4 @@
+import { subPhaseIdsFor } from "../phases.js";
 /** @param {import("../types").Army} army */
 export function renderMagicItemsContext(army, phaseId, subPhaseId) {
   const grouped = {};
@@ -8,7 +9,11 @@ export function renderMagicItemsContext(army, phaseId, subPhaseId) {
       if (!item) continue;
       if (item.type === "virtue") continue;
       if (!item.phases?.includes(phaseId)) continue;
-      if (subPhaseId && item.subPhases && !item.subPhases.includes(subPhaseId))
+      if (
+        subPhaseId &&
+        item.subPhases &&
+        !subPhaseIdsFor(subPhaseId).some((id) => item.subPhases.includes(id))
+      )
         continue;
       if (subPhaseId && item.opponentOnly) continue;
       if (!subPhaseId && item.yourTurnOnly) continue;
@@ -30,8 +35,6 @@ export function renderMagicItemsContext(army, phaseId, subPhaseId) {
         !item.effect?.toLowerCase().includes("bound spell")
       )
         continue;
-      if (subPhaseId === "combat-result" && item.type !== "banner") continue;
-      if (subPhaseId === "break-test" && item.type !== "banner") continue;
       if (subPhaseId === "pursuit" && !item.subPhases?.includes("pursuit"))
         continue;
       const key = item.name;

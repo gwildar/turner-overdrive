@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { MAGIC_ITEMS } from "../data/magic-items.js";
 import { SUPPLEMENT_ITEMS } from "../data/supplements/index.js";
-import { PHASES } from "../phases.js";
+import { PHASES, ALL_SUB_PHASE_IDS } from "../phases.js";
 import { renderMagicItemsContext } from "../context/items.js";
 import { CORE_RULES } from "../data/special-rules.js";
 import { SUPPLEMENT_RULES } from "../data/supplements/index.js";
@@ -11,7 +11,7 @@ import { SUPPLEMENT_UNITS } from "../data/supplements/index.js";
 import { resolveUnitEntry } from "../parsers/resolve.js";
 
 const PHASE_IDS = PHASES.map((p) => p.id);
-const SUB_PHASE_IDS = PHASES.flatMap((p) => p.subPhases.map((s) => s.id));
+const SUB_PHASE_IDS = ALL_SUB_PHASE_IDS;
 
 // Runtime twin of the types in src/types.d.ts, so bad data also fails `npm test`.
 const ALL_ITEMS = [...MAGIC_ITEMS, ...SUPPLEMENT_ITEMS];

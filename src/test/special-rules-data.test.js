@@ -112,6 +112,9 @@ describe("rule reminders added from the tow.whfb.app crawl", () => {
     ["Indomitable (2)", "break-test", "Unstable"],
     ["Infernal Favour (1)", "break-test", "Daemonic Instability"],
     ["Lance Formation", "combat-result", "+1 combat result"],
+    // Choose & Fight includes the Combat Result and Break Test steps
+    ["Lance Formation", "choose-fight", "+1 combat result"],
+    ["Indomitable (2)", "choose-fight", "Unstable"],
     ["Ignore Panic", "shoot", "No Panic test"],
     ["Ignore Panic", "break-test", "No Panic test"],
     ["Ignore Panic", "compulsory-moves", "fled through"],
@@ -123,7 +126,6 @@ describe("rule reminders added from the tow.whfb.app crawl", () => {
   });
 
   it.each([
-    ["Lance Formation", "choose-fight"],
     ["Backstab", "combat-result"],
     ["Blood Greed", "break-test"],
   ])("%s does not show at %s", (owbText, step) => {

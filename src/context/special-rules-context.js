@@ -1,3 +1,4 @@
+import { subPhaseIdsFor } from "../phases.js";
 import { getRound } from "../state.js";
 import { normaliseRuleName } from "../helpers.js";
 import { getRuleset } from "../parsers/resolve.js";
@@ -178,7 +179,8 @@ export function hasSpecialRulesForSubPhase(army, subPhaseId) {
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
       for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
-        if (rule.phases.some((p) => p.subPhaseId === subPhaseId)) return true;
+        const ids = subPhaseIdsFor(subPhaseId);
+        if (rule.phases.some((p) => ids.includes(p.subPhaseId))) return true;
       }
     }
   }
@@ -210,6 +212,9 @@ export function renderSpecialRulesContext(army, subPhase) {
   const ruleset = armyRuleset(army);
   const round = getRound();
   const matches = [];
+  const ids = subPhaseIdsFor(subPhase.id).filter(
+    (id) => !(army.skipPhases || []).includes(id),
+  );
 
   for (const unit of army.units) {
     const { unitRules, resolvedRules } = buildUnitRules(unit);
@@ -218,7 +223,7 @@ export function renderSpecialRulesContext(army, subPhase) {
       const normName = normaliseRuleName(ruleName);
       for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
         for (const phase of rule.phases) {
-          if (phase.subPhaseId !== subPhase.id) continue;
+          if (!ids.includes(phase.subPhaseId)) continue;
           if (phase.fromRound && round < phase.fromRound) continue;
           if (phase.opponentOnly) continue;
           matches.push({
@@ -263,7 +268,8 @@ export function renderSpecialRulesForPhase(army, phase) {
         const normName = normaliseRuleName(ruleName);
         for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
           for (const rulePhase of rule.phases) {
-            if (rulePhase.subPhaseId !== sub.id) continue;
+            if (!subPhaseIdsFor(sub.id).includes(rulePhase.subPhaseId))
+              continue;
             if (rulePhase.fromRound && round < rulePhase.fromRound) continue;
             if (rulePhase.yourTurnOnly) continue;
             const key = `${rule.displayName}||${rulePhase.description}`;

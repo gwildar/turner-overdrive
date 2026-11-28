@@ -12,7 +12,7 @@ import {
   saveDisplayMode,
   saveScenarioOptions,
 } from "../../state.js";
-import { getAllSubPhases } from "../../phases.js";
+import { getAllSubPhases, subPhaseToIndex } from "../../phases.js";
 
 describe("Game Screen", () => {
   let army;
@@ -127,7 +127,7 @@ describe("Game Screen", () => {
     });
 
     it("shows Close Order in Special Rules on combat-result step", () => {
-      savePhaseIndex(10); // combat-result
+      savePhaseIndex(9); // choose-fight (includes combat result)
       renderGameScreen(army);
       const specialRulesPanel = getApp().querySelector(
         ".border-wh-accent\\/20",
@@ -139,7 +139,7 @@ describe("Game Screen", () => {
 
   describe("last step", () => {
     it("shows End Turn on last step", () => {
-      savePhaseIndex(13); // last step (Scoring)
+      savePhaseIndex(11); // last step (Scoring)
       renderGameScreen(army);
       expect(getApp().querySelector("#next-btn").textContent).toContain(
         "End Turn",
@@ -671,15 +671,17 @@ describe("Ogre Kingdoms army", () => {
     expect(ironblasterCard.textContent).toContain("Leadbelcher");
   });
 
-  it("shows crew Ld for Ironblaster on break test", () => {
-    savePhaseIndex(11); // break-test
+  it("shows crew Ld for Ironblaster on its combat card", () => {
+    savePhaseIndex(9); // choose-fight (includes break test)
     renderGameScreen(army);
     const combatPanel = getApp().querySelector(".border-wh-phase-combat\\/30");
     const ironblasterCard = [
       ...combatPanel.querySelectorAll(".bg-wh-card"),
     ].find((el) => el.textContent.includes("Ironblaster"));
     expect(ironblasterCard).toBeTruthy();
-    expect(ironblasterCard.textContent).toContain("Ld7");
+    expect(
+      ironblasterCard.querySelector('[title="Leadership"]')?.textContent,
+    ).toMatch(/Ld\s*7$/);
   });
 });
 
@@ -693,7 +695,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows scoring section with Turn Times title when no objectives", () => {
-    savePhaseIndex(13); // Scoring
+    savePhaseIndex(11); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
   });
@@ -705,7 +707,7 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(13); // Scoring
+    savePhaseIndex(11); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Strategic Objectives");
     expect(getApp().querySelector("#score-you")).toBeTruthy();
@@ -719,13 +721,13 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(13); // Scoring
+    savePhaseIndex(11); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Total");
   });
 
   it("hides magic items in scoring sub-phase", () => {
-    savePhaseIndex(13); // Scoring
+    savePhaseIndex(11); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
     // Should NOT contain any magic items (e.g. Spelleater Axe)
@@ -733,7 +735,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows Time column header in scoring table", () => {
-    savePhaseIndex(13);
+    savePhaseIndex(11);
     renderGameScreen(army);
     const header = getApp().querySelector("thead");
     expect(header.textContent).toContain("Time");
@@ -741,28 +743,28 @@ describe("Scoring UI", () => {
 
   it("shows deployment row when deploymentTime is set", () => {
     saveDeploymentTime(1200000); // 20 minutes
-    savePhaseIndex(13);
+    savePhaseIndex(11);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Deploy");
     expect(getApp().textContent).toContain("20:00");
   });
 
   it("does not show deployment row when deploymentTime is null", () => {
-    savePhaseIndex(13);
+    savePhaseIndex(11);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Deploy");
   });
 
   it("shows turn time in table when timings are set", () => {
     saveTimings({ 1: { you: { 0: 900000 } } }); // 15 minutes total
-    savePhaseIndex(13);
+    savePhaseIndex(11);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("15:00");
   });
 
   it("does not show the Turn Timings details section", () => {
     saveTimings({ 1: { you: { 0: 900000 } } });
-    savePhaseIndex(13);
+    savePhaseIndex(11);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Turn Timings");
   });
@@ -1633,24 +1635,16 @@ describe("Psychology-immune armies skip phases", () => {
     expect(navigatedIdx).toBeGreaterThan(rallyIdx);
   });
 
-  it("skips break-test phase when navigating for Vampire Counts army", () => {
-    vi.spyOn(Nav, "navigate").mockImplementation(() => {});
+  it("shows no Break Test panel on Choose & Fight for Vampire Counts", () => {
     const vcArmy = loadArmy("vampire-counts");
     startGame(vcArmy);
-    const subPhases = getAllSubPhases();
-    const breakIdx = subPhases.findIndex(
-      (sp) => sp.subPhase.id === "break-test",
-    );
-    savePhaseIndex(breakIdx - 1);
+    savePhaseIndex(subPhaseToIndex("combat", "choose-fight"));
     renderGameScreen(vcArmy);
-    getApp().querySelector("#next-btn").click();
-    const navigatedUrl = Nav.navigate.mock.calls[0][0];
-    const navigatedSubPhaseId = navigatedUrl.split("/").pop();
-    const navigatedIdx = subPhases.findIndex(
-      (sp) => sp.subPhase.id === navigatedSubPhaseId,
+    const headings = [...getApp().querySelectorAll("h3")].map(
+      (h) => h.textContent,
     );
-    expect(navigatedIdx).not.toBe(breakIdx);
-    expect(navigatedIdx).toBeGreaterThan(breakIdx);
+    expect(headings).toContain("Combat Units");
+    expect(headings).not.toContain("Break Test");
   });
 });
 
@@ -1760,5 +1754,43 @@ describe("Terror priority banner at Declare Charges", () => {
     savePhaseIndex(declareIdx);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Terror tests!");
+  });
+});
+
+describe("Choose & Fight includes Combat Result and Break Test", () => {
+  it("has no separate Combat Result or Break Test steps", () => {
+    const ids = getAllSubPhases().map((sp) => sp.subPhase.id);
+    expect(ids).not.toContain("combat-result");
+    expect(ids).not.toContain("break-test");
+  });
+
+  it("shows combat units, static combat bonuses and the Break Test ranges", () => {
+    const army = loadArmy("bretonnian-exiles");
+    startGame(army);
+    savePhaseIndex(subPhaseToIndex("combat", "choose-fight"));
+    renderGameScreen(army);
+    const headings = [...getApp().querySelectorAll("h3")].map(
+      (h) => h.textContent,
+    );
+    expect(headings).toEqual(
+      expect.arrayContaining([
+        "Combat Units",
+        "Static Combat Bonuses",
+        "Break Test",
+      ]),
+    );
+    expect(getApp().textContent).toContain("Inspiring Presence");
+  });
+
+  it("shows Leadership next to T and W on each combat card", () => {
+    const army = loadArmy("bretonnian-exiles");
+    startGame(army);
+    savePhaseIndex(subPhaseToIndex("combat", "choose-fight"));
+    renderGameScreen(army);
+    const baron = [...getApp().querySelectorAll(".bg-wh-card")].find((el) =>
+      el.textContent.includes("Baron"),
+    );
+    const ld = baron.querySelector('[title="Leadership"]');
+    expect(ld?.textContent).toMatch(/Ld\s*9/);
   });
 });

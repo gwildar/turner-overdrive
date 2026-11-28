@@ -1,3 +1,5 @@
+import { blastTemplateButton } from "../tools/launchers.js";
+import { usesBlastTemplate, weaponBlastSize } from "../tools/blast-template.js";
 import { getShootingUnits } from "../army.js";
 import { RANGED_WEAPONS, MISFIRE_TABLES, getWeapon } from "../data/weapons.js";
 import { displayUnitName } from "../utils/unit-name.js";
@@ -184,6 +186,7 @@ export function renderShootingContext(army) {
                     <span class="text-wh-phase-shooting font-mono text-xs">${r.weapon.range}</span>
                     ${r.weapon.s ? `<span class="text-wh-muted font-mono text-xs">S${resolveStrength(r.weapon.s, r.unitS)}</span>` : ""}
                     ${r.weapon.ap && r.weapon.ap !== "—" ? `<span class="text-wh-muted font-mono text-xs">AP${r.weapon.ap}</span>` : ""}
+                    ${usesBlastTemplate(r.weapon) ? blastTemplateButton({ size: weaponBlastSize(r.weapon) }) : ""}
                     ${group.championBS && !r.weapon?.noBS ? `<div class="text-xs text-wh-muted pl-1">Champion: <span class="text-wh-phase-shooting font-mono">BS${group.championBS}</span></div>` : ""}
                   </div>
                   ${r.weapon.rules?.length ? `<p class="text-xs text-wh-muted mt-0.5">${r.weapon.rules.join(", ")}</p>` : ""}

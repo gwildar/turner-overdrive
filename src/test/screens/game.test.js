@@ -1795,3 +1795,36 @@ describe("Choose & Fight includes Combat Result, Break Test and Pursuit", () => 
     expect(ld?.textContent).toMatch(/Ld\s*9/);
   });
 });
+
+describe("blast template tool on the game screens", () => {
+  it("has a template button in the header", () => {
+    const army = loadArmy("bretonnian-exiles");
+    startGame(army);
+    savePhaseIndex(0);
+    renderGameScreen(army);
+    expect(getApp().querySelector("header [data-blast-template]")).toBeTruthy();
+  });
+
+  it('gives a stone thrower a 3" template shortcut, and a cannon none', () => {
+    const army = loadArmy("bretonnian-exiles");
+    const bombards = army.units.filter((u) => u.name === "Bombard");
+    bombards[0].shootingWeapons = [
+      {
+        name: "Rock Lobber",
+        range: '12"-48"',
+        s: "3(6)",
+        ap: "-1",
+        rules: ['Bombardment (3" blast)'],
+        noBS: true,
+      },
+    ];
+    startGame(army);
+    savePhaseIndex(subPhaseToIndex("shooting", "shoot"));
+    renderGameScreen(army);
+    const shortcuts = getApp().querySelectorAll("main [data-blast-template]");
+    expect(shortcuts).toHaveLength(1);
+    expect(
+      /** @type {HTMLElement} */ (shortcuts[0]).dataset.blastTemplate,
+    ).toBe("3");
+  });
+});

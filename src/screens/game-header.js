@@ -1,3 +1,4 @@
+import { blastTemplateButton } from "../tools/launchers.js";
 import { PHASES } from "../phases.js";
 import { PHASE_BG } from "../helpers.js";
 
@@ -43,6 +44,7 @@ export function renderGameHeader({
         </div>
         <div class="flex items-center gap-3">
           <span class="font-mono ${isOpponentTurn ? "" : "font-black "}text-wh-accent">Round ${round}</span>
+          ${blastTemplateButton({ label: "&#9678;", className: "text-base leading-none text-wh-muted hover:text-wh-accent border border-wh-border px-2 py-1 rounded transition-colors" })}
           ${isOpponentTurn ? `<span class="text-xs text-wh-red font-semibold border border-wh-red px-2 py-0.5 rounded">Opp</span>` : ""}
           ${army.owbId ? `<a href="https://old-world-builder.com/game-view/${army.owbId}" target="_blank" rel="noopener noreferrer" class="text-xs text-wh-green border border-wh-green/30 px-2 py-1 rounded transition-colors" title="View in Old World Builder">&#128065; OWB</a>` : ""}
           <button id="new-game-btn"

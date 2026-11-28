@@ -16,6 +16,8 @@ const KEYS = {
   displayMode: "tow-display-mode",
   scenario: "tow-scenario",
   supplementVersions: "tow-supplement-versions",
+  // Blast template tool: formation, base and template last used
+  templateTool: "tow-template-tool",
   // Before per-army versions: one checkbox for the v1.5.2.2 drafts. Read
   // only to carry an old choice over (see getSupplementVersions).
   supplementsEnabled: "tow-supplements-enabled",
@@ -275,6 +277,23 @@ export function clearAll() {
   for (const key of Object.values(KEYS)) {
     localStorage.removeItem(key);
   }
+}
+
+const DEFAULT_TEMPLATE_TOOL = {
+  files: 5,
+  ranks: 4,
+  base: "25x25",
+  size: 3,
+  legacy: false,
+};
+
+/** @returns {{ files: number, ranks: number, base: string, size: 3 | 5, legacy: boolean }} */
+export function getTemplateToolSettings() {
+  return { ...DEFAULT_TEMPLATE_TOOL, ...load(KEYS.templateTool, {}) };
+}
+
+export function saveTemplateToolSettings(settings) {
+  save(KEYS.templateTool, settings);
 }
 
 export function getDisplayMode() {

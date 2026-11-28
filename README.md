@@ -3,8 +3,8 @@
 A turn tracker and phase reference tool for Warhammer: The Old World. Import your army list from [Old World Builder](https://old-world-builder.com), then step through each game phase with contextual reminders for special rules, magic items, spells, charge ranges, and shooting profiles.
 
 ## Features
-
-- Import army lists from [Old World Builder](https://old-world-builder.com) (`.owb.json`)
+ 
+- Import army lists from [Old World Builder](https://old-world-builder.com) (`.owb.json`) or [Old World Rankings](https://oldworldrankings.com/) (`.ob.json`)
 - Step-by-step phase and sub-phase tracking with rules reminders
 - Contextual display of special rules, magic items, and spells per phase
 - Declarable charge ranges with Fly, Swiftstride, and virtue modifiers

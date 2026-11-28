@@ -139,7 +139,7 @@ describe("Game Screen", () => {
 
   describe("last step", () => {
     it("shows End Turn on last step", () => {
-      savePhaseIndex(11); // last step (Scoring)
+      savePhaseIndex(10); // last step (Scoring)
       renderGameScreen(army);
       expect(getApp().querySelector("#next-btn").textContent).toContain(
         "End Turn",
@@ -695,7 +695,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows scoring section with Turn Times title when no objectives", () => {
-    savePhaseIndex(11); // Scoring
+    savePhaseIndex(10); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
   });
@@ -707,7 +707,7 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(11); // Scoring
+    savePhaseIndex(10); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Strategic Objectives");
     expect(getApp().querySelector("#score-you")).toBeTruthy();
@@ -721,13 +721,13 @@ describe("Scoring UI", () => {
       strategicLocations: { enabled: false, count: 3 },
       specialFeatures: false,
     });
-    savePhaseIndex(11); // Scoring
+    savePhaseIndex(10); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Total");
   });
 
   it("hides magic items in scoring sub-phase", () => {
-    savePhaseIndex(11); // Scoring
+    savePhaseIndex(10); // Scoring
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Turn Times");
     // Should NOT contain any magic items (e.g. Spelleater Axe)
@@ -735,7 +735,7 @@ describe("Scoring UI", () => {
   });
 
   it("shows Time column header in scoring table", () => {
-    savePhaseIndex(11);
+    savePhaseIndex(10);
     renderGameScreen(army);
     const header = getApp().querySelector("thead");
     expect(header.textContent).toContain("Time");
@@ -743,28 +743,28 @@ describe("Scoring UI", () => {
 
   it("shows deployment row when deploymentTime is set", () => {
     saveDeploymentTime(1200000); // 20 minutes
-    savePhaseIndex(11);
+    savePhaseIndex(10);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("Deploy");
     expect(getApp().textContent).toContain("20:00");
   });
 
   it("does not show deployment row when deploymentTime is null", () => {
-    savePhaseIndex(11);
+    savePhaseIndex(10);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Deploy");
   });
 
   it("shows turn time in table when timings are set", () => {
     saveTimings({ 1: { you: { 0: 900000 } } }); // 15 minutes total
-    savePhaseIndex(11);
+    savePhaseIndex(10);
     renderGameScreen(army);
     expect(getApp().textContent).toContain("15:00");
   });
 
   it("does not show the Turn Timings details section", () => {
     saveTimings({ 1: { you: { 0: 900000 } } });
-    savePhaseIndex(11);
+    savePhaseIndex(10);
     renderGameScreen(army);
     expect(getApp().textContent).not.toContain("Turn Timings");
   });
@@ -1757,11 +1757,12 @@ describe("Terror priority banner at Declare Charges", () => {
   });
 });
 
-describe("Choose & Fight includes Combat Result and Break Test", () => {
+describe("Choose & Fight includes Combat Result, Break Test and Pursuit", () => {
   it("has no separate Combat Result or Break Test steps", () => {
     const ids = getAllSubPhases().map((sp) => sp.subPhase.id);
     expect(ids).not.toContain("combat-result");
     expect(ids).not.toContain("break-test");
+    expect(ids).not.toContain("pursuit");
   });
 
   it("shows combat units, static combat bonuses and the Break Test ranges", () => {

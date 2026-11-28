@@ -35,8 +35,6 @@ export function renderMagicItemsContext(army, phaseId, subPhaseId) {
         !item.effect?.toLowerCase().includes("bound spell")
       )
         continue;
-      if (subPhaseId === "pursuit" && !item.subPhases?.includes("pursuit"))
-        continue;
       const key = item.name;
       if (!grouped[key]) grouped[key] = { item, units: [] };
       if (!grouped[key].units.includes(unit.name))

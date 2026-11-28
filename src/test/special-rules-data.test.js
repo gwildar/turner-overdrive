@@ -115,6 +115,7 @@ describe("rule reminders added from the tow.whfb.app crawl", () => {
     // Choose & Fight includes the Combat Result and Break Test steps
     ["Lance Formation", "choose-fight", "+1 combat result"],
     ["Indomitable (2)", "choose-fight", "Unstable"],
+    ["Blood Greed", "choose-fight", "single D6"],
     ["Ignore Panic", "shoot", "No Panic test"],
     ["Ignore Panic", "break-test", "No Panic test"],
     ["Ignore Panic", "compulsory-moves", "fled through"],

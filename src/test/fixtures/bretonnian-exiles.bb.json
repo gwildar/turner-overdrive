@@ -1,0 +1,344 @@
+{
+  "id": "aa540ac6-c66c-401a-8f0d-305aa112b552",
+  "name": "Aliénor",
+  "builderEditedAt": "2026-11-06T11:04:48.797Z",
+  "factionId": "tow/kingdom-of-bretonnia",
+  "forceTemplateId": "tow/kingdom-of-bretonnia/bretonnian-exiles",
+  "ruleset": {
+    "gameSystemId": "the-old-world",
+    "gameVersionId": "tow-1.5.3"
+  },
+  "compositionRuleIds": ["tow/grand-melee", "tow/combined-arms"],
+  "pointsLimit": 2000,
+  "units": [
+    {
+      "id": "owb-0",
+      "unitEntryId": "tow/kingdom-of-bretonnia/baron",
+      "customName": "Aliénor de Parravon",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "baron-default-armour",
+          "optionId": "heavy-armour"
+        },
+        {
+          "groupId": "baron-weapon",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "baron-shield",
+          "optionId": "shield"
+        },
+        {
+          "groupId": "baron-vow",
+          "optionId": "the-exile-s-vow"
+        },
+        {
+          "groupId": "baron-mount",
+          "optionId": "royal-pegasus"
+        }
+      ],
+      "traitIds": [
+        "tow/kingdom-of-bretonnia-magic-items/frontier-axe",
+        "tow/common/elixir-of-power",
+        "tow/kingdom-of-bretonnia/knightly-virtues/virtue-of-the-ideal",
+        "tow/common/talisman-of-protection"
+      ]
+    },
+    {
+      "id": "owb-1",
+      "unitEntryId": "tow/kingdom-of-bretonnia/baron",
+      "customName": "Le Baron de Chair-à-Canon",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "baron-default-armour",
+          "optionId": "heavy-armour"
+        },
+        {
+          "groupId": "baron-weapon",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "baron-vow",
+          "optionId": "the-exile-s-vow"
+        },
+        {
+          "groupId": "baron-mount",
+          "optionId": "barded-pegasus"
+        },
+        {
+          "groupId": "baron-general",
+          "optionId": "general"
+        }
+      ],
+      "traitIds": [
+        "tow/common/flail-of-wrecks",
+        "tow/common/charmed-shield",
+        "tow/kingdom-of-bretonnia-magic-items/sirienne-s-locket",
+        "tow/kingdom-of-bretonnia/knightly-virtues/virtue-of-knightly-temper"
+      ]
+    },
+    {
+      "id": "owb-2",
+      "unitEntryId": "tow/kingdom-of-bretonnia/paladin",
+      "customName": "Vyvyan le Bâtard",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "paladin-default-armour",
+          "optionId": "heavy-armour"
+        },
+        {
+          "groupId": "paladin-general",
+          "optionId": "battle-standard-bearer"
+        },
+        {
+          "groupId": "paladin-weapon",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "paladin-vow",
+          "optionId": "the-exile-s-vow"
+        },
+        {
+          "groupId": "paladin-mount",
+          "optionId": "barded-pegasus"
+        },
+        {
+          "groupId": "paladin-shield",
+          "optionId": "shield"
+        }
+      ],
+      "traitIds": [
+        "tow/common/obsidian-lodestone",
+        "tow/common/obsidian-lodestone",
+        "tow/kingdom-of-bretonnia-magic-items/errantry-banner",
+        "tow/kingdom-of-bretonnia/knightly-virtues/virtue-of-the-impetuous-knight",
+        "tow/common/charmed-shield"
+      ]
+    },
+    {
+      "id": "owb-3",
+      "unitEntryId": "tow/kingdom-of-bretonnia/outcast-wizard",
+      "customName": "Mertz Karst",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "outcast-wizard-default-equipment",
+          "optionId": "hand-weapon"
+        },
+        {
+          "groupId": "outcast-wizard-wizard-level",
+          "optionId": "level-3-wizard"
+        },
+        {
+          "groupId": "outcast-wizard-mount",
+          "optionId": "warhorse"
+        },
+        {
+          "groupId": "outcast-wizard-lore",
+          "optionId": "dark-magic"
+        }
+      ],
+      "traitIds": [
+        "tow/common/sorcerous-ruse",
+        "tow/common/lore-familiar",
+        "tow/common/ring-of-doom"
+      ]
+    },
+    {
+      "id": "owb-4",
+      "unitEntryId": "tow/kingdom-of-bretonnia/mounted-yeomen",
+      "customName": "les Cavaliers Pleutres",
+      "quantity": 8,
+      "selectedOptions": [
+        {
+          "groupId": "mounted-yeomen-default-equipment",
+          "optionId": "hand-weapons"
+        },
+        {
+          "groupId": "mounted-yeomen-default-equipment",
+          "optionId": "cavalry-spears"
+        },
+        {
+          "groupId": "mounted-yeomen-default-equipment",
+          "optionId": "shortbows"
+        },
+        {
+          "groupId": "mounted-yeomen-command",
+          "optionId": "warden"
+        },
+        {
+          "groupId": "mounted-yeomen-command",
+          "optionId": "standard-bearer"
+        },
+        {
+          "groupId": "mounted-yeomen-command",
+          "optionId": "musician"
+        },
+        {
+          "groupId": "mounted-yeomen-armour",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "mounted-yeomen-shields",
+          "optionId": "shields"
+        },
+        {
+          "groupId": "mounted-yeomen-feigned-flight",
+          "optionId": "feigned-flight"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "owb-5",
+      "unitEntryId": "tow/kingdom-of-bretonnia/mounted-knights-of-the-realm",
+      "customName": "Le Codir",
+      "quantity": 10,
+      "selectedOptions": [
+        {
+          "groupId": "mounted-knights-of-the-realm-default-armour",
+          "optionId": "heavy-armour"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-default-armour",
+          "optionId": "barding"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-default-equipment",
+          "optionId": "hand-weapons"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-default-equipment",
+          "optionId": "lances"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-default-equipment",
+          "optionId": "shields"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-command",
+          "optionId": "first-knight"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-command",
+          "optionId": "standard-bearer"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-command",
+          "optionId": "musician"
+        },
+        {
+          "groupId": "mounted-knights-of-the-realm-vow",
+          "optionId": "the-exile-s-vow"
+        }
+      ],
+      "traitIds": [
+        "tow/kingdom-of-bretonnia-magic-items/antlers-of-the-great-hunt",
+        "tow/kingdom-of-bretonnia-magic-items/banner-of-the-zealous-knight"
+      ]
+    },
+    {
+      "id": "owb-6",
+      "unitEntryId": "tow/kingdom-of-bretonnia/peasant-bowmen",
+      "customName": "Les Navets victorieux",
+      "quantity": 11,
+      "selectedOptions": [
+        {
+          "groupId": "peasant-bowmen-default-equipment",
+          "optionId": "hand-weapons"
+        },
+        {
+          "groupId": "peasant-bowmen-default-equipment",
+          "optionId": "longbows"
+        },
+        {
+          "groupId": "peasant-bowmen-light-armour",
+          "optionId": "no-armour"
+        },
+        {
+          "groupId": "peasant-bowmen-skirmishers",
+          "optionId": "skirmishers"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "owb-7",
+      "unitEntryId": "tow/kingdom-of-bretonnia/pegasus-knights",
+      "customName": "Les Grands Pigeonniers",
+      "quantity": 4,
+      "selectedOptions": [
+        {
+          "groupId": "pegasus-knights-default-armour",
+          "optionId": "heavy-armour"
+        },
+        {
+          "groupId": "pegasus-knights-default-armour",
+          "optionId": "barding"
+        },
+        {
+          "groupId": "pegasus-knights-default-equipment",
+          "optionId": "hand-weapons"
+        },
+        {
+          "groupId": "pegasus-knights-default-equipment",
+          "optionId": "lances"
+        },
+        {
+          "groupId": "pegasus-knights-default-equipment",
+          "optionId": "shields"
+        },
+        {
+          "groupId": "pegasus-knights-command",
+          "optionId": "first-knight"
+        },
+        {
+          "groupId": "pegasus-knights-command",
+          "optionId": "standard-bearer"
+        },
+        {
+          "groupId": "pegasus-knights-vow",
+          "optionId": "the-exile-s-vow"
+        }
+      ],
+      "traitIds": ["tow/common/totem-of-wrath"]
+    },
+    {
+      "id": "owb-8",
+      "unitEntryId": "tow/kingdom-of-bretonnia/border-princes-bombard",
+      "customName": "Pas De Canon",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "border-princes-bombard-default-armour",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "border-princes-bombard-default-equipment",
+          "optionId": "bombard-hand-weapons"
+        }
+      ],
+      "traitIds": []
+    },
+    {
+      "id": "owb-9",
+      "unitEntryId": "tow/kingdom-of-bretonnia/border-princes-bombard",
+      "customName": "Jean Luc Pétard",
+      "quantity": 1,
+      "selectedOptions": [
+        {
+          "groupId": "border-princes-bombard-default-armour",
+          "optionId": "light-armour"
+        },
+        {
+          "groupId": "border-princes-bombard-default-equipment",
+          "optionId": "bombard-hand-weapons"
+        }
+      ],
+      "traitIds": []
+    }
+  ]
+}

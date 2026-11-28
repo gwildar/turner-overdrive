@@ -1,5 +1,10 @@
 import { version } from "../../package.json";
-import { importArmy, loadStoredArmy, getCasters } from "../army.js";
+import {
+  importArmy,
+  convertArmyFile,
+  loadStoredArmy,
+  getCasters,
+} from "../army.js";
 import { displayUnitName } from "../utils/unit-name.js";
 import {
   clearArmy,
@@ -167,8 +172,12 @@ function renderWhatsNew() {
       </summary>
       <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
         <div class="pt-3">
-          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Old World Builder Only</p>
-          <p class="text-xs">New Recruit files are no longer supported. Export your list from <span class="text-wh-text">Old World Builder</span> as <span class="font-mono text-wh-text">.owb.json</span>. A previously saved New Recruit army will need re-uploading.</p>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Battle Builder Lists</p>
+          <p class="text-xs">You can now import lists from <span class="text-wh-text">Battle Builder</span> (oldworldrankings.com/builder): export as <span class="font-mono text-wh-text">.bb.json</span> and upload it here.</p>
+        </div>
+        <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Old World Builder and Battle Builder</p>
+          <p class="text-xs">New Recruit files are no longer supported. Export your list from <span class="text-wh-text">Old World Builder</span> as <span class="font-mono text-wh-text">.owb.json</span> or from Battle Builder as <span class="font-mono text-wh-text">.bb.json</span>. A previously saved New Recruit army will need re-uploading.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Updates Apply Straight Away</p>
@@ -206,7 +215,7 @@ function renderUploadSection() {
                hover:border-wh-accent transition-colors cursor-pointer">
         <div class="text-4xl mb-4">&#128193;</div>
         <p class="text-lg mb-2">Drop your army file here</p>
-        <p class="text-wh-muted text-sm mb-2"><span class="text-wh-accent font-mono">.owb.json</span> from Old World Builder</p>
+        <p class="text-wh-muted text-sm mb-2"><span class="text-wh-accent font-mono">.owb.json</span> from Old World Builder, or <span class="text-wh-accent font-mono">.bb.json</span> from Battle Builder</p>
         <p class="text-wh-muted text-sm mb-4">or click to browse</p>
         <input type="file" id="file-input" accept=".json,.owb" class="hidden" />
         <button id="browse-btn"
@@ -223,6 +232,12 @@ function renderUploadSection() {
           <li>Go to <a href="https://old-world-builder.com" target="_blank" rel="noopener noreferrer" class="text-wh-accent hover:underline">Old World Builder</a> (old-world-builder.com)</li>
           <li>Create or open your army list</li>
           <li>Export as <span class="font-mono text-wh-text">.owb.json</span></li>
+          <li>Upload the file here</li>
+        </ol>
+        <p class="text-xs text-wh-muted mt-3 mb-2 font-semibold uppercase tracking-wide">Battle Builder</p>
+        <ol class="text-sm text-wh-muted space-y-1 list-decimal list-inside">
+          <li>Go to <a href="https://oldworldrankings.com/builder/" target="_blank" rel="noopener noreferrer" class="text-wh-accent hover:underline">Battle Builder</a> (oldworldrankings.com/builder)</li>
+          <li>Open your army list and export it as <span class="font-mono text-wh-text">.bb.json</span></li>
           <li>Upload the file here</li>
         </ol>
       </div>
@@ -396,9 +411,9 @@ function bindUpload() {
 
 function handleFile(file, errorEl) {
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     try {
-      const json = JSON.parse(String(reader.result));
+      const json = await convertArmyFile(JSON.parse(String(reader.result)));
       const army = importArmy(json);
       currentWarnings = validateArmy(json, army);
       const casters = getCasters(army);

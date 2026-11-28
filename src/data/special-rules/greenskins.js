@@ -176,6 +176,49 @@ const RULES = [
       "Elves of any type cause Fear in models with this special rule.",
     phases: [],
   },
+  {
+    id: "release the fanatics!",
+    displayName: "Release the Fanatics!",
+    aliases: ["release the fanatics"],
+    description:
+      'Unless fleeing or in Marching Column, a concealing unit may release Fanatics: place each within 3". They move 2D6" in your chosen direction this Compulsory Moves, randomly after that, through units; a natural double or terrain contact removes them. Can\'t be charged; can be shot as a lone character.',
+    phases: [
+      {
+        subPhaseId: "start-of-turn",
+        description:
+          'Concealing units (not fleeing or in Marching Column) may release Fanatics: place each within 3" of the unit.',
+        yourTurnOnly: true,
+      },
+      {
+        subPhaseId: "compulsory-moves",
+        description:
+          'Fanatics move 2D6" (your chosen direction the turn released, random after), through any units. A natural double, or touching difficult/dangerous/impassable terrain or a linear obstacle, removes them. Two Fanatics colliding are both removed.',
+      },
+    ],
+  },
+  {
+    id: "skulking menace",
+    displayName: "Skulking Menace",
+    description:
+      "Nasty Skulkers hide in a Goblin Mob and must be revealed at the start of its first round of combat (placed as joined characters); removed if the unit is destroyed or flees first.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "syphoned strength",
+    displayName: "Syphoned Strength",
+    description:
+      'Within 3" of a friendly, non-fleeing Troll Mob of US 6+, +1 to Casting rolls.',
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "bully",
+    displayName: "Bully",
+    description:
+      "Deploys with its war machine and can't leave it. Unless fleeing, friendly war machines within its Command range may use its Leadership.",
+    passive: true,
+    phases: [],
+  },
 ];
 
 export default RULES;

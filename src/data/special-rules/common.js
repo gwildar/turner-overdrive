@@ -2334,6 +2334,122 @@ const RULES = [
       "Reduce the wounds suffered from Unstable by the number in brackets. Not cumulative: a unit uses the highest Indomitable value among its models.",
     phases: ["break-test"],
   },
+  {
+    id: "run with the pack",
+    displayName: "Run with the Pack",
+    description:
+      "While a Beast Keeper remains, the unit isn't Undisciplined and its war beasts don't fear Flaming Attacks. The unit may use the Movement of most of its models.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "boldest of the bold",
+    displayName: "Boldest of the Bold",
+    description: "Araloth ignores all negative modifiers to his Leadership.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "favour of the goddess",
+    displayName: "Favour of the Goddess",
+    description: "5+ Ward save against any wounds suffered.",
+    passive: true,
+    phases: [],
+    ward: "5+",
+  },
+  {
+    id: "skaryn the eye thief",
+    displayName: "Skaryn the Eye Thief",
+    description:
+      'Roll D6: on 3+, one enemy model within 18" suffers a S4 AP -1 hit; if it takes an unsaved wound, -D3 WS and I (min 1) for the rest of the game.',
+    phases: ["command"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "handler",
+    displayName: "Handler",
+    description:
+      "Deploys with its Chaos Warhounds unit and can't leave it. Unless fleeing, friendly Chaos Warhound units within its Command range may use its Leadership.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "breath of change",
+    displayName: "Breath of Change",
+    description:
+      "Once per game, instead of Dark Fire or Fumes of Contagion: flame template from the front arc; every model hit (friend or foe) takes a Toughness test — failed = removed as a casualty.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "spirit of galrauch",
+    displayName: "Spirit of Galrauch",
+    description:
+      "Take a Leadership test. If failed, until next turn: Wizard Level 1 (one spell per turn), Random Movement (2D6), and in combat D3 of his attacks hit himself (those wounds count for the enemy's combat result).",
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "two-headed dragon",
+    displayName: "Two-headed Dragon",
+    description:
+      "May use Dark Fire of Chaos or Fumes of Contagion in its Shooting phase, not both.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "grand master of the knights panther",
+    displayName: "Grand Master of the Knights Panther",
+    description:
+      "Knights Panther: may re-roll one natural 1 on a Charge roll (before discarding dice). May only join a Knights Panther unit.",
+    phases: ["declare-charges"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "skilled duellist",
+    displayName: "Skilled Duellist",
+    description:
+      "If he slays an enemy in a challenge in a turn he charged, he may issue a second challenge, fought immediately (not his mount).",
+    phases: ["choose-fight"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "the wyrm slayer",
+    displayName: "The Wyrm Slayer",
+    description:
+      "If he kills an enemy monstrous infantry, monstrous cavalry, monstrous creature or behemoth in combat, he gains Terror for the rest of the game.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "sorcerous miasma",
+    displayName: "Sorcerous Miasma",
+    description:
+      "In combat, enemy models attacking a character on a Lammasu with a magic weapon count as armed with a hand weapon instead.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "deploying weapon teams",
+    displayName: "Deploying Weapon Teams",
+    description:
+      'Deploys at the same time as its parent unit, within 3" of it.',
+    phases: ["deployment"],
+  },
+  {
+    id: "weapon team leadership",
+    displayName: "Weapon Team Leadership",
+    description:
+      "Within 3\" of its parent unit, +Ld equal to that unit's current Rank Bonus (max 10).",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "targeting weapon teams",
+    displayName: "Targeting Weapon Teams",
+    description:
+      'Within 3" of a non-fleeing parent unit of 5+ models, cannot be targeted by enemy shooting or spells unless it is the closest target.',
+    phases: ["shoot"],
+    opponentOnly: true,
+  },
 ];
 
 export default RULES;

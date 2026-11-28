@@ -122,6 +122,21 @@ const RULES = [
     phases: ["remaining-moves"],
     yourTurnOnly: true,
   },
+  {
+    id: "gorefeast",
+    displayName: "Gorefeast",
+    description:
+      "For each Wound an enemy loses to this model's Impact Hits, roll D6: on a 6 it recovers a Wound.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "totem of endless bloodletting",
+    displayName: "Totem of Endless Bloodletting",
+    description:
+      "Friendly Daemons of Khorne within its Command range that charged this turn re-roll To Hit rolls of a natural 1 in combat.",
+    phases: ["choose-fight"],
+    yourTurnOnly: true,
+  },
 ];
 
 export default RULES;

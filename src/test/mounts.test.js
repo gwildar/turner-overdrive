@@ -15,6 +15,7 @@ describe("mount kinds", () => {
   it.each([
     ["Barded Warhorse", "cavalry"],
     ["Barded Pegasus", "cavalry"],
+    ["Great Stag", "cavalry"],
     ["Black Dragon", "monster"],
     ["Terrorgheist {mount}", "monster"],
     ["Chaos Chariot", "chariot"],
@@ -100,5 +101,20 @@ describe("a Renegade version's mounts are used when ridden", () => {
     const v15 = findMount(name, getRuleset(comp, "v1.5"));
     expect(check(draft)).toBe(true);
     expect(check(v15)).toBe(false);
+  });
+});
+
+describe("Great Stag", () => {
+  it("is a Monstrous Cavalry mount: +1 T, +1 W, Impact Hits (1), Stomp Attacks (1)", () => {
+    const stag = findMount("Great Stag");
+    expect(stag).toMatchObject({
+      troopType: "MCa",
+      m: 8,
+      tBonus: 1,
+      wBonus: 1,
+      impactHits: "1",
+      stomp: "1",
+    });
+    expect(mountedTW(3, 2, stag)).toEqual({ t: 4, w: 3 });
   });
 });

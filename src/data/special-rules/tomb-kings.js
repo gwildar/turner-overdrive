@@ -168,6 +168,68 @@ const RULES = [
       },
     ],
   },
+  {
+    id: "cloud of dust",
+    displayName: "Cloud of Dust",
+    description:
+      "Any enemy model targeting this model in the Shooting phase suffers an additional -1 To Hit.",
+    phases: ["shoot"],
+    opponentOnly: true,
+  },
+  {
+    id: "herald of despair",
+    displayName: "Herald of Despair",
+    description:
+      "Enemy units in base contact with Nekaph or his unit roll an extra D6 for Fear and Terror tests and discard the lowest.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "settras champion",
+    displayName: "Settra's Champion",
+    aliases: ["settra's champion"],
+    description:
+      "Must always issue and accept challenges; his challenges cannot be refused. In a challenge he strikes Killing Blow on To Wound rolls of 5 or 6.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "scarab prince",
+    displayName: "Scarab Prince",
+    description:
+      'When Apophas loses his last Wound, every enemy unit within 2D6" suffers 2D6 S2 AP -1 hits.',
+    phases: ["shoot", "choose-fight"],
+  },
+  {
+    id: "usirians reaper",
+    displayName: "Usirian's Reaper",
+    aliases: ["usirian's reaper"],
+    description:
+      "After deployment, nominate an enemy character: Apophas re-rolls failed To Hit and To Wound rolls against it, and his hits on it have Magical Attacks.",
+    phases: ["deployment", "choose-fight"],
+  },
+  {
+    id: "commander of legions",
+    displayName: "Commander of Legions",
+    description:
+      "Settra has the Arise! rule and may use it even while engaged in combat.",
+    phases: ["conjuration"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "settra does not kneel!",
+    displayName: "Settra Does Not Kneel!",
+    aliases: ["settra does not kneel"],
+    description:
+      "Settra must always accept a challenge, unless Nekaph is in the same combat — then Nekaph must accept it for him.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "settra the great",
+    displayName: "Settra the Great",
+    description:
+      'Settra must be the General and the Hierophant. Command range 18".',
+    passive: true,
+    phases: [],
+  },
 ];
 
 export default RULES;

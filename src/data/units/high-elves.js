@@ -1570,8 +1570,17 @@ const UNITS = {
   ],
   "chieftain's-chariot": {
     shared: {
-      rules: [],
-      equipment: [],
+      rules: [
+        "Armour Bane (1, Chracian Lions only)",
+        "Close Order",
+        "Elven Reflexes",
+        "Fear",
+        "First Charge",
+        "Impact Hits (D6, Chieftain's Chariot only)",
+        "Stubborn",
+        "Valour of Ages",
+      ],
+
       troopType: ["HCh"],
       magic: [],
       optionalRules: [],
@@ -1589,6 +1598,9 @@ const UNITS = {
         Ld: "-",
         WS: "-",
         Name: "Chieftain's Chariot",
+        AS: "4",
+        "Impact-Hits": "D6",
+        equipment: [],
       },
       {
         A: "1",
@@ -1601,6 +1613,7 @@ const UNITS = {
         Ld: "-",
         WS: "5",
         Name: "Charioteer (x1)",
+        equipment: ["Hand weapons", "Chracian great blade"],
       },
       {
         A: "2",
@@ -1613,6 +1626,7 @@ const UNITS = {
         Ld: "-",
         WS: "5",
         Name: "Chracian Lion (x2)",
+        equipment: ["Claws and fangs", "hand weapons"],
       },
     ],
   },

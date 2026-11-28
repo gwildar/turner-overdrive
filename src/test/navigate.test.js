@@ -18,3 +18,15 @@ describe("links from when the app used hash routing", () => {
     expect(window.location.hash).toBe("#credits");
   });
 });
+
+describe("onNavigate", () => {
+  it("runs after navigate() and on back/forward", async () => {
+    const { navigate, onNavigate } = await import("../navigate.js");
+    const calls = [];
+    onNavigate(() => calls.push(window.location.pathname));
+    navigate("/about");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    expect(calls.length).toBe(2);
+    expect(calls[0]).toBe("/about");
+  });
+});

@@ -176,6 +176,10 @@ function renderWhatsNew() {
           <p class="text-xs">Import lists from <span class="text-wh-text">Battle Builder</span> (oldworldrankings.com/builder) as <span class="font-mono text-wh-text">.bb.json</span>, as well as Old World Builder <span class="font-mono text-wh-text">.owb.json</span>. Composition costs and the Renegade rules version come across with the list. New Recruit files are no longer supported.</p>
         </div>
         <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Works Offline</p>
+          <p class="text-xs">Once opened, the app loads with no signal, and you can add it to your home screen. Updates install themselves, but never in the middle of a game.</p>
+        </div>
+        <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">One Combat Step</p>
           <p class="text-xs">Choose &amp; Fight now covers Combat Result, Break Test and Follow Up &amp; Pursuit: one screen with your combat units, static combat bonuses and Break Test ranges. Each combat card shows its Leadership.</p>
         </div>

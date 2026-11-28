@@ -1,11 +1,13 @@
 // Cloudflare Worker serving the built app (dist/) as static assets.
 // Workers Builds: build command `npm run build`, deploy command
-// `npx wrangler deploy`. vite.config.js uses base "/" when WORKERS_CI is set.
+// `npx wrangler deploy`.
 {
   "name": "turner-overdrive",
   "compatibility_date": "2026-11-28",
   "assets": {
     "directory": "./dist",
+    // Path routing: any path that isn't a file gets index.html
+    "not_found_handling": "single-page-application",
   },
   // Branch previews (`wrangler preview`, run by Workers Builds for PRs)
   // need this block; empty means the same assets and settings as above.

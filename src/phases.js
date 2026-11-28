@@ -128,9 +128,10 @@ export const PHASES = [
       {
         id: "choose-fight",
         name: "Choose & Fight Combat",
-        // Calculate Combat Result and Break Test happen on this step too:
-        // rules and items tagged with those ids show here
-        merges: ["combat-result", "break-test"],
+        // Calculate Combat Result, Break Test and Follow Up & Pursuit
+        // happen on this step too: rules and items tagged with those ids
+        // show here
+        merges: ["combat-result", "break-test", "pursuit"],
         rules: [
           "Active player picks a combat to resolve.",
           "Models fight in Initiative order (highest first).",
@@ -152,18 +153,11 @@ export const PHASES = [
           '\u2022 Gives Ground: modified roll \u2264 Ld (or natural double 1) \u2014 moves 2" back, maintains formation.',
           "\u2022 Falls Back in Good Order: natural roll \u2264 Ld but modified roll > Ld \u2014 controlled retreat, auto-rallies.",
           "\u2022 Breaks and Flees: natural roll > Ld \u2014 unit routs and flees.",
-        ],
-      },
-      {
-        id: "pursuit",
-        name: "Follow Up & Pursuit",
-        rules: [
-          "Winning units may:",
+          "Follow up & pursuit \u2014 winning units may:",
           "\u2022 Follow up an enemy that Gives Ground.",
           "\u2022 Pursue an enemy that Falls Back in Good Order or Breaks.",
           "\u2022 Restrain from pursuit (requires Ld test).",
           "Pursuing into a fleeing unit destroys it.",
-          "This is the last sub-phase \u2014 the turn ends after all combats are resolved.",
         ],
       },
     ],

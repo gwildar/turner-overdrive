@@ -54,17 +54,39 @@ function hasTerrorUnits(army) {
       ) || (unit.mount?.rules ?? []).includes("Terror"),
   );
 }
-function renderPriorityRules(subPhase, army) {
+function renderPriorityRules(subPhase, army, phase) {
   let rules = PRIORITY_RULES[subPhase.id] || [];
   // If this is charge declaration and no unit causes Terror, remove it
   if (subPhase.id === "declare-charges" && !hasTerrorUnits(army)) {
     rules = rules.filter((r) => r.text !== "Terror tests!");
   }
   if (rules.length === 0) return "";
-  // Visual style: dark background, white bold text, slight shadow.
-  return `<div class="bg-wh-phase-combat text-wh-bg font-bold py-2 px-4 rounded-lg shadow-md mb-4">
-    ${rules[0].text}
+  // Each reminder slides in, glows, then fades out (see .priority-reminder
+  // in style.css); tinted with the phase colour, staggered when several.
+  return `<div class="priority-reminders">
+    ${rules
+      .map(
+        (rule, i) => `<div class="priority-reminder" role="status"
+          style="--reminder: var(--color-${phase.colour}); --reminder-index: ${i}">
+          <span class="priority-reminder__icon" aria-hidden="true">!</span>
+          <div>
+            <p class="priority-reminder__label">Don't forget</p>
+            <p class="priority-reminder__text">${rule.text}</p>
+          </div>
+        </div>`,
+      )
+      .join("")}
   </div>`;
+}
+
+/** Faded-out reminders leave the page (and the screen reader's view) */
+function bindPriorityRules() {
+  for (const el of document.querySelectorAll(".priority-reminder")) {
+    el.addEventListener("animationend", (e) => {
+      if (/** @type {AnimationEvent} */ (e).animationName === "reminder-out")
+        el.remove();
+    });
+  }
 }
 
 import { renderChargeContext } from "../context/charge.js";
@@ -114,7 +136,7 @@ export function renderGameScreen(army) {
               <h2 class="text-2xl font-bold text-wh-text">${subPhase.name}</h2>
               <span class="text-xs text-wh-muted">Step ${visibleStep} of ${visibleTotal}</span>
             </div>
-            ${renderPriorityRules(subPhase, army)}
+            ${renderPriorityRules(subPhase, army, phase)}
   
             <!-- Rules -->
             <details class="mb-4">
@@ -350,6 +372,7 @@ function nextVisibleIdx(army, from, direction) {
 
 function bindGameActions(army) {
   bindScoringEvents(army, renderGameScreen);
+  bindPriorityRules();
 
   document.getElementById("prev-btn")?.addEventListener("click", () => {
     const idx = getPhaseIndex();

@@ -1,0 +1,487 @@
+{
+  "name": "Orc & Goblin Tribes",
+  "description": "",
+  "game": "the-old-world",
+  "version": null,
+  "points": 1000,
+  "army": "orc-and-goblin-tribes",
+  "characters": [
+    {
+      "name_en": "Night Goblin Oddnob",
+      "name_cn": "夜地精萨满",
+      "name_de": "Nachtgoblin-Oddboss",
+      "name_fr": "Zarbnob Gobelin de la Nuit",
+      "id": "night-goblin-oddnob.pnastnxoo",
+      "points": 130,
+      "armyComposition": {
+        "orc-and-goblin-tribes": { "category": "characters" }
+      },
+      "command": [
+        {
+          "name_en": "General",
+          "name_cn": "主将",
+          "name_de": "General",
+          "name_fr": "Général",
+          "name_es": "General",
+          "points": 0,
+          "id": 0
+        }
+      ],
+      "equipment": [
+        {
+          "name_en": "Hand weapon",
+          "name_cn": "单手武器",
+          "name_de": "Handwaffe",
+          "name_fr": "Arme de base",
+          "points": 0,
+          "perModel": true,
+          "active": true,
+          "id": 0
+        }
+      ],
+      "armor": [],
+      "options": [
+        {
+          "name_en": "Wizard",
+          "name_cn": "法师",
+          "name_de": "Zauberer",
+          "name_fr": "Sorcier",
+          "name_es": "Hechicero",
+          "points": 0,
+          "active": true,
+          "alwaysActive": true,
+          "options": [
+            {
+              "name_en": "Level 3 Wizard",
+              "name_cn": "3级法师",
+              "name_de": "Stufe 3 Zauberer",
+              "name_fr": "Sorcier de Niveau 3",
+              "name_es": "Hechicero de Nivel 3",
+              "points": 0,
+              "exclusive": true,
+              "active": true
+            },
+            {
+              "name_en": "Level 4 Wizard",
+              "name_cn": "4级法师",
+              "name_de": "Stufe 4 Zauberer",
+              "name_fr": "Sorcier de Niveau 4",
+              "name_es": "Hechicero de Nivel 4",
+              "points": 30,
+              "exclusive": true
+            }
+          ],
+          "id": 0
+        }
+      ],
+      "mounts": [
+        {
+          "name_en": "On foot",
+          "name_cn": "步行",
+          "name_de": "Zu Fuß",
+          "name_fr": "À Pied",
+          "points": 0,
+          "active": true,
+          "id": 0
+        }
+      ],
+      "items": [
+        {
+          "name_en": "Magic Items",
+          "name_cn": "魔法物品",
+          "name_de": "Magische Gegenstände",
+          "name_fr": "Objets Magiques",
+          "types": ["weapon", "talisman", "arcane-item", "enchanted-item"],
+          "selected": [],
+          "maxPoints": 100
+        }
+      ],
+      "lores": ["illusion", "waaagh-magic", "troll-magic"],
+      "specialRules": {
+        "name_en": "Fear of Elves, Hatred (Dwarfs), Lore of Mork, Warband",
+        "name_cn": "惧怕精灵, 仇恨(矮人), 毛哥法系, 战帮",
+        "name_de": "Angst vor Elfen, Hass (Zwerge), Lehre des Mork, Kriegerschar",
+        "name_es": "Fear of Elves, Hatred (Dwarfs), Lore of Mork, Warband",
+        "name_fr": "Peur des Elfes, Haine (Nains), Domaine de Mork, Bande de Guerre"
+      }
+    },
+    {
+      "name_en": "Night Goblin Oddnob",
+      "name_cn": "夜地精萨满",
+      "name_de": "Nachtgoblin-Oddboss",
+      "name_fr": "Zarbnob Gobelin de la Nuit",
+      "id": "night-goblin-oddnob.omdsrfgaqd",
+      "points": 130,
+      "armyComposition": {
+        "orc-and-goblin-tribes": { "category": "characters" }
+      },
+      "command": [
+        {
+          "name_en": "General",
+          "name_cn": "主将",
+          "name_de": "General",
+          "name_fr": "Général",
+          "name_es": "General",
+          "points": 0,
+          "id": 0,
+          "active": true
+        }
+      ],
+      "equipment": [
+        {
+          "name_en": "Hand weapon",
+          "name_cn": "单手武器",
+          "name_de": "Handwaffe",
+          "name_fr": "Arme de base",
+          "points": 0,
+          "perModel": true,
+          "active": true,
+          "id": 0
+        }
+      ],
+      "armor": [],
+      "options": [
+        {
+          "name_en": "Wizard",
+          "name_cn": "法师",
+          "name_de": "Zauberer",
+          "name_fr": "Sorcier",
+          "name_es": "Hechicero",
+          "points": 0,
+          "active": true,
+          "alwaysActive": true,
+          "options": [
+            {
+              "name_en": "Level 3 Wizard",
+              "name_cn": "3级法师",
+              "name_de": "Stufe 3 Zauberer",
+              "name_fr": "Sorcier de Niveau 3",
+              "name_es": "Hechicero de Nivel 3",
+              "points": 0,
+              "exclusive": true,
+              "active": true
+            },
+            {
+              "name_en": "Level 4 Wizard",
+              "name_cn": "4级法师",
+              "name_de": "Stufe 4 Zauberer",
+              "name_fr": "Sorcier de Niveau 4",
+              "name_es": "Hechicero de Nivel 4",
+              "points": 30,
+              "exclusive": true
+            }
+          ],
+          "id": 0
+        }
+      ],
+      "mounts": [
+        {
+          "name_en": "On foot",
+          "name_cn": "步行",
+          "name_de": "Zu Fuß",
+          "name_fr": "À Pied",
+          "points": 0,
+          "active": true,
+          "id": 0
+        }
+      ],
+      "items": [
+        {
+          "name_en": "Magic Items",
+          "name_cn": "魔法物品",
+          "name_de": "Magische Gegenstände",
+          "name_fr": "Objets Magiques",
+          "types": ["weapon", "talisman", "arcane-item", "enchanted-item"],
+          "selected": [],
+          "maxPoints": 100
+        }
+      ],
+      "lores": ["illusion", "waaagh-magic", "troll-magic"],
+      "specialRules": {
+        "name_en": "Fear of Elves, Hatred (Dwarfs), Lore of Mork, Warband",
+        "name_cn": "惧怕精灵, 仇恨(矮人), 毛哥法系, 战帮",
+        "name_de": "Angst vor Elfen, Hass (Zwerge), Lehre des Mork, Kriegerschar",
+        "name_es": "Fear of Elves, Hatred (Dwarfs), Lore of Mork, Warband",
+        "name_fr": "Peur des Elfes, Haine (Nains), Domaine de Mork, Bande de Guerre"
+      },
+      "magic": { "items": [] }
+    }
+  ],
+  "core": [
+    {
+      "name_en": "Night Goblin Squig Herd",
+      "name_cn": "夜地精跳跳牧群",
+      "name_de": "Nachtgoblin-Squigherde",
+      "name_fr": "Troupeau de Squigs Gobelins de la Nuit",
+      "id": "night-goblin-squig-herd.admtzy",
+      "points": 10,
+      "minimum": 5,
+      "maximum": 0,
+      "armyComposition": {
+        "orc-and-goblin-tribes": {
+          "category": "core",
+          "notes": {
+            "name_en": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_cn": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_de": "0-1 Nachtgoblin-Squigherde pro gewähltem Nachtgoblin-Boss oder Nachtgobline-Schamanen",
+            "name_es": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_fr": "0-1 Troupeau de Squigs Gobelins de la Nuit par Chef Gobelin de la Nuit ou Chamane Gobelin de la Nuit sélectionné"
+          }
+        }
+      },
+      "command": [],
+      "equipment": [],
+      "armor": [],
+      "options": [
+        {
+          "name_en": "Squig Herder",
+          "name_cn": "跳跳牧人",
+          "name_de": "Squigtreiber",
+          "name_fr": "Berger Gobelin de la Nuit",
+          "points": 3,
+          "stackable": true,
+          "minimum": 1,
+          "maximum": 0,
+          "notes": {
+            "name_en": "At least 1 per 5 Squigs",
+            "name_cn": "每五个洞穴跳跳至少有一个",
+            "name_de": "Mindestens 1 pro 5 Squigs",
+            "name_fr": "Au moins 1 par tranche de 5 Squigs"
+          },
+          "id": 0
+        },
+        {
+          "name_en": "Thrusting spears for Squig Herder",
+          "name_cn": "单位中的任意跳跳牧人可装备投矛",
+          "name_de": "Stoßspeere für Squigtreiber",
+          "name_fr": "Lances d’infanterie pour Berger Gobelin de la Nuit",
+          "points": 1,
+          "stackable": true,
+          "minimum": 0,
+          "maximum": 0,
+          "id": 1
+        }
+      ],
+      "mounts": [],
+      "specialRules": {
+        "name_en": "Hatred (Dwarfs), Immune to Psychology, Impetuous, Loner, Motley Crew, Open Order, Skirmishers, Squigs Go Wild, Warband",
+        "name_cn": "仇恨(矮人), 心理免疫, 鲁莽, 独行, 散兵游勇, 开放阵型, 散兵, 跳跳发狂, 战帮",
+        "name_de": "Hass (Zwege), Immun gegen Psychologie, Ungestüm, Einzelgänger, Zusammengewürfelter Haufen, Offene Ränge, Plänkler, Squig-Amok, Kriegerschar",
+        "name_es": "Hatred (Dwarfs), Immune to Psychology, Impetuous, Loner, Motley Crew, Open Order, Skirmishers, Squigs Go Wild, Warband",
+        "name_fr": "Haine (Nains), Immunisé à la Psychologie, Impétueux, Solitaire, Bande Hétéroclite, Ordre Dispersé, Tirailleurs, Squigs Sauvages, Bande de Guerre"
+      },
+      "strength": 5
+    },
+    {
+      "name_en": "Night Goblin Squig Herd",
+      "name_cn": "夜地精跳跳牧群",
+      "name_de": "Nachtgoblin-Squigherde",
+      "name_fr": "Troupeau de Squigs Gobelins de la Nuit",
+      "id": "night-goblin-squig-herd.ngefuc",
+      "points": 10,
+      "minimum": 5,
+      "maximum": 0,
+      "armyComposition": {
+        "orc-and-goblin-tribes": {
+          "category": "core",
+          "notes": {
+            "name_en": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_cn": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_de": "0-1 Nachtgoblin-Squigherde pro gewähltem Nachtgoblin-Boss oder Nachtgobline-Schamanen",
+            "name_es": "0-1 Night Goblin Squig Herd per Night Goblin Chief or Night Goblin Shaman taken",
+            "name_fr": "0-1 Troupeau de Squigs Gobelins de la Nuit par Chef Gobelin de la Nuit ou Chamane Gobelin de la Nuit sélectionné"
+          }
+        }
+      },
+      "command": [],
+      "equipment": [],
+      "armor": [],
+      "options": [
+        {
+          "name_en": "Squig Herder",
+          "name_cn": "跳跳牧人",
+          "name_de": "Squigtreiber",
+          "name_fr": "Berger Gobelin de la Nuit",
+          "points": 3,
+          "stackable": true,
+          "minimum": 1,
+          "maximum": 0,
+          "notes": {
+            "name_en": "At least 1 per 5 Squigs",
+            "name_cn": "每五个洞穴跳跳至少有一个",
+            "name_de": "Mindestens 1 pro 5 Squigs",
+            "name_fr": "Au moins 1 par tranche de 5 Squigs"
+          },
+          "id": 0
+        },
+        {
+          "name_en": "Thrusting spears for Squig Herder",
+          "name_cn": "单位中的任意跳跳牧人可装备投矛",
+          "name_de": "Stoßspeere für Squigtreiber",
+          "name_fr": "Lances d’infanterie pour Berger Gobelin de la Nuit",
+          "points": 1,
+          "stackable": true,
+          "minimum": 0,
+          "maximum": 0,
+          "id": 1
+        }
+      ],
+      "mounts": [],
+      "specialRules": {
+        "name_en": "Hatred (Dwarfs), Immune to Psychology, Impetuous, Loner, Motley Crew, Open Order, Skirmishers, Squigs Go Wild, Warband",
+        "name_cn": "仇恨(矮人), 心理免疫, 鲁莽, 独行, 散兵游勇, 开放阵型, 散兵, 跳跳发狂, 战帮",
+        "name_de": "Hass (Zwege), Immun gegen Psychologie, Ungestüm, Einzelgänger, Zusammengewürfelter Haufen, Offene Ränge, Plänkler, Squig-Amok, Kriegerschar",
+        "name_es": "Hatred (Dwarfs), Immune to Psychology, Impetuous, Loner, Motley Crew, Open Order, Skirmishers, Squigs Go Wild, Warband",
+        "name_fr": "Haine (Nains), Immunisé à la Psychologie, Impétueux, Solitaire, Bande Hétéroclite, Ordre Dispersé, Tirailleurs, Squigs Sauvages, Bande de Guerre"
+      },
+      "strength": 5
+    }
+  ],
+  "special": [
+    {
+      "name_en": "Night Goblin Squig Hopper Mob",
+      "name_cn": "夜地精跳跳骑兵战帮",
+      "name_de": "Nachtgoblin-Squighoppa-Mob",
+      "name_fr": "Bande de Gobelins de la Nuit sur Squigs",
+      "id": "night-goblin-squig-hopper-mob.ymescleo",
+      "points": 12,
+      "minimum": 5,
+      "maximum": 0,
+      "armyComposition": { "orc-and-goblin-tribes": { "category": "special" } },
+      "command": [
+        {
+          "name_en": "Boss (champion)",
+          "name_cn": "老大(冠军)",
+          "name_de": "Boss (Champion)",
+          "name_fr": "Chef (champion)",
+          "points": 6,
+          "magic": {
+            "types": [
+              "weapon",
+              "armor",
+              "talisman",
+              "arcane-item",
+              "enchanted-item"
+            ],
+            "maxPoints": 25
+          },
+          "id": 0
+        }
+      ],
+      "equipment": [
+        {
+          "name_en": "Hand weapons, Huge gobs (Squigs only)",
+          "name_cn": "单手武器, Huge gobs (Squigs only)",
+          "name_de": "Handwaffen, Huge gobs (Squigs only)",
+          "name_fr": "Armes de base, Huge gobs (Squigs only)",
+          "points": 0,
+          "perModel": true,
+          "active": true,
+          "equippedDefault": true,
+          "id": 0
+        },
+        {
+          "name_en": "Cavalry spears, Huge gobs (Squigs only)",
+          "name_cn": "骑兵长矛, Huge gobs (Squigs only)",
+          "name_de": "Kavalleriespeere, Huge gobs (Squigs only)",
+          "name_fr": "Lances de cavalerie, Huge gobs (Squigs only)",
+          "points": 1,
+          "perModel": true,
+          "id": 1
+        }
+      ],
+      "armor": [],
+      "options": [
+        {
+          "name_en": "Light armour",
+          "name_cn": "轻甲",
+          "name_de": "Leichte Rüstung",
+          "name_fr": "Armure légère",
+          "points": 1,
+          "perModel": true,
+          "id": 0
+        }
+      ],
+      "mounts": [],
+      "notes": {
+        "name_en": "0-1 Night Goblin Squig Hopper Mob per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_cn": "0-1 Night Goblin Squig Hopper Mob per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_de": "0-1 Nachtgoblin-Squighoppa-Mob pro gewähltem Nachtgoblin-Boss oder Nachtgobline-Schamane",
+        "name_es": "0-1 Night Goblin Squig Hopper Mob per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_fr": "0-1 Bande de Gobelins de la Nuit sur Squigs par Chef Gobelin de la Nuit ou Chamane Gobelin de la Nuit sélectionné"
+      },
+      "specialRules": {
+        "name_en": "Hatred (Dwarfs), Immune to Psychology, Impact Hits (1), Loner, Open Order, Random Movement, Skirmishers, Warband",
+        "name_cn": "仇恨(矮人), 心理免疫, 撞击(1), 独行, 开放阵型, 随机移动, 散兵, 战帮",
+        "name_de": "Hass (Zwege), Immun gegen Psychologie, Aufpralltreffer (1), Einzelgänger, Offene Ränge, Zufällige Bewegung, Plänkler, Kriegerschar",
+        "name_es": "Hatred (Dwarfs), Immune to Psychology, Impact Hits (1), Loner, Open Order, Random Movement, Skirmishers, Warband",
+        "name_fr": "Haine (Nains), Immunisé à la Psychologie, Touches d’Impact (1), Solitaire, Ordre Dispersé, Mouvement Aléatoire, Tirailleurs, Bande de Guerre"
+      },
+      "strength": 5
+    }
+  ],
+  "rare": [
+    {
+      "name_en": "Mangler Squigs",
+      "name_cn": "跳跳压路机",
+      "name_de": "Kettensquigs",
+      "name_fr": "Squigs Broyeurs",
+      "id": "mangler-squigs.njjr",
+      "points": 95,
+      "armyComposition": { "orc-and-goblin-tribes": { "category": "rare" } },
+      "command": [],
+      "equipment": [
+        {
+          "name_en": "Colossal fang-filled gob",
+          "name_cn": "血盆大口",
+          "name_de": "Kolossales Reißzahnmaul",
+          "name_fr": "Colossale gueule garnie de crocs",
+          "points": 0,
+          "perModel": true,
+          "active": true,
+          "id": 0
+        }
+      ],
+      "armor": [
+        {
+          "name_en": "Heavy armour",
+          "name_cn": "重甲",
+          "name_de": "Schwere Rüstung",
+          "name_fr": "Armure lourde",
+          "points": 0,
+          "perModel": true,
+          "active": true,
+          "notes": {
+            "name_en": "Scaly skin",
+            "name_cn": "鳞皮",
+            "name_de": "Schuppenhaut",
+            "name_fr": "Peau écailleuse"
+          },
+          "activeDefault": true,
+          "id": 0
+        }
+      ],
+      "options": [],
+      "mounts": [],
+      "notes": {
+        "name_en": "0-1 Mangler Squig per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_cn": "0-1Mangler Squig per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_de": "0-1 Kettensquigs pro gewähltem Nachtgoblin-Boss oder Nachtgobline-Schamane",
+        "name_es": "0-1 Mangler Squig per Night Goblin Chief or Night Goblin Shaman taken",
+        "name_fr": "0-1 Squig Broyeur par Chef Gobelin de la Nuit ou Chamane Gobelin de la Nuit sélectionné"
+      },
+      "specialRules": {
+        "name_en": "Close Order, Hatred (Dwarfs), Immune to Psychology, Impact Hits (D6), Ker-splat, Large Target, Random Attacks, Random Movement, Spiked Ball & Chains, Stomp Attacks (D3), Timmm-berrr!",
+        "name_cn": "紧密阵型, 仇恨(矮人), 心理免疫, 撞击(D6), 咻——啪, 大型目标, 随机攻击, 随机移动, 尖刺链球, 践踏攻击(D3), 倒啦！",
+        "name_de": "Geschlossen Ränge, Hass (Zwege), Immun gegen Psychologie, Aufpralltreffer (W6), Garg-Matsch, Großes Ziel, Zufällige Attacken, Zufällige Bewegung, Stachelige Kugelkette, Stampfattacken (W3), Baum fällt!",
+        "name_es": "Close Order, Hatred (Dwarfs), Immune to Psychology, Impact Hits (D6), Ker-splat, Large Target, Random Attacks, Random Movement, Spiked Ball & Chains, Stomp Attacks (D3), Timmm-berrr!",
+        "name_fr": "Ordre Serré, Haine (Nains), Immunisé à la Psychologie, Touches d’Impact (D6), Sproutch, Grande Cible, Attaques Aléatoires, Mouvement Aléatoire, Chaînes & Boulets, Attaques de Piétinement (D3), Timmm-berrr!"
+      }
+    }
+  ],
+  "mercenaries": [],
+  "allies": [],
+  "id": "xgjdyb",
+  "armyComposition": "orc-and-goblin-tribes",
+  "compositionRule": "open-war"
+}

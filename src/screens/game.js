@@ -12,7 +12,7 @@ import {
   getDisplayMode,
   getScenarioOptions,
 } from "../state.js";
-import { PHASE_TEXT } from "../helpers.js";
+import { PHASE_TEXT, hasRule } from "../helpers.js";
 import { renderGameHeader } from "./game-header.js";
 import { renderCasterContext } from "../context/caster.js";
 import { renderShootingContext } from "../context/shooting.js";
@@ -40,20 +40,15 @@ const PRIORITY_RULES = {
   ],
 };
 
-/**
- * Render the priority rules for a given sub‑phase.
- * Returns an empty string if none are defined.
- */
-// Determine if any unit in the army causes Terror (directly or via mount)
+/** Whether any unit causes Terror (its own rule or its mount's) */
 function hasTerrorUnits(army) {
-  if (!army?.units) return false;
-  return army.units.some(
-    (unit) =>
-      (unit.specialRules ?? []).some((r) =>
-        /^terror$/i.test(r.displayName ?? ""),
-      ) || (unit.mount?.rules ?? []).includes("Terror"),
-  );
+  return (army?.units ?? []).some((unit) => hasRule(unit, "terror"));
 }
+
+/**
+ * The priority reminders for a step ("Terror tests!"), as animated cards;
+ * empty if the step has none.
+ */
 function renderPriorityRules(subPhase, army, phase) {
   let rules = PRIORITY_RULES[subPhase.id] || [];
   // If this is charge declaration and no unit causes Terror, remove it
@@ -271,11 +266,7 @@ function renderPhaseContext(army, phase, subPhase) {
   html += renderSpecialRulesContext(army, subPhase);
   if (
     subPhase.id === "command" &&
-    army.units.some((u) =>
-      (u.specialRules || []).some((r) =>
-        r.displayName?.toLowerCase().includes("rallying cry"),
-      ),
-    )
+    army.units.some((u) => hasRule(u, "rallying cry"))
   )
     html += renderCombatLeadershipContext(army, "Rally Leadership");
 
@@ -299,18 +290,12 @@ function recordAndNavigate(army, newPhaseIdx, isOpponentTurn, isPrev) {
 }
 
 function hasReserveMove(army) {
-  return army.units.some((u) =>
-    (u.specialRules || []).some((r) => r.id === "reserve move"),
-  );
+  return army.units.some((u) => hasRule(u, "reserve move"));
 }
 
 function hasCommandContent(army) {
   if (hasSpecialRulesForSubPhase(army, "command")) return true;
-  return army.units.some((u) =>
-    (u.specialRules || []).some((r) =>
-      r.displayName?.toLowerCase().includes("rallying cry"),
-    ),
-  );
+  return army.units.some((u) => hasRule(u, "rallying cry"));
 }
 
 function hasStartOfTurnContent(army) {

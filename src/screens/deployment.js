@@ -1,4 +1,4 @@
-import { SPECIAL_RULES } from "../data/special-rules.js";
+import { isRule } from "../helpers.js";
 import {
   ARMY_COMPOSITIONS,
   ARMY_SLUG_DEPLOYMENT_CARDS,
@@ -8,43 +8,33 @@ import { navigate } from "../navigate.js";
 import { renderSetupHeader, bindSetupHeaderEvents } from "./setup-header.js";
 import { getApp, renderScreen } from "./_app.js";
 
-const DEPLOYMENT_RULE_IDS = new Set([
+const DEPLOYMENT_RULE_IDS = [
   "scouts",
   "vanguard",
   "ambushers",
   "from the mists",
-  "ambush", // alias for ambushers in special-rules.js
-]);
+];
+const POST_DEPLOYMENT_RULE_IDS = ["the arrow of kurnous"];
 
-const POST_DEPLOYMENT_RULE_IDS = new Set(["the arrow of kurnous"]);
-
-function normaliseRuleId(displayName) {
-  return (displayName || "")
-    .toLowerCase()
-    .replace(/\s*\(.*$/, "")
-    .trim();
-}
-
-function getDeploymentRules(unit) {
+/** The unit's resolved rules with one of these ids */
+function rulesWithIds(unit, ids) {
   return (unit.specialRules || []).filter((r) =>
-    DEPLOYMENT_RULE_IDS.has(normaliseRuleId(r.displayName)),
+    ids.some((id) => isRule(r, id)),
   );
 }
 
-function getPostDeploymentRules(unit) {
-  return (unit.specialRules || []).filter((r) =>
-    POST_DEPLOYMENT_RULE_IDS.has(normaliseRuleId(r.displayName)),
-  );
-}
+const getDeploymentRules = (unit) => rulesWithIds(unit, DEPLOYMENT_RULE_IDS);
+const getPostDeploymentRules = (unit) =>
+  rulesWithIds(unit, POST_DEPLOYMENT_RULE_IDS);
 
-function ruleDescription(displayName) {
-  const id = normaliseRuleId(displayName);
-  const rule = SPECIAL_RULES.find((sr) => sr.id === id);
-  if (!rule) return "";
-  // Prefer a dedicated deployment entry (e.g. The Arrow of Kurnous), then the
-  // rule's own description (Scouts, Vanguard), then its first phase entry
-  // (Ambushers only describes itself per step).
-  const phaseEntries = rule.phases.filter((p) => typeof p === "object");
+/**
+ * What a deployment rule says, from the unit's own resolved rule (so a
+ * Renegade draft's version shows): its deployment entry (The Arrow of
+ * Kurnous), else its description (Scouts, Vanguard), else its first step
+ * entry (Ambushers only describes itself per step).
+ */
+function ruleDescription(rule) {
+  const phaseEntries = (rule.phases ?? []).filter((p) => typeof p === "object");
   const deploymentEntry = phaseEntries.find(
     (p) => p.subPhaseId === "deployment",
   );
@@ -78,7 +68,7 @@ function renderUnitCard(unit) {
       <div class="text-sm font-semibold text-wh-text">${unit.name}</div>
       ${rules
         .map((r) => {
-          const desc = ruleDescription(r.displayName);
+          const desc = ruleDescription(r);
           return `
           <div class="mt-1">
             <span class="text-xs text-wh-accent font-semibold">${r.displayName}</span>
@@ -131,7 +121,7 @@ function renderPostDeploymentUnits(army) {
       const rules = getPostDeploymentRules(unit);
       return rules
         .map((r) => {
-          const desc = ruleDescription(r.displayName);
+          const desc = ruleDescription(r);
           return `
           <div class="p-2 rounded border border-wh-border bg-wh-card mb-2">
             <div class="text-sm font-semibold text-wh-text">${unit.name}</div>

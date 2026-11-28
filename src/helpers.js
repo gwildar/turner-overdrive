@@ -9,12 +9,7 @@ import { findMount, isDiceMovement } from "./parsers/resolve.js";
  * @returns {{ dice: string[] } | null}
  */
 export function randomMovement(unit) {
-  const ruleRe = /^random movement/i;
-  const hasRule =
-    (unit.specialRules || []).some(
-      (r) => r.id === "random movement" || ruleRe.test(r.displayName ?? ""),
-    ) || (unit.mount?.rules || []).some((r) => ruleRe.test(r));
-  if (!hasRule) return null;
+  if (!hasRule(unit, "random movement")) return null;
   const dice = new Set();
   for (const p of unit.stats || [])
     if (isDiceMovement(p.M)) dice.add(String(p.M).replace(/\s+/g, ""));
@@ -72,6 +67,36 @@ export function formatSlug(slug) {
 export function normaliseRuleName(name) {
   // Strip parenthetical parameters: "Armour Bane (2)" → "Armour Bane"
   return name.replace(/\s*\(.*?\)\s*$/, "").trim();
+}
+
+/**
+ * Whether a resolved special rule is the rule `id` ("terror", "random
+ * movement"): by its id, its aliases, or its name without a parameter
+ * ("Stomp Attacks (D3)" is "stomp attacks").
+ * @param {{ id?: string | null, displayName?: string, aliases?: string[] }} rule
+ * @param {string} id - lower case
+ */
+export function isRule(rule, id) {
+  if (!rule) return false;
+  if (rule.id === id) return true;
+  if (normaliseRuleName(rule.displayName ?? "").toLowerCase() === id)
+    return true;
+  return (rule.aliases ?? []).some((a) => a.toLowerCase() === id);
+}
+
+/**
+ * Whether a unit has the special rule `id`, its own or its mount's
+ * (a character on a Dragon causes Terror).
+ * @param {import("./types").Unit} unit
+ * @param {string} id - lower case: "terror", "random movement"
+ */
+export function hasRule(unit, id) {
+  return (
+    (unit.specialRules ?? []).some((r) => isRule(r, id)) ||
+    (unit.mount?.rules ?? []).some(
+      (name) => normaliseRuleName(name).toLowerCase() === id,
+    )
+  );
 }
 
 export function ruleMatches(rule, normName) {

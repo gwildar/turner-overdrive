@@ -1,3 +1,4 @@
+import { hasRule } from "../helpers.js";
 import { COMBAT_WEAPONS, getWeapon } from "../data/weapons.js";
 import { findMount, isBigMount, mountedTW } from "../parsers/resolve.js";
 import { getCharacterAssignments } from "../state.js";
@@ -123,14 +124,7 @@ function hasRiderMagicalAttacks(unit) {
     if (item.type !== "weapon" && item.effect?.includes("Magical Attacks"))
       return true;
   }
-  const rules = unit.specialRules || [];
-  if (
-    rules.some((r) => r.displayName?.toLowerCase().includes("magical attacks"))
-  )
-    return true;
-  if (rules.some((r) => r.displayName?.toLowerCase().includes("grail vow")))
-    return true;
-  return false;
+  return hasRule(unit, "magical attacks") || hasRule(unit, "the grail vow");
 }
 
 function detectItemBonuses(units) {
@@ -534,11 +528,7 @@ function unitLdLabel(u) {
 // Large Target (own rule or from the mount) extends General/BSB range to 18".
 /** @param {import("../types").Unit} unit */
 function hasLargeTarget(unit) {
-  return (
-    (unit.specialRules || []).some((r) =>
-      r.displayName?.toLowerCase().includes("large target"),
-    ) || (unit.mount?.rules ?? []).includes("Large Target")
-  );
+  return hasRule(unit, "large target");
 }
 
 /** @param {import("../types").Army} army */
@@ -652,9 +642,7 @@ export function buildCombatResultEntries(army) {
     const bonuses = [];
     let total = 0;
 
-    const hasCloseOrder = (u.specialRules || []).some((r) =>
-      r.displayName?.toLowerCase().includes("close order"),
-    );
+    const hasCloseOrder = hasRule(u, "close order");
     if (hasCloseOrder && u.unitStrength >= 10) {
       bonuses.push("Close Order +1");
       total += 1;
@@ -1217,9 +1205,7 @@ export function buildDefensiveStatsEntries(army) {
         }
       }
     }
-    const hasEvasive = (u.specialRules || []).some((r) =>
-      r.displayName?.toLowerCase().includes("evasive"),
-    );
+    const hasEvasive = hasRule(u, "evasive");
     return {
       t,
       w,

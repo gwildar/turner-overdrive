@@ -172,6 +172,10 @@ function renderWhatsNew() {
       </summary>
       <div class="mt-2 px-3 pb-3 space-y-2 text-sm text-wh-muted border border-wh-border border-t-0 rounded-b-lg bg-wh-surface">
         <div class="pt-3">
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">One Combat Step</p>
+          <p class="text-xs">Calculate Combat Result and Break Test are now part of Choose &amp; Fight: one screen with your combat units, static combat bonuses and Break Test ranges. Each combat card shows its Leadership.</p>
+        </div>
+        <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Battle Builder Lists</p>
           <p class="text-xs">You can now import lists from <span class="text-wh-text">Battle Builder</span> (oldworldrankings.com/builder): export as <span class="font-mono text-wh-text">.bb.json</span> and upload it here.</p>
         </div>

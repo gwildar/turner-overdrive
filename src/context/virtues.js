@@ -1,3 +1,4 @@
+import { subPhaseIdsFor } from "../phases.js";
 /** @param {import("../types").Army} army */
 export function renderVirtuesContext(army, phaseId, subPhaseId) {
   const grouped = {};
@@ -7,7 +8,11 @@ export function renderVirtuesContext(army, phaseId, subPhaseId) {
     for (const item of unit.magicItems || []) {
       if (!item || item.type !== "virtue") continue;
       if (!item.phases?.includes(phaseId)) continue;
-      if (subPhaseId && item.subPhases && !item.subPhases.includes(subPhaseId))
+      if (
+        subPhaseId &&
+        item.subPhases &&
+        !subPhaseIdsFor(subPhaseId).some((id) => item.subPhases.includes(id))
+      )
         continue;
       if (subPhaseId && item.opponentOnly) continue;
       if (!subPhaseId && item.yourTurnOnly) continue;

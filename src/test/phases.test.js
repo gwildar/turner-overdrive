@@ -12,8 +12,14 @@ describe("subPhaseToIndex", () => {
     expect(subPhaseToIndex("combat", "choose-fight")).toBe(9);
   });
 
-  it("returns 13 for scoring/scoring (last subphase)", () => {
-    expect(subPhaseToIndex("scoring", "scoring")).toBe(13);
+  it("returns 11 for scoring/scoring (last subphase)", () => {
+    expect(subPhaseToIndex("scoring", "scoring")).toBe(11);
+  });
+
+  it("sends the merged Combat Result and Break Test steps to Choose & Fight", () => {
+    const fight = subPhaseToIndex("combat", "choose-fight");
+    expect(subPhaseToIndex("combat", "combat-result")).toBe(fight);
+    expect(subPhaseToIndex("combat", "break-test")).toBe(fight);
   });
 
   it("returns -1 for unknown phase/subphase combination", () => {

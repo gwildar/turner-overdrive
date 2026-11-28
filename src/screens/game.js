@@ -219,9 +219,15 @@ const PHASE_RENDERERS = {
   "declare-charges": [renderChargeContext],
   "compulsory-moves": [renderRandomMoverContext],
   "remaining-moves": [renderMovementStatsContext],
-  "choose-fight": [renderCombatWeaponsContext],
-  "combat-result": [renderCombatResultContext],
-  "break-test": [renderCombatLeadershipContext],
+  // Choose & Fight also covers Calculate Combat Result and Break Test
+  "choose-fight": [
+    renderCombatWeaponsContext,
+    renderCombatResultContext,
+    (a) =>
+      (a.skipPhases || []).includes("break-test")
+        ? ""
+        : renderCombatLeadershipContext(a, "Break Test", { unitList: false }),
+  ],
 };
 
 function renderPhaseContext(army, phase, subPhase) {
@@ -244,8 +250,6 @@ function renderPhaseContext(army, phase, subPhase) {
     "declare-charges",
     "remaining-moves",
     "choose-fight",
-    "combat-result",
-    "break-test",
     "rally",
   ]);
 

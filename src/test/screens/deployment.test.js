@@ -4,6 +4,7 @@ import { getApp, loadArmy } from "../helpers.js";
 import { getDeploymentTime } from "../../state.js";
 import * as Nav from "../../navigate.js";
 import { SPECIAL_RULES } from "../../data/special-rules.js";
+import { resolveSpecialRules } from "../../parsers/resolve.js";
 
 describe("Deployment screen", () => {
   let army;
@@ -56,7 +57,7 @@ describe("Deployment screen", () => {
           id: "scouts-unit",
           name: "Shadow Warriors",
           category: "core",
-          specialRules: [{ displayName: "Scouts" }],
+          specialRules: resolveSpecialRules("Scouts"),
           magicItems: [],
         },
       ],
@@ -75,7 +76,7 @@ describe("Deployment screen", () => {
           id: "vanguard-unit",
           name: "Outriders",
           category: "core",
-          specialRules: [{ displayName: "Vanguard" }],
+          specialRules: resolveSpecialRules("Vanguard"),
           magicItems: [],
         },
       ],
@@ -94,7 +95,7 @@ describe("Deployment screen", () => {
           id: "ambush-unit",
           name: "Night Goblins",
           category: "core",
-          specialRules: [{ displayName: "Ambush" }],
+          specialRules: resolveSpecialRules("Ambush"),
           magicItems: [],
         },
       ],
@@ -113,14 +114,14 @@ describe("Deployment screen", () => {
           id: "scouts-unit",
           name: "Shadow Warriors",
           category: "core",
-          specialRules: [{ displayName: "Scouts" }],
+          specialRules: resolveSpecialRules("Scouts"),
           magicItems: [],
         },
         {
           id: "normal-unit",
           name: "Spearmen",
           category: "core",
-          specialRules: [{ displayName: "Killing Blow" }],
+          specialRules: resolveSpecialRules("Killing Blow"),
           magicItems: [],
         },
       ],
@@ -138,7 +139,7 @@ describe("Deployment screen", () => {
           id: "ambushers-unit",
           name: "Forest Goblins",
           category: "core",
-          specialRules: [{ displayName: "Ambushers" }],
+          specialRules: resolveSpecialRules("Ambushers"),
           magicItems: [],
         },
       ],
@@ -157,7 +158,7 @@ describe("Deployment screen", () => {
           id: "paren-unit",
           name: "Light Cavalry",
           category: "core",
-          specialRules: [{ displayName: "Scouts (Cavalry)" }],
+          specialRules: resolveSpecialRules("Scouts (Cavalry)"),
           magicItems: [],
         },
       ],
@@ -212,7 +213,7 @@ describe("Deployment screen — rule descriptions", () => {
         id: "u1",
         name: "Test Unit",
         category: "core",
-        specialRules: [{ displayName }],
+        specialRules: resolveSpecialRules(displayName),
         magicItems: [],
       },
     ],

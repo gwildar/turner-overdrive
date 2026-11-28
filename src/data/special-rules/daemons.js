@@ -8,6 +8,7 @@ const RULES = [
     description:
       "5+ Ward save against wounds caused by non-magical attacks. Also grants: Daemonic Instability, Fear, Immune to Psychology, Magical Attacks, Unbreakable, Warp-spawned. Characters cannot join units without this rule.",
     phases: ["choose-fight", "shoot"],
+    ward: "5+ (non-magical)",
   },
   {
     id: "daemonic instability",
@@ -26,6 +27,7 @@ const RULES = [
   {
     id: "daemon of khorne",
     displayName: "Daemon of Khorne",
+    aliases: ["daemons of khorne"],
     description:
       "Hatred (Daemons of Slaanesh). During a turn in which it charged, gains +1 Strength (not its mount).",
     phases: ["choose-fight"],
@@ -33,6 +35,7 @@ const RULES = [
   {
     id: "daemon of nurgle",
     displayName: "Daemon of Nurgle",
+    aliases: ["daemons of nurgle"],
     description:
       "Hatred (Daemons of Tzeentch). Enemy models directing attacks against this model must re-roll To Hit rolls of a natural 6.",
     phases: ["choose-fight"],
@@ -41,6 +44,7 @@ const RULES = [
   {
     id: "daemon of slaanesh",
     displayName: "Daemon of Slaanesh",
+    aliases: ["daemons of slaanesh"],
     phases: [
       {
         subPhaseId: "declare-charges",
@@ -57,6 +61,7 @@ const RULES = [
   {
     id: "daemon of tzeentch",
     displayName: "Daemon of Tzeentch",
+    aliases: ["daemons of tzeentch"],
     description:
       "Hatred (Daemons of Nurgle). If a Wizard with this rule, gains +1 to Casting rolls.",
     phases: ["conjuration"],

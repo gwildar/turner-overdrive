@@ -7,6 +7,7 @@ import {
   resolveWeapons,
   findMount,
   resolveStats,
+  computeWard,
 } from "../parsers/resolve.js";
 import {
   SUPPLEMENT_VERSIONS,
@@ -329,5 +330,43 @@ describe("Vampire Counts Renegade: v1.5 vs the v1.5.3.1 draft", () => {
     expect(
       resolveSpecialRules("Carrion Feeders", draft)[0].description,
     ).toMatch(/Weapon Skill/);
+  });
+});
+
+describe("Daemons of Chaos: core fixes and the v1.5.2.1 draft", () => {
+  const v15 = getRuleset("doc-renegade", "v1.5");
+  const draft = getRuleset("doc-renegade", "v1.5.2.1");
+
+  it('"Daemons of Khorne" (as army lists write it) resolves to the alignment rule', () => {
+    expect(resolveSpecialRules("Daemons of Khorne", CORE_RULESET)[0].id).toBe(
+      "daemon of khorne",
+    );
+  });
+
+  it("core Daemonic gives its 5+ Ward against non-magical attacks", () => {
+    expect(computeWard([], resolveSpecialRules("Daemonic", CORE_RULESET))).toBe(
+      "5+ (non-magical)",
+    );
+  });
+
+  it("the draft's Daemonic rolls on the Reign of Chaos each turn", () => {
+    const army = (rs) => ({
+      composition: "doc-renegade",
+      supplementVersion: rs.version,
+      units: [{ name: "D", specialRules: resolveSpecialRules("Daemonic", rs) }],
+    });
+    expect(
+      renderSpecialRulesContext(army(draft), { id: "start-of-turn" }),
+    ).toContain("Chaotic Surge");
+    expect(
+      renderSpecialRulesContext(army(v15), { id: "start-of-turn" }),
+    ).not.toContain("Chaotic Surge");
+  });
+
+  it("the draft's Bloodthirster has Impact Hits (D3+1) and no Furious Charge", () => {
+    const b = (rs) => resolveStats("bloodthirster", "Bloodthirster", rs)[0];
+    expect(b(v15).rules).toContain("Furious Charge");
+    expect(b(draft).rules).not.toContain("Furious Charge");
+    expect(b(draft)["Impact-Hits"]).toBe("D3+1");
   });
 });

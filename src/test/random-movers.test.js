@@ -82,3 +82,31 @@ describe("random movers", () => {
     expect(html).toContain("roll each and use the lowest");
   });
 });
+
+describe("a real Orc & Goblin list with squigs", async () => {
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  const file = path.join(
+    path.dirname(new URL(import.meta.url).pathname),
+    "fixtures/orc-and-goblin-squigs.owb.json",
+  );
+  const list = parseArmyList(JSON.parse(fs.readFileSync(file, "utf8")));
+
+  it("lists Squig Hoppers and the Mangler Squig at 3D6", () => {
+    const html = text(renderRandomMoverContext(list));
+    expect(html).toMatch(/Squig Hoppers x5 3D6"/);
+    expect(html).toMatch(/Mangler Squig 3D6"/);
+    expect(html).not.toContain("Herder");
+  });
+
+  it("keeps the herders and Oddnobs in charge and movement, without NaN", () => {
+    const charge = text(renderChargeContext(list));
+    const move = text(renderMovementStatsContext(list));
+    expect(charge).toContain("Squig Herders");
+    expect(move).toMatch(/Oddnob 4" March 8"/);
+    for (const html of [charge, move]) {
+      expect(html).not.toMatch(/Hopper|Mangler/);
+      expect(html).not.toContain("NaN");
+    }
+  });
+});

@@ -9,7 +9,9 @@ import {
   saveArmySource,
   clearArmy,
   applyActiveLores,
+  saveSupplementVersion,
 } from "./state.js";
+import { SUPPLEMENT_VERSIONS } from "./data/supplements/index.js";
 
 /**
  * Parse an Old World Builder (.owb.json) export into the canonical army.
@@ -60,6 +62,11 @@ export async function convertArmyFile(json) {
  * previous army along with its spell, lore and character choices.
  */
 export function importArmy(json) {
+  // A Battle Builder list names its Renegade rules version: use it, when
+  // the app has that version, before parsing
+  const versions = SUPPLEMENT_VERSIONS[json?.armyComposition] ?? [];
+  if (versions.some((v) => v.id === json?.supplementVersion))
+    saveSupplementVersion(json.armyComposition, json.supplementVersion);
   const army = parseArmyList(json);
   clearArmy();
   saveArmySource(json);

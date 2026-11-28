@@ -33,6 +33,8 @@ const CATEGORIES = [
  * carries the app's key.
  */
 const UNIT_KEYS = {
+  // The VC Renegade draft's Vampire Lord (its Vampire Count)
+  "tow/vampire-counts/vampire-lord": "vampire-count-renegade",
   // Wild Herd's Centigor Chieftain is the Warhoof
   "tow/beastmen-brayherds/centigor-chieftain": "warhoof",
   "tow/daemons-of-chaos/herald-of-khorne": "daemonic-herald-of-khorne",
@@ -94,7 +96,7 @@ function compositionOf(forceTemplateId, army) {
 
 /**
  * @param {any} json - a .bb.json export
- * @param {{ units: Record<string, any>, traits: Record<string, any> }} catalog
+ * @param {{ units: Record<string, any>, traits: Record<string, any>, forceTemplates?: Record<string, { v: string }> }} catalog
  * @returns {any} an Old World Builder–shaped list
  */
 export function battleBuilderToOwb(json, catalog) {
@@ -108,6 +110,9 @@ export function battleBuilderToOwb(json, catalog) {
     points: json.pointsLimit || 0,
     id: json.id ?? null,
     source: "battle-builder",
+    // the Renegade rules version the list was built for, e.g. "v1.5.3.1"
+    supplementVersion:
+      catalog.forceTemplates?.[json.forceTemplateId]?.v ?? null,
     ...Object.fromEntries(CATEGORIES.map((c) => [c, []])),
   };
   const unknown = [];

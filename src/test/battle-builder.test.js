@@ -7,6 +7,7 @@ import {
   battleBuilderToOwb,
 } from "../parsers/from-battle-builder.js";
 import catalog from "../data/battle-builder-catalog.json";
+import { getSupplementVersion } from "../state.js";
 
 const dir = path.join(
   path.dirname(new URL(import.meta.url).pathname),
@@ -96,6 +97,30 @@ describe("Battle Builder (.bb.json) import", () => {
     );
     const [unit] = parseArmyList(owb).units;
     expect(unit.stats[0].Name).toBe("Warhoof");
+  });
+
+  it("imports the VC Renegade Vampire Lord with the list's rules version", () => {
+    const owb = battleBuilderToOwb(
+      {
+        factionId: "tow/vampire-counts",
+        forceTemplateId: "tow/vampire-counts/vc-renegade-v2",
+        units: [{ unitEntryId: "tow/vampire-counts/vampire-lord" }],
+      },
+      catalog,
+    );
+    expect(owb.armyComposition).toBe("vc-renegade");
+    expect(owb.supplementVersion).toBe("v1.5.3.1");
+    const [unit] = importArmy(owb).units;
+    expect(getSupplementVersion("vc-renegade")).toBe("v1.5.3.1");
+    expect(unit.stats[0]).toMatchObject({ Name: "Vampire Lord", W: "4" });
+  });
+
+  it("sets the Renegade version from the force template", async () => {
+    const v1 = { ...DE, forceTemplateId: "tow/dark-elves/de-renegade-v1" };
+    importArmy(await convertArmyFile(v1));
+    expect(getSupplementVersion("de-renegade")).toBe("v1.5");
+    importArmy(await convertArmyFile(DE));
+    expect(getSupplementVersion("de-renegade")).toBe("v1.5.2.2");
   });
 
   it("names units the catalog doesn't have", () => {

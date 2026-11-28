@@ -117,12 +117,22 @@ for (const t of data.traits)
     c: t.cost ?? 0,
   };
 
+// Force templates name their rules version: "Renegades V2 beta - 1.5.3.1",
+// "Renegades V1 - 1.5" → the app's supplement version ids
+const forceTemplates = {};
+for (const t of data.forceTemplates) {
+  const version = msg(t.name).match(/\b(\d+(?:\.\d+)+)$/)?.[1];
+  if (version && /renegade/i.test(t.id))
+    forceTemplates[t.id] = { v: `v${version}` };
+}
+
 const out = {
   source: MANIFEST,
   gameVersion: data.gameVersion?.id ?? null,
   schemaVersion: data.schemaVersion,
   units,
   traits,
+  forceTemplates,
 };
 fs.writeFileSync(OUT, JSON.stringify(out));
 console.log(

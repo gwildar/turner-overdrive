@@ -175,6 +175,10 @@ function renderWhatsNew() {
           <p class="text-xs">Rules updates and the Renegade rules version now apply to your saved army without re-importing it.</p>
         </div>
         <div>
+          <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Disastrous Miscasts</p>
+          <p class="text-xs">Scenario Setup has a new Game Options section: turn on Disastrous Miscasts to use that table instead of the Miscast table during the game.</p>
+        </div>
+        <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Renegade Versions Per Army</p>
           <p class="text-xs">A Renegade army now has a rules version picker on its army card: the v1.5 PDF or the latest community draft. Draft rules only ever apply to that Renegade army, never to a standard army.</p>
         </div>

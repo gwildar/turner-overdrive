@@ -615,8 +615,9 @@ const RULES = [
     id: "wailing dirge",
     displayName: "Wailing Dirge",
     description:
-      'Range 8". Ld test at -2. Wounds = margin of failure. No armour/Regen saves. Can target units in combat.',
-    phases: ["choose-fight"],
+      'In your Shooting phase, unless it marched: target a unit within 8" (including in combat, or one it is engaged with). Ld test at -2. Wounds = margin of failure. No armour/Regen saves.',
+    phases: ["shoot"],
+    yourTurnOnly: true,
   },
   {
     id: "poisoned attacks",

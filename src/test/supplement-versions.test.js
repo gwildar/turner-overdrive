@@ -20,6 +20,7 @@ import {
 } from "../state.js";
 import { parseArmyList } from "../army.js";
 import { renderSetupScreen } from "../screens/setup.js";
+import { renderSpecialRulesContext } from "../context/special-rules-context.js";
 import { getApp } from "./helpers.js";
 import deRenegadeJson from "./fixtures/de-renegade-draft.owb.json";
 
@@ -288,5 +289,45 @@ describe("Lizardmen Renegade: v1.5 vs the v1.5.2.1 draft", () => {
   it("the draft uses its own Lore of Lustria (Monsoon 10+)", () => {
     expect(v15.loreRemaps.lustria).toBe("lustria-v1.5");
     expect(draft.loreRemaps.lustria).toBe("lustria-renegade");
+  });
+});
+
+describe("Vampire Counts Renegade: v1.5 vs the v1.5.3.1 draft", () => {
+  const v15 = getRuleset("vc-renegade", "v1.5");
+  const draft = getRuleset("vc-renegade", "v1.5.3.1");
+
+  it("the draft's Zombies are a Shambling Horde instead of The Newly Dead", () => {
+    const z = (rs) => resolveStats("zombies", "Zombies", rs)[0];
+    expect(z(v15).rules).toContain("The Newly Dead");
+    expect(z(draft).rules).toContain("Shambling Horde");
+    expect(z(draft).T).toBe("2");
+  });
+
+  it("Wailing Dirge (-2) takes the draft's bracketed modifier wording", () => {
+    const army = (rs) => ({
+      composition: "vc-renegade",
+      supplementVersion: rs.version,
+      units: [
+        {
+          name: "T",
+          specialRules: resolveSpecialRules("Wailing Dirge (-2)", rs),
+        },
+      ],
+    });
+    expect(renderSpecialRulesContext(army(draft), { id: "shoot" })).toMatch(
+      /modifier in brackets/,
+    );
+    expect(renderSpecialRulesContext(army(v15), { id: "shoot" })).toMatch(
+      /Ld test at -2/,
+    );
+  });
+
+  it("Carrion Feeders lower Weapon Skill on the draft, Initiative officially", () => {
+    expect(resolveSpecialRules("Carrion Feeders", v15)[0].description).toMatch(
+      /Initiative/,
+    );
+    expect(
+      resolveSpecialRules("Carrion Feeders", draft)[0].description,
+    ).toMatch(/Weapon Skill/);
   });
 });

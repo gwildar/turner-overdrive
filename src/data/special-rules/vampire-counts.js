@@ -91,6 +91,58 @@ const RULES = [
     phases: ["remaining-moves"],
     yourTurnOnly: true,
   },
+  {
+    id: "carrion feeders",
+    displayName: "Carrion Feeders",
+    description:
+      "Enemy units engaged in combat with this model suffer -1 Initiative.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "balefire brazier",
+    displayName: "Balefire Brazier",
+    description:
+      'Enemy Wizards within 15" of a model with this rule increase the casting value of their spells by 1.',
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+    opponentOnly: true,
+  },
+  {
+    id: "warped tintinnabulation",
+    displayName: "Warped Tintinnabulation",
+    description:
+      'When a friendly unit within 15" recovers Wounds from Invocation of Nehek, roll D6: on 4+ it recovers one more. Friendly units within 15" reduce Wounds lost to Unstable by 1 (cumulative with Indomitable).',
+    phases: ["command", "break-test"],
+  },
+  {
+    id: "accursed reliquary",
+    displayName: "Accursed Reliquary",
+    description:
+      "Friendly Necromantic Undead units within this model's Command range have +1 Movement and +1 Initiative.",
+    phases: ["remaining-moves", "choose-fight"],
+  },
+  {
+    id: "blasphemous tome",
+    displayName: "Blasphemous Tome",
+    description:
+      "All Wizards (friend or foe) within this model's Command range get +1 to Casting rolls, but a miscast there rolls twice on the Miscast table and applies both.",
+    phases: ["conjuration", "remaining-moves", "shoot", "choose-fight"],
+  },
+  {
+    id: "the death of a general",
+    displayName: "The Death of a General",
+    description:
+      "Your General must be a Wizard. Once the General is slain, Necromantic Undead units lose Regeneration and, at the end of that phase and each of your Start of Turn sub-phases, take a Leadership test, losing Wounds equal to the amount failed by.",
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "scrying pool",
+    displayName: "Scrying Pool",
+    description:
+      "Bound spell (Power Level 2), Enchantment, 9+, Self, may be cast in combat: until your next Start of Turn, re-roll To Hit rolls of a natural 1.",
+    phases: ["conjuration"],
+    yourTurnOnly: true,
+  },
 ];
 
 export default RULES;

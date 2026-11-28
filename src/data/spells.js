@@ -1084,7 +1084,7 @@ export const LORES = {
 // First-write-wins: core lore keys take priority over supplement variants
 // (e.g. "lore of naggaroth" → "naggaroth", not "naggaroth-renegade").
 // The lore remap system in from-owb.js then converts base keys to the correct
-// supplement variant based on the draft toggle.
+// supplement variant for the army's chosen supplement version.
 export const LORE_NAME_TO_KEY = {};
 for (const [key, lore] of Object.entries(LORES)) {
   const name = lore.name.toLowerCase();

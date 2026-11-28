@@ -8,6 +8,7 @@ const RULES = [
     description:
       "5+ Ward save against wounds caused by non-magical attacks. Also grants: Daemonic Instability, Fear, Immune to Psychology, Magical Attacks, Unbreakable, Warp-spawned. Characters cannot join units without this rule.",
     phases: ["choose-fight", "shoot"],
+    ward: "5+ (non-magical)",
   },
   {
     id: "daemonic instability",
@@ -26,6 +27,7 @@ const RULES = [
   {
     id: "daemon of khorne",
     displayName: "Daemon of Khorne",
+    aliases: ["daemons of khorne"],
     description:
       "Hatred (Daemons of Slaanesh). During a turn in which it charged, gains +1 Strength (not its mount).",
     phases: ["choose-fight"],
@@ -33,6 +35,7 @@ const RULES = [
   {
     id: "daemon of nurgle",
     displayName: "Daemon of Nurgle",
+    aliases: ["daemons of nurgle"],
     description:
       "Hatred (Daemons of Tzeentch). Enemy models directing attacks against this model must re-roll To Hit rolls of a natural 6.",
     phases: ["choose-fight"],
@@ -41,6 +44,7 @@ const RULES = [
   {
     id: "daemon of slaanesh",
     displayName: "Daemon of Slaanesh",
+    aliases: ["daemons of slaanesh"],
     phases: [
       {
         subPhaseId: "declare-charges",
@@ -57,9 +61,66 @@ const RULES = [
   {
     id: "daemon of tzeentch",
     displayName: "Daemon of Tzeentch",
+    aliases: ["daemons of tzeentch"],
     description:
       "Hatred (Daemons of Nurgle). If a Wizard with this rule, gains +1 to Casting rolls.",
     phases: ["conjuration"],
+  },
+  {
+    id: "infernal favour",
+    displayName: "Infernal Favour",
+    description:
+      "Reduce the wounds suffered from Daemonic Instability by the number in brackets. Not cumulative: a unit uses the highest Infernal Favour value among its models.",
+    phases: ["break-test"],
+  },
+  {
+    id: "scintillating sorcery",
+    displayName: "Scintillating Sorcery",
+    description:
+      "Knows one spell of its Daemonic Alignment (chosen before deployment), cast as a Bound spell with Power Level equal to the unit's current Rank Bonus.",
+    phases: ["conjuration", "shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "attention seeker",
+    displayName: "Attention Seeker",
+    description:
+      "Every model in the unit can issue and accept challenges as if it were a character.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "slime trail",
+    displayName: "Slime Trail",
+    description:
+      "Enemy units cannot claim bonus combat result for being engaged in this unit's flank or rear.",
+    phases: ["combat-result"],
+  },
+  {
+    id: "soporific musk",
+    displayName: "Soporific Musk",
+    description:
+      "Enemy models engaged with this model cannot use Strike First; enemies without Strike First are subject to Strike Last.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "brazen wheels",
+    displayName: "Brazen Wheels",
+    description: "Stomp Attacks have AP -3 (not against Behemoths).",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "daemonic charge",
+    displayName: "Daemonic Charge",
+    description: "Impact Hits caused by this model have AP -2.",
+    phases: ["choose-fight"],
+  },
+  {
+    id: "slashing attack",
+    displayName: "Slashing Attack",
+    description:
+      "May fly over a single unengaged enemy unit during Remaining Moves. That unit suffers D3 S4 AP- hits per model that flew over it.",
+    phases: ["remaining-moves"],
+    yourTurnOnly: true,
   },
 ];
 

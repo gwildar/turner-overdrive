@@ -1,14 +1,8 @@
 import { COMBAT_WEAPONS, RANGED_WEAPONS } from "../data/weapons.js";
-import { MAGIC_ITEMS } from "../data/magic-items.js";
+import { CORE_MAGIC_ITEMS } from "../data/magic-items.js";
 import { CORE_RULES } from "../data/special-rules.js";
-import {
-  STABLE_SUPPLEMENT_RULES,
-  DRAFT_SUPPLEMENT_RULES,
-  STABLE_SUPPLEMENT_ITEMS,
-  DRAFT_SUPPLEMENT_ITEMS,
-  SUPPLEMENT_RANGED_WEAPONS,
-  SUPPLEMENT_COMBAT_WEAPONS,
-} from "../data/supplements/index.js";
+import { findSupplementVersion } from "../data/supplements/index.js";
+import { ARMY_COMPOSITIONS } from "../data/army-compositions.js";
 import { UNIT_STATS } from "../data/units.js";
 
 // Index: lowercased id/alias → rule object. O(1) lookup in resolveSpecialRules.
@@ -23,15 +17,100 @@ function buildRuleIndex(rules) {
   return map;
 }
 
-const STABLE_RULE_INDEX = buildRuleIndex([
-  ...CORE_RULES,
-  ...STABLE_SUPPLEMENT_RULES,
-]);
-const ALL_RULE_INDEX = buildRuleIndex([
-  ...CORE_RULES,
-  ...STABLE_SUPPLEMENT_RULES,
-  ...DRAFT_SUPPLEMENT_RULES,
-]);
+/** Item lookup key: lowercase, no accents. */
+const itemKey = (name) =>
+  name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+/**
+ * Add items to a name → item map, keeping the first item for each name.
+ * Callers add higher-priority items first.
+ */
+function addItems(map, items) {
+  for (const item of items) {
+    const key = itemKey(item.name);
+    if (!map[key]) map[key] = item;
+  }
+  return map;
+}
+
+/**
+ * The data an army's lookups use: the core rules, items, weapons and units,
+ * with the chosen supplement version's layers over them. Standard armies
+ * (and compositions without supplements) get the core data alone, so
+ * supplement rules can never leak into them.
+ *
+ * @typedef {object} Ruleset
+ * @property {string} composition - "" for the core ruleset
+ * @property {string | null} version - supplement version id, null if none
+ * @property {Map<string, any>} ruleIndex - lowercased id/alias → rule
+ * @property {Record<string, any>} items - item key → magic item
+ * @property {Record<string, any>} combatWeapons
+ * @property {Record<string, any>} rangedWeapons
+ * @property {Record<string, import("../types").UnitEntry>} units -
+ *   supplement unit entries, checked before UNIT_STATS
+ * @property {Record<string, string>} loreRemaps
+ */
+
+/** @type {Map<string, Ruleset>} */
+const rulesets = new Map();
+
+/**
+ * @param {string | null} [composition] - the army's armyComposition
+ * @param {string | null} [versionId] - the chosen supplement version;
+ *   unknown or missing means the composition's default
+ * @returns {Ruleset}
+ */
+export function getRuleset(composition = "", versionId = null) {
+  const comp = composition || "";
+  const version = findSupplementVersion(comp, versionId);
+  // Every army without a supplement version shares the core ruleset
+  const cacheKey = version ? `${comp}|${version.id}` : "";
+  const cached = rulesets.get(cacheKey);
+  if (cached) return cached;
+
+  const layers = version?.layers ?? []; // highest priority first
+  const lowestFirst = [...layers].reverse();
+  /** @type {Partial<import("../types").ArmyComposition>} */
+  const compConfig = ARMY_COMPOSITIONS[comp] || {};
+
+  /** @type {Ruleset} */
+  const ruleset = {
+    composition: version ? comp : "",
+    version: version?.id ?? null,
+    // Later entries win, so supplement rules replace core rules of the same id
+    ruleIndex: buildRuleIndex([
+      ...CORE_RULES,
+      ...lowestFirst.flatMap((l) => l.specialRules || []),
+    ]),
+    items: addItems(
+      addItems(
+        {},
+        layers.flatMap((l) => l.magicItems || []),
+      ),
+      CORE_MAGIC_ITEMS,
+    ),
+    combatWeapons: Object.assign(
+      {},
+      COMBAT_WEAPONS,
+      ...lowestFirst.map((l) => l.combat_weapons || {}),
+    ),
+    rangedWeapons: Object.assign(
+      {},
+      RANGED_WEAPONS,
+      ...lowestFirst.map((l) => l.ranged_weapons || {}),
+    ),
+    units: Object.assign({}, ...lowestFirst.map((l) => l.units || {})),
+    loreRemaps: version?.loreRemaps ?? compConfig.loreRemaps ?? {},
+  };
+  rulesets.set(cacheKey, ruleset);
+  return ruleset;
+}
+
+/** Core data only: what every standard army uses. */
+export const CORE_RULESET = getRuleset();
 
 // Maps canonical mount name (lowercase) → units.js key.
 // Used for mounts whose slug doesn't directly match a units.js key.
@@ -129,8 +208,11 @@ export function resolveUnitEntry(entry) {
       );
 }
 
-/** @returns {import("../types").UnitProfile[]} */
-export function resolveStats(id, name, composition, isDraft = false) {
+/**
+ * @param {Ruleset} [ruleset]
+ * @returns {import("../types").UnitProfile[]}
+ */
+export function resolveStats(id, name, ruleset = CORE_RULESET) {
   const baseId = (id || "").split(".")[0];
   const slug = name?.replace(/[{}]/g, "").toLowerCase().replace(/\s+/g, "-");
   const keys = [
@@ -140,12 +222,12 @@ export function resolveStats(id, name, composition, isDraft = false) {
     slug,
     slug?.replace(/s$/, ""),
   ];
-  // For renegade compositions, try -renegade suffixed keys first
-  if (isDraft && composition?.includes("renegade")) {
-    for (const key of keys) {
-      const rk = key ? key + "-renegade" : null;
-      if (rk && UNIT_STATS[rk]) return resolveUnitEntry(UNIT_STATS[rk]);
-    }
+  // The supplement version's own unit entries come first ("war-hydra" →
+  // "war-hydra-renegade"), then the core units.
+  for (const key of keys) {
+    if (!key) continue;
+    const entry = ruleset.units[key] ?? ruleset.units[key + "-renegade"];
+    if (entry) return resolveUnitEntry(entry);
   }
   for (const key of keys) {
     if (key && UNIT_STATS[key]) return resolveUnitEntry(UNIT_STATS[key]);
@@ -159,16 +241,17 @@ function parseBonusInt(val) {
 
 /**
  * @param {string | import("../types").Mount | null | undefined} name
+ * @param {Ruleset} [ruleset]
  * @returns {import("../types").Mount | null}
  */
-export function findMount(name) {
+export function findMount(name, ruleset = CORE_RULESET) {
   if (!name) return null;
   if (typeof name === "object") return name;
 
   const lower = name.toLowerCase();
   const normalised = lower.replace(/[{}]/g, "");
   const key = MOUNT_KEY_OVERRIDES[lower] ?? normalised.replace(/\s+/g, "-");
-  const entry = UNIT_STATS[key];
+  const entry = ruleset.units[key] ?? UNIT_STATS[key];
   if (!entry) return null;
 
   const profiles = resolveUnitEntry(entry);
@@ -219,7 +302,7 @@ export function findMount(name) {
     troopType: profile.troopType?.[0] ?? null,
     armourBane,
     f: profile.Fly ? parseInt(profile.Fly, 10) : null,
-    breath: equipment.find((e) => RANGED_WEAPONS[e]) ?? null,
+    breath: equipment.find((e) => ruleset.rangedWeapons[e]) ?? null,
     rules: profile.rules,
   };
 }
@@ -236,77 +319,31 @@ function normaliseItemName(name) {
     .replace(/\*$/, "");
 }
 
-/**
- * Build a lookup map from magic item names (lowercase) → item data.
- * Uses first-write-wins so core items are preserved when supplement items
- * share the same name (e.g. Weeping Blade at different points costs).
- */
-function buildMagicItemMap() {
-  const map = {};
-  for (const item of MAGIC_ITEMS) {
-    const key = item.name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-    if (!map[key]) map[key] = item;
-  }
-  return map;
-}
-
-const MAGIC_ITEM_MAP = buildMagicItemMap();
-
-function buildSupplementItemMap(items) {
-  const map = {};
-  for (const item of items) {
-    const key = item.name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-    map[key] = item;
-  }
-  return map;
-}
-
-const STABLE_SUPPLEMENT_ITEM_MAP = buildSupplementItemMap(
-  STABLE_SUPPLEMENT_ITEMS,
-);
-const DRAFT_SUPPLEMENT_ITEM_MAP = buildSupplementItemMap(
-  DRAFT_SUPPLEMENT_ITEMS,
-);
-
-function lookupItem(name, composition, isDraft = false) {
-  const key = normaliseItemName(name);
-  if (composition?.includes("renegade")) {
-    if (isDraft && DRAFT_SUPPLEMENT_ITEM_MAP[key])
-      return DRAFT_SUPPLEMENT_ITEM_MAP[key];
-    if (STABLE_SUPPLEMENT_ITEM_MAP[key]) return STABLE_SUPPLEMENT_ITEM_MAP[key];
-  }
-  return MAGIC_ITEM_MAP[key] ?? null;
+/** @param {Ruleset} ruleset */
+function lookupItem(name, ruleset) {
+  return ruleset.items[normaliseItemName(name)] ?? null;
 }
 
 /**
  * Resolve combat weapons from equipment strings
  * @param {string[]} equipmentStrings - e.g. ["Hand weapon", "Lance", "Shield"]
  * @param {string[]} magicItemNames - magic item names that may include weapons
- * @param {string} [composition] - army composition for supplement-aware lookup
+ * @param {Ruleset} [ruleset] - the army's rules data (supplement-aware)
  * @returns {object[]} - array of resolved weapon objects
  */
 export function resolveWeapons(
   equipmentStrings,
   magicItemNames,
-  composition,
-  isDraft = false,
+  ruleset = CORE_RULESET,
 ) {
-  const weaponMap = isDraft
-    ? { ...COMBAT_WEAPONS, ...SUPPLEMENT_COMBAT_WEAPONS }
-    : COMBAT_WEAPONS;
+  const weaponMap = ruleset.combatWeapons;
   const weapons = [];
   const seen = new Set();
 
   // Check for magic weapons first (skip champion-only items)
   for (const itemName of magicItemNames) {
     if (itemName.toLowerCase().includes("(champion)")) continue;
-    const mi = lookupItem(itemName, composition, isDraft);
+    const mi = lookupItem(itemName, ruleset);
     if (mi?.type === "weapon" && mi.s && mi.phases?.includes("combat")) {
       const weapon = {
         name: mi.name,
@@ -326,8 +363,15 @@ export function resolveWeapons(
   // Then check equipment strings for mundane weapons
   for (const equipStr of equipmentStrings) {
     const lower = equipStr.toLowerCase();
-    for (const [key, weapon] of Object.entries(weaponMap)) {
-      if (lower.includes(key) && !seen.has(weapon.name)) {
+    // A key inside a longer matching key is the same weapon named more
+    // fully ("bloodflail" also contains "flail"): keep only the longest.
+    const matched = Object.keys(weaponMap).filter((key) => lower.includes(key));
+    const longest = matched.filter(
+      (key) => !matched.some((other) => other !== key && other.includes(key)),
+    );
+    for (const key of longest) {
+      const weapon = weaponMap[key];
+      if (!seen.has(weapon.name)) {
         seen.add(weapon.name);
         weapons.push({
           name: weapon.name,
@@ -361,13 +405,14 @@ export function resolveWeapons(
 /**
  * Resolve shooting weapons from equipment strings
  * @param {string[]} equipmentStrings
- * @param {boolean} [isDraft] - when true, supplement weapon overrides apply
+ * @param {Ruleset} [ruleset] - the army's rules data (supplement-aware)
  * @returns {object[]} - array of resolved ranged weapon objects
  */
-export function resolveShootingWeapons(equipmentStrings, isDraft = false) {
-  const weaponMap = isDraft
-    ? { ...RANGED_WEAPONS, ...SUPPLEMENT_RANGED_WEAPONS }
-    : RANGED_WEAPONS;
+export function resolveShootingWeapons(
+  equipmentStrings,
+  ruleset = CORE_RULESET,
+) {
+  const weaponMap = ruleset.rangedWeapons;
   const weapons = [];
   const seen = new Set();
 
@@ -403,15 +448,15 @@ export function resolveShootingWeapons(equipmentStrings, isDraft = false) {
 /**
  * Resolve magic items by name
  * @param {string[]} itemNames - magic item names
- * @param {string} [composition] - army composition for supplement-aware lookup
+ * @param {Ruleset} [ruleset] - the army's rules data (supplement-aware)
  * @returns {object[]} - array of full magic item objects
  */
 /** @returns {import("../types").ResolvedMagicItem[]} */
-export function resolveMagicItems(itemNames, composition, isDraft = false) {
+export function resolveMagicItems(itemNames, ruleset = CORE_RULESET) {
   const items = [];
 
   for (const name of itemNames) {
-    const mi = lookupItem(name, composition, isDraft);
+    const mi = lookupItem(name, ruleset);
     if (mi) {
       items.push(mi);
     }
@@ -423,13 +468,14 @@ export function resolveMagicItems(itemNames, composition, isDraft = false) {
 /**
  * Resolve special rules from a comma-separated rules string
  * @param {string} rulesString - e.g. "Killing Blow, Hatred (Elves), Armoured Hide (1)"
+ * @param {Ruleset} [ruleset] - the army's rules data (supplement-aware)
  * @returns {object[]} - array of resolved rule objects
  */
 /** @returns {import("../types").ResolvedRule[]} */
-export function resolveSpecialRules(rulesString, isDraft = false) {
+export function resolveSpecialRules(rulesString, ruleset = CORE_RULESET) {
   if (!rulesString || !rulesString.trim()) return [];
 
-  const index = isDraft ? ALL_RULE_INDEX : STABLE_RULE_INDEX;
+  const index = ruleset.ruleIndex;
   const rules = [];
   const parts = rulesString.split(",").map((s) => s.trim());
 
@@ -468,9 +514,10 @@ export function resolveSpecialRules(rulesString, isDraft = false) {
  * @returns {object|null} - full mount object or null
  */
 /** @returns {import("../types").Mount | null} */
-export function resolveMount(mountName) {
+/** @param {Ruleset} [ruleset] */
+export function resolveMount(mountName, ruleset = CORE_RULESET) {
   if (!mountName) return null;
-  return findMount(mountName);
+  return findMount(mountName, ruleset);
 }
 
 /**
@@ -556,6 +603,13 @@ export function computeArmourSave(
     modifier -= 1;
   }
 
+  // Rules that always change the armour value (e.g. the Chaos Dwarf draft's
+  // Blackshard Armour: "improves their armour value by 1"). Conditional
+  // bonuses (Lion Cloak vs shooting) stay in the rule text instead.
+  for (const rule of specialRules) {
+    if (rule.armourMod && baseAS !== null) modifier += rule.armourMod;
+  }
+
   // Armoured Hide from special rules — use displayName regex (rule may be unrecognised)
   for (const rule of specialRules) {
     const match = (rule.displayName || "").match(/Armoured Hide\s*\((\d+)\)/i);
@@ -612,14 +666,21 @@ function wardValue(ward) {
 export function computeWard(magicItems, specialRules) {
   let best = null;
   for (const source of [...magicItems, ...specialRules]) {
-    if (
-      source.ward &&
-      (best === null || wardValue(source.ward) < wardValue(best))
-    ) {
-      best = source.ward;
+    const ward = source.ward ?? wardFromRuleName(source.displayName);
+    if (ward && (best === null || wardValue(ward) < wardValue(best))) {
+      best = ward;
     }
   }
   return best;
+}
+
+/**
+ * Rules whose Ward save is given in brackets in the army list, e.g.
+ * "Chaos Armour (5+)". These resolve as bare entries (the bracket isn't part
+ * of the rule id), so the value is read from the name.
+ */
+function wardFromRuleName(name) {
+  return name?.match(/^Chaos Armour\s*\((\d\+)\)/i)?.[1] ?? null;
 }
 
 /**

@@ -12,7 +12,8 @@
     "typecheck": "tsc -p .",
     "prepare": "git config core.hooksPath .githooks",
     "prettier": "prettier --write .",
-    "crawl:rules": "node scripts/crawl-tow-rules.mjs"
+    "crawl:rules": "node scripts/crawl-tow-rules.mjs",
+    "compare:rules": "node scripts/compare-tow-data.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

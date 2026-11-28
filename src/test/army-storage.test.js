@@ -7,14 +7,14 @@ import {
   saveArmy,
   clearArmy,
   saveActiveLore,
-  saveSupplementsEnabled,
+  saveSupplementVersion,
 } from "../state.js";
 import { renderSetupScreen } from "../screens/setup.js";
 import lizardmenJson from "./fixtures/lizardmen.owb.json";
 import deRenegadeDraftJson from "./fixtures/de-renegade-draft.owb.json";
 
 describe("army storage — raw file is stored and re-parsed on load", () => {
-  afterEach(() => saveSupplementsEnabled(false));
+  afterEach(() => saveSupplementVersion("de-renegade", "v1.5"));
 
   it("stores the original file, not the parsed army", () => {
     importArmy(lizardmenJson);
@@ -39,7 +39,7 @@ describe("army storage — raw file is stored and re-parsed on load", () => {
 
     importArmy(deRenegadeDraftJson);
     const stable = hydraStomp();
-    saveSupplementsEnabled(true);
+    saveSupplementVersion("de-renegade", "v1.5.2.2");
     expect(hydraStomp()).toBe("D3+1");
     expect(stable).not.toBe("D3+1");
   });

@@ -690,6 +690,7 @@ const SUPPLEMENT = {
     {
       id: "murderous-renegade",
       displayName: "Murderous",
+      aliases: ["murderous {renegade}"],
       description:
         "Re-roll any To Wound rolls of a natural 1 in combat. Applies to all mundane weapons. Does not apply to magic weapons or the model's mount.",
       phases: ["choose-fight"],

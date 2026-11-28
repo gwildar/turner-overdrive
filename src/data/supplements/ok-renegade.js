@@ -543,6 +543,7 @@ const SUPPLEMENT = {
     {
       id: "ogre-kingdoms-charge",
       displayName: "Ogre Kingdoms Charge",
+      aliases: ["ogre kingdoms charge"],
       description:
         "The Strength and AP of Impact Hits are improved by the unit's current Rank Bonus (or the joined unit's Rank Bonus for characters). In addition, if a unit makes a Charge move of 6\" or more following a Charge roll that includes one or more natural 6s, all models gain Impact Hits (1) and treat low linear obstacles as open ground during the turn they charge.",
       phases: ["declare-charges", "choose-fight"],
@@ -550,6 +551,7 @@ const SUPPLEMENT = {
     {
       id: "ogre-club",
       displayName: "Ogre Club",
+      aliases: ["ogre club"],
       passive: true,
       description:
         "A hand weapon carried by this model has an AP of -1. Only applies to a single non-magical hand weapon. Ceases to apply if using an Ironfist or any other weapon.",
@@ -558,6 +560,7 @@ const SUPPLEMENT = {
     {
       id: "deluge-of-sharp-instruments",
       displayName: "Deluge of Sharp Instruments",
+      aliases: ["deluge of sharp instruments"],
       description:
         "If a natural 6 is rolled when making a roll To Wound with this weapon, enemy models whose troop type is regular infantry, heavy infantry, light cavalry, heavy cavalry or war beasts are not permitted an armour or Regeneration save.",
       phases: ["shoot"],
@@ -569,6 +572,60 @@ const SUPPLEMENT = {
       description:
         "A unit of Gnoblar Trappers within Command Range of a non-fleeing Hunter may use the Hunter's Leadership instead of their own.",
       phases: [],
+    },
+    {
+      id: "ravenous hunger",
+      displayName: "Ravenous Hunger",
+      description:
+        "If most models in the unit have this rule, it may re-roll its Charge roll.",
+      phases: ["declare-charges"],
+      yourTurnOnly: true,
+    },
+    {
+      id: "numbing chill",
+      displayName: "Numbing Chill",
+      description:
+        "Enemy units engaged in combat with a model with this rule have Strike Last and -1 Weapon Skill (min 1).",
+      phases: ["choose-fight"],
+    },
+    {
+      id: "bull charge",
+      displayName: "Bull Charge",
+      description:
+        "Impact Hits caused by this model (including its mount) have AP -1.",
+      phases: ["choose-fight"],
+    },
+    {
+      id: "mournfang charge",
+      displayName: "Mournfang Charge",
+      description:
+        'Impact Hits have Armour Bane (1) and AP -1. After a Charge move of 6"+ from a Charge roll with a natural 6, every model gains Impact Hits (1) and treats low linear obstacles as open ground that turn.',
+      phases: ["declare-charges", "choose-fight"],
+    },
+    {
+      id: "running with the pack",
+      displayName: "Running with the Pack",
+      description:
+        "A Hunter joining Sabretusks gains Swiftstride and the Sabretusks lose Impetuous; the unit may stay in Skirmish formation. While a Sabretusk remains, the Hunter can't be targeted by shooting and gets a Look Out, Sir! roll.",
+      phases: ["shoot"],
+    },
+    {
+      id: "blessings of the volcano god",
+      displayName: "Blessings of the Volcano God",
+      description:
+        "May discard a random spell to learn Fireball instead (if it didn't already roll it). 4+ Ward save against wounds from Flaming Attacks.",
+      passive: true,
+      phases: [],
+      ward: "4+ (Flaming Attacks)",
+    },
+    {
+      id: "traps and snares",
+      displayName: "Traps & Snares",
+      aliases: ["traps & snares"],
+      description:
+        'Any enemy model ending its move within 6" of a model with this rule (not fleeing or fighting another unit) takes a Dangerous Terrain test.',
+      phases: ["remaining-moves", "compulsory-moves"],
+      opponentOnly: true,
     },
   ],
 
@@ -608,7 +665,151 @@ const SUPPLEMENT = {
         "Single use each. After making a Casting roll for a spell from the Lore of the Great Maw, apply a +1 modifier to the result. A model may only use one Tooth-Gnoblar per Casting roll.",
       phases: [],
     },
+    {
+      name: "Beastkiller",
+      type: "enchanted-item",
+      points: 40,
+      effect:
+        "0-1 per army. Hunter only. Unless wielding a magic weapon, gains Monster Slayer (not its mount; not for shooting).",
+      phases: ["combat"],
+    },
+    {
+      name: "Mawseeker",
+      type: "enchanted-item",
+      points: 30,
+      effect:
+        "0-1 per army. +1 Toughness (including its mount). Subject to Stupidity.",
+      phases: ["combat"],
+    },
+    {
+      name: "Wallcrusher",
+      type: "enchanted-item",
+      points: 30,
+      effect:
+        "Gains Impact Hits (1) (not its mount). It and any unit it joins treat low linear obstacles as open ground.",
+      phases: ["combat"],
+    },
+    {
+      name: "Mountaineater",
+      type: "enchanted-item",
+      points: 25,
+      effect:
+        "0-1 per army. Cannot be wounded by a To Wound roll of 2, whatever the Strength.",
+      phases: ["combat"],
+    },
+    {
+      name: "Giantbreaker",
+      type: "enchanted-item",
+      points: 20,
+      effect:
+        "+1 Strength (not its mount). Cannot refuse a challenge; neither it nor its unit can Flee as a charge reaction.",
+      phases: ["combat"],
+      strengthMod: "+1",
+    },
+    {
+      name: "Kineater",
+      type: "enchanted-item",
+      points: 15,
+      effect:
+        "Characters only. Unless fleeing, friendly models within its Command range may re-roll failed Panic and Rally tests.",
+      phases: ["movement"],
+    },
+    {
+      name: "Deathcheater",
+      type: "enchanted-item",
+      points: 5,
+      effect:
+        "Once per game, make your opponent re-roll one To Wound roll against this model.",
+      phases: ["combat"],
+    },
+    {
+      name: "Thundermace",
+      type: "weapon",
+      points: 90,
+      effect:
+        'Instead of attacking normally, may make a Thunderstrike: place a 3" blast template over the centre of an engaged enemy unit (no To Hit roll); models under it risk being hit.',
+      phases: ["combat"],
+      s: "S",
+      ap: "—",
+    },
+    {
+      name: "Gut Maw",
+      type: "armour",
+      points: 45,
+      effect:
+        "May be worn with other armour: improves the armour save by 1. Recovers a Wound for each unsaved wound it causes in a challenge.",
+      phases: ["combat"],
+      armourBase: 5,
+      armourMod: -1,
+    },
+    {
+      name: "Cathayan Jet Pendant",
+      type: "talisman",
+      points: 10,
+      extremely: true,
+      effect:
+        "The bearer and any unit it joins have a 6+ Ward save against wounds from Magic Missiles, Magical Vortexes and Assailment spells.",
+      phases: ["shooting"],
+      ward: "6+ (spells)",
+    },
+    {
+      name: "Dragonhide Banner",
+      type: "banner",
+      points: 75,
+      effect:
+        "The unit may re-roll To Hit rolls of a natural 1 and has the Numbing Chill rule.",
+      phases: ["combat"],
+    },
   ],
+  ranged_weapons: {
+    "harpoon launcher": {
+      name: "Harpoon Launcher",
+      range: '36"',
+      s: "6",
+      ap: "-2",
+      rules: [
+        "Cumbersome",
+        "Multiple Wounds (2)",
+        "Through & Through",
+        "+1 To Hit against Monsters.",
+      ],
+    },
+    "leadbelcher gun (scatter shot)": {
+      name: "Leadbelcher Gun (Scatter Shot)",
+      range: '18"',
+      s: "4",
+      ap: "-1",
+      rules: [
+        "Armour Bane (2)",
+        "A hit causes D3 hits. Ignores penalties for moving and long range.",
+      ],
+    },
+    "sphere of frost-wreathed ice": {
+      name: "Sphere of Frost-wreathed Ice",
+      range: '6"-24"',
+      s: "3(6)",
+      ap: "-1(-2)",
+      noBS: true,
+      rules: [
+        "Bombardment",
+        "Cumbersome",
+        "Multiple Wounds (D3)",
+        "Shoots like a stone thrower with a 3\" template. Misfire: the model suffers a Wound and doesn't shoot. Multiple Wounds only on the model under the central hole.",
+      ],
+    },
+  },
+  combat_weapons: {
+    ironfist: {
+      name: "Ironfist (Smash)",
+      s: "S",
+      ap: "—",
+      rules: [
+        "Extra Attacks (+1)",
+        "Requires Two Hands",
+        "Two profiles, chosen each round: Stab (S, AP -1) or Smash. Counts as a shield; used as a weapon it improves armour value by 1 more (max 3+).",
+      ],
+    },
+  },
 };
 
 export default SUPPLEMENT;

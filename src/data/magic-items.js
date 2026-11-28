@@ -37,7 +37,8 @@ import TOMB_KINGS from "./magic-items/tomb-kings.js";
 import GRAND_CATHAY from "./magic-items/grand-cathay.js";
 import DAEMONS_OF_CHAOS from "./magic-items/daemons-of-chaos.js";
 
-export const MAGIC_ITEMS = [
+/** Core magic items only — supplement items resolve through getRuleset(). */
+export const CORE_MAGIC_ITEMS = [
   ...COMMON,
   ...DARK_ELVES,
   ...BRETONNIA,
@@ -56,8 +57,10 @@ export const MAGIC_ITEMS = [
   ...TOMB_KINGS,
   ...GRAND_CATHAY,
   ...DAEMONS_OF_CHAOS,
-  ...SUPPLEMENT_ITEMS,
 ];
+
+/** Every item name the app knows, including supplements (for recognising items). */
+export const MAGIC_ITEMS = [...CORE_MAGIC_ITEMS, ...SUPPLEMENT_ITEMS];
 
 /**
  * Look up a magic item by name (case-insensitive).

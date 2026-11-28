@@ -103,6 +103,7 @@ export interface SpecialRule {
   aliases?: string[];
   ward?: SaveValue;
   chargeMod?: ChargeMod;
+  /** Always applied to the armour value (negative = better). Conditional bonuses go in the description. */
   armourMod?: number;
   /** Rule ids this rule also grants (e.g. The Exile's Vow → Stubborn, Veteran). */
   grantsRules?: string[];
@@ -279,8 +280,8 @@ export interface ArmyComposition {
   /** Bonus rules injected into units whose id starts with one of unitIds. */
   rules: { rule: string; unitIds: string[] }[];
   deploymentCards?: DeploymentCard[];
+  /** Lore keys swapped for this composition (the v1.5 lores for Renegade armies). */
   loreRemaps?: Record<string, string>;
-  draftLoreRemaps?: Record<string, string>;
 }
 
 // ─── Supplements (src/data/supplements/) ────────────────────────────────────
@@ -450,6 +451,8 @@ export interface Army {
   points: number;
   /** Army of Infamy / composition key, e.g. "de-renegade". */
   composition: string | null;
+  /** Community supplement version the army was resolved with, e.g. "v1.5.2.2"; null for none. */
+  supplementVersion?: string | null;
   /** OWB list id, used for the "view in Old World Builder" link. */
   owbId: string | null;
   units: Unit[];

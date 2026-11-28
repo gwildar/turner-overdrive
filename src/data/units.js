@@ -2,9 +2,9 @@
  * Unit stats registry.
  * Each faction's units live in their own file under units/.
  * Cross-faction units (mounts, mercenaries, generic creatures) live in units/common.js.
+ * Supplement units are not merged in: they resolve through getRuleset().
  */
 
-import { SUPPLEMENT_UNITS } from "./supplements/index.js";
 import COMMON from "./units/common.js";
 import BRETONNIA from "./units/bretonnia.js";
 import BEASTMEN from "./units/beastmen.js";
@@ -43,5 +43,4 @@ export const UNIT_STATS = {
   ...VAMPIRE_COUNTS,
   ...WARRIORS_OF_CHAOS,
   ...WOOD_ELVES,
-  ...SUPPLEMENT_UNITS,
 };

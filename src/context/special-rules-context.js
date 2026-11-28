@@ -1,8 +1,9 @@
-import { SPECIAL_RULES } from "../data/special-rules.js";
 import { getRound } from "../state.js";
-import { normaliseRuleName, ruleMatches } from "../helpers.js";
+import { normaliseRuleName } from "../helpers.js";
+import { getRuleset } from "../parsers/resolve.js";
 
-const RULES = SPECIAL_RULES.map((rule) => ({
+/** A rule with every phase as a { subPhaseId, description, … } entry. */
+const withPhaseEntries = (rule) => ({
   ...rule,
   phases: rule.phases.map((entry) =>
     typeof entry === "string"
@@ -15,7 +16,11 @@ const RULES = SPECIAL_RULES.map((rule) => ({
         }
       : entry,
   ),
-}));
+});
+
+/** The rules data the army was resolved with (core + its supplement version). */
+const armyRuleset = (army) =>
+  getRuleset(army.composition, army.supplementVersion);
 
 const TROOP_TYPE_RULES = {
   MCr: ["Large Target"],
@@ -56,7 +61,7 @@ function injectUnitTroopTypeRules(unitRules, unit) {
 
 /** @param {import("../types").Unit} unit */
 function buildUnitRules(unit) {
-  // Resolved rule objects from the unit (already draft-toggle-aware)
+  // Resolved rule objects from the unit (already supplement-version-aware)
   const resolvedRules = new Map();
   for (const rule of unit.specialRules || []) {
     if (rule.id && rule.phases) {
@@ -153,43 +158,26 @@ function renderRulesBlock(grouped, title) {
 }
 
 /**
- * Find matching rule entries for a given rule name, preferring the unit's
- * resolved rules (which are draft-toggle-aware) over the global RULES array.
- * This prevents duplicate entries when core and draft supplements define the
- * same rule id with different descriptions (e.g. Hekarti's Blessing).
+ * Find the rule entries for a rule name. The unit's own resolved rule wins —
+ * it was resolved with the army's supplement version, and a passive one has
+ * no reminders. Names the unit didn't resolve (weapons, weapon rules, troop
+ * types, mount rules) are looked up in the army's ruleset, so a standard army
+ * never picks up a supplement's version of a rule.
  */
-function findRulesForName(normName, resolvedRules) {
-  const resolved = resolvedRules.get(normName.toLowerCase());
-  if (resolved?.phases?.length) {
-    // Use the already-resolved rule (correct for current toggle state)
-    return [
-      {
-        ...resolved,
-        phases: resolved.phases.map((entry) =>
-          typeof entry === "string"
-            ? {
-                subPhaseId: entry,
-                description: resolved.description,
-                yourTurnOnly: resolved.yourTurnOnly,
-                opponentOnly: resolved.opponentOnly,
-                fromRound: resolved.fromRound,
-              }
-            : entry,
-        ),
-      },
-    ];
-  }
-  // Fall back to global RULES lookup for injected rules (weapons, troop types)
-  return RULES.filter((rule) => ruleMatches(rule, normName));
+function findRulesForName(normName, resolvedRules, ruleset) {
+  const key = normName.toLowerCase();
+  const rule = resolvedRules.get(key) ?? ruleset.ruleIndex.get(key);
+  return rule?.phases?.length ? [withPhaseEntries(rule)] : [];
 }
 
 /** @param {import("../types").Army} army */
 export function hasSpecialRulesForSubPhase(army, subPhaseId) {
+  const ruleset = armyRuleset(army);
   for (const unit of army.units) {
     const { unitRules, resolvedRules } = buildUnitRules(unit);
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules)) {
+      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
         if (rule.phases.some((p) => p.subPhaseId === subPhaseId)) return true;
       }
     }
@@ -199,11 +187,12 @@ export function hasSpecialRulesForSubPhase(army, subPhaseId) {
 
 /** @param {import("../types").Army} army */
 export function hasStartOfTurnRules(army, round) {
+  const ruleset = armyRuleset(army);
   for (const unit of army.units) {
     const { unitRules, resolvedRules } = buildUnitRules(unit);
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules)) {
+      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
         for (const phase of rule.phases) {
           if (phase.subPhaseId !== "start-of-turn") continue;
           if (phase.fromRound && round < phase.fromRound) continue;
@@ -218,6 +207,7 @@ export function hasStartOfTurnRules(army, round) {
 
 /** @param {import("../types").Army} army */
 export function renderSpecialRulesContext(army, subPhase) {
+  const ruleset = armyRuleset(army);
   const round = getRound();
   const matches = [];
 
@@ -226,7 +216,7 @@ export function renderSpecialRulesContext(army, subPhase) {
 
     for (const ruleName of unitRules) {
       const normName = normaliseRuleName(ruleName);
-      for (const rule of findRulesForName(normName, resolvedRules)) {
+      for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
         for (const phase of rule.phases) {
           if (phase.subPhaseId !== subPhase.id) continue;
           if (phase.fromRound && round < phase.fromRound) continue;
@@ -261,6 +251,7 @@ export function renderSpecialRulesContext(army, subPhase) {
 
 /** @param {import("../types").Army} army */
 export function renderSpecialRulesForPhase(army, phase) {
+  const ruleset = armyRuleset(army);
   const round = getRound();
   const grouped = {};
 
@@ -270,7 +261,7 @@ export function renderSpecialRulesForPhase(army, phase) {
 
       for (const ruleName of unitRules) {
         const normName = normaliseRuleName(ruleName);
-        for (const rule of findRulesForName(normName, resolvedRules)) {
+        for (const rule of findRulesForName(normName, resolvedRules, ruleset)) {
           for (const rulePhase of rule.phases) {
             if (rulePhase.subPhaseId !== sub.id) continue;
             if (rulePhase.fromRound && round < rulePhase.fromRound) continue;

@@ -100,24 +100,21 @@ export const ARMY_COMPOSITIONS = {
     rules: [],
   },
   // ── Renegade Legacy Pack v1.5 compositions ──────────────────────────
-  // loreRemaps: used by default (v1.5 stable)
-  // draftLoreRemaps: used when draft toggle is ON (v1.5.2.2 draft override)
+  // loreRemaps: the v1.5 lores. Draft versions set their own loreRemaps in
+  // supplements/index.js (SUPPLEMENT_VERSIONS).
   "de-renegade": {
     name: "Dark Elves Renegades",
     loreRemaps: { naggaroth: "naggaroth-v1.5" },
-    draftLoreRemaps: { naggaroth: "naggaroth-renegade" },
     rules: [],
   },
   "ok-renegade": {
     name: "Ogre Kingdoms Renegades",
     loreRemaps: { "great-maw": "great-maw-v1.5" },
-    draftLoreRemaps: { "great-maw": "great-maw-renegade" },
     rules: [],
   },
   "sk-renegade": {
     name: "Skaven Renegades",
     loreRemaps: { "horned-rat": "horned-rat-v1.5" },
-    draftLoreRemaps: { "horned-rat": "horned-rat-renegade" },
     rules: [],
   },
   // Factions covered by v1.5 only (no draft equivalent yet).

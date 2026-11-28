@@ -5,6 +5,7 @@ import {
   renderSpecialRulesForPhase,
 } from "../context/special-rules-context.js";
 import { PHASES } from "../phases.js";
+import { resolveSpecialRules, computeWard } from "../parsers/resolve.js";
 import { loadArmy } from "./helpers.js";
 
 function makeVeteranArmy() {
@@ -96,5 +97,82 @@ describe("Gaze of the Gods rule data", () => {
       expect(entry.result).toBeTruthy();
       expect(entry.effect).toBeTruthy();
     }
+  });
+});
+
+describe("rule reminders added from the tow.whfb.app crawl", () => {
+  // Rules as the parser produces them from an OWB rules string.
+  const armyWithRule = (owbText) => ({
+    units: [{ name: "Test Unit", specialRules: resolveSpecialRules(owbText) }],
+  });
+  const shows = (owbText, step) =>
+    renderSpecialRulesContext(armyWithRule(owbText), { id: step });
+
+  it.each([
+    ["Indomitable (2)", "break-test", "Unstable"],
+    ["Infernal Favour (1)", "break-test", "Daemonic Instability"],
+    ["Lance Formation", "combat-result", "+1 combat result"],
+    ["Ignore Panic", "shoot", "No Panic test"],
+    ["Ignore Panic", "break-test", "No Panic test"],
+    ["Ignore Panic", "compulsory-moves", "fled through"],
+    ["Backstab", "choose-fight", "re-roll failed To Hit"],
+    ["Blood Greed", "choose-fight", "+2 Attacks"],
+    ["Blood Greed", "pursuit", "single D6"],
+  ])("%s shows at %s", (owbText, step, text) => {
+    expect(shows(owbText, step)).toContain(text);
+  });
+
+  it.each([
+    ["Lance Formation", "choose-fight"],
+    ["Backstab", "combat-result"],
+    ["Blood Greed", "break-test"],
+  ])("%s does not show at %s", (owbText, step) => {
+    expect(shows(owbText, step)).toBe("");
+  });
+});
+
+describe("rules units use that had no app entry (tow.whfb.app crawl)", () => {
+  const armyWithRule = (owbText) => ({
+    units: [{ name: "Test Unit", specialRules: resolveSpecialRules(owbText) }],
+  });
+  const shows = (owbText, step) =>
+    renderSpecialRulesContext(armyWithRule(owbText), { id: step });
+
+  it.each([
+    ["Ensorcelled Weapons", "choose-fight", "Magical Attacks and AP -1"],
+    ["Khopesh", "choose-fight", "AP -1"],
+    ["Drunken", "start-of-turn", "Belligerent Drunks"],
+    ["Maddening Aura", "command", "D3 S3 hits"],
+    ["Caged Fury", "start-of-turn", "Misfire table"],
+    ["Dances of Loec", "choose-fight", "Whirling Death"],
+    ["Banner of the King", "break-test", "Unstable by D3"],
+    ["Steam Power", "remaining-moves", "discard the lowest"],
+    ["Doomseeker", "scoring", "bonus VP"],
+    ["Rampant Mutation", "choose-fight", "Killing Blow"],
+    ["Hit & Run", "combat-result", "Fall Back in Good Order"],
+    ['"Stand Back Chief"', "shoot", ""],
+  ])("%s shows at %s", (owbText, step, text) => {
+    const html = shows(owbText, step);
+    if (text) expect(html).toContain(text);
+    else expect(html).toBe(""); // opponent-only: not on your own turn
+  });
+
+  it.each([
+    ["Maddening Aura", "choose-fight"],
+    ["Ensorcelled Weapons", "command"],
+    ["Brayhorn", "command"], // from round 2 only
+    ["Beast Handlers", "shoot"], // opponent's shooting only
+  ])("%s does not show at %s", (owbText, step) => {
+    expect(shows(owbText, step)).toBe("");
+  });
+
+  it.each([
+    ["Chaos Armour (5+)", "5+"],
+    ["Chaos Armour", "4+"],
+    ["Talismanic Tattoos", "6+"],
+    ["Arcane Shield", "5+"],
+    ["Blackshard Armour", "5+ (Flaming Attacks)"],
+  ])("%s gives a %s Ward save", (owbText, ward) => {
+    expect(computeWard([], resolveSpecialRules(owbText))).toBe(ward);
   });
 });

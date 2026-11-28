@@ -37,6 +37,17 @@ npm run typecheck
 
 The app is plain JavaScript. `src/types.d.ts` describes the data and army shapes, and `tsc` checks the JSDoc-annotated files listed in `tsconfig.json` (all app code under `src/`; tests are not checked). Nothing is compiled. A pre-commit hook (`.githooks/pre-commit`, installed by `npm install`) runs the same checks as CI before each commit — prettier, lint, type check and tests (about 10 seconds); skip it once with `git commit --no-verify`.
 
+## Rules data
+
+Unit profiles, rules, spells and items are hand-maintained in `src/data/`. To check them against [tow.whfb.app](https://tow.whfb.app):
+
+```bash
+npm run crawl:rules     # snapshot the site to ~/tow-rules (about 50 minutes, 1 request/second)
+npm run compare:rules   # compare with the app's data (a few seconds)
+```
+
+`compare:rules` writes `~/tow-rules/comparison.md`: stat, troop type, armour value and equipment differences per unit, units missing from the app, spell, weapon and item-points differences, and special rules that are new, recently edited, or used by units but unknown to the app. Use `-- --since YYYY-MM-DD` to set the date for "recently edited". The snapshot is not committed.
+
 ## Tech stack
 
 - Vanilla JavaScript (no framework)

@@ -41,14 +41,6 @@ const ITEMS = [
     phases: ["combat"],
   },
   {
-    name: "Dagger of Malice",
-    type: "weapon",
-    points: 35,
-    effect:
-      "Frenzy, Hatred (all enemies), Magical Attacks. The wielder cannot lose Frenzy.",
-    phases: ["combat"],
-  },
-  {
     name: "Da Akrit Axe",
     type: "weapon",
     points: 30,
@@ -159,13 +151,6 @@ const ITEMS = [
       "When the bearer's unit is targeted by an enemy spell, may use instead of a Wizardly dispel. Roll a D6; on 2+ the spell is dispelled. On 1, the amulet explodes (destroyed, bearer loses a Wound).",
     phases: ["strategy"],
     subPhases: ["conjuration"],
-  },
-  {
-    name: "Mantle of Stone",
-    type: "talisman",
-    points: 30,
-    effect: "+1 Toughness, -1 Initiative.",
-    phases: ["passive"],
   },
   {
     name: "The Collar of Zorga",

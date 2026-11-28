@@ -258,6 +258,8 @@ export interface Spell {
   type: SpellType;
   cv: string;
   range: string;
+  /** Blast template size the spell places (3" or 5"), if any */
+  template?: 3 | 5;
 }
 
 export interface Lore {

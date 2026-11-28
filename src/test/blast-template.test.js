@@ -132,3 +132,58 @@ describe("blast template tool", () => {
     expect(tool()).toBeNull();
   });
 });
+
+describe("template shortcuts for spells and bound spells", async () => {
+  const { spellTemplateSize, TEMPLATE_SPELL_NAMES } =
+    await import("../data/spells.js");
+  const { renderMagicItemsContext } = await import("../context/items.js");
+  const { renderCasterContext } = await import("../context/caster.js");
+  const { saveSpellSelections } = await import("../state.js");
+
+  it("knows which spells place a template, and which size", () => {
+    expect(spellTemplateSize("Doombolt")).toBe(3);
+    expect(spellTemplateSize("Fiery Convocation")).toBe(5);
+    expect(spellTemplateSize("Fist of Gork (or Mork)")).toBe(5);
+    // vortexes are judged by eye; ordinary spells have none
+    expect(spellTemplateSize("Pillar of Fire")).toBe(null);
+    expect(spellTemplateSize("Word of Pain")).toBe(null);
+    expect(TEMPLATE_SPELL_NAMES).toContain("Acidic Bile");
+  });
+
+  it("shows a 3\" shortcut on the Ring of Doom's bound Doombolt", () => {
+    const ring = {
+      name: "Ring of Doom",
+      type: "enchanted-item",
+      effect:
+        "The bearer can cast Doombolt (Dark Magic) as a Bound spell, with a Power Level of 2.",
+      phases: ["shooting"],
+      yourTurnOnly: true,
+    };
+    const html = renderMagicItemsContext(
+      /** @type {any} */ ({ units: [{ name: "Shade", magicItems: [ring] }] }),
+      "shooting",
+      "shoot",
+    );
+    expect(html).toContain('data-blast-template="3"');
+  });
+
+  it('shows a 3" shortcut next to Doombolt in the casting panel', () => {
+    localStorage.clear();
+    const caster = {
+      id: "sorc",
+      name: "Sorceress",
+      isCaster: true,
+      lores: ["dark-magic"],
+      specialRules: [],
+      magicItems: [],
+      stats: [{ Name: "Sorceress" }],
+      wizardLevel: 2,
+    };
+    saveSpellSelections({ sorc: { "dark-magic:S:Doombolt": true } });
+    const html = renderCasterContext(/** @type {any} */ ({ units: [caster] }), [
+      "magic-missile",
+    ]);
+    expect(html).toContain("Doombolt");
+    expect(html).toContain('data-blast-template="3"');
+  });
+});

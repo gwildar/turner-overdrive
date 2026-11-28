@@ -1,0 +1,43 @@
+name: GitHub Pages redirect
+
+# The app now deploys to Cloudflare. This publishes a single page to the old
+# GitHub Pages address (gwildar.github.io/turner-overdrive) that redirects to
+# the new one. Run it by hand; run it again if the address changes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Where the app lives now (no trailing slash)"
+        required: true
+        default: "https://turner-overdrive.gwilymjohnston.workers.dev"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build redirect page
+        env:
+          TARGET: ${{ inputs.target }}
+        run: |
+          mkdir site
+          sed "s|__TARGET__|${TARGET}|g" .github/pages-redirect/index.html > site/index.html
+          cp site/index.html site/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

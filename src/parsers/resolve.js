@@ -232,6 +232,17 @@ export function resolveStats(id, name, ruleset = CORE_RULESET) {
   for (const key of keys) {
     if (key && UNIT_STATS[key]) return resolveUnitEntry(UNIT_STATS[key]);
   }
+  // Army lists sometimes give a Renegade unit its own id
+  // ("repeater-crossbowmen-renegade") with no profile of its own: use the
+  // version's entry or the plain unit.
+  const plain = keys
+    .filter((k) => k?.endsWith("-renegade"))
+    .map((k) => k.replace(/-renegade$/, ""));
+  // e.g. "war-hydra-special-renegade" / "War Hydra {renegade}" → "war-hydra"
+  for (const k of plain) {
+    const found = resolveStats(k, undefined, ruleset);
+    if (found.length) return found;
+  }
   return [];
 }
 
@@ -442,6 +453,39 @@ export function resolveShootingWeapons(
     }
   }
 
+  return weapons;
+}
+
+/**
+ * Shooting profiles for magic weapons used in the Shooting phase (e.g.
+ * Hunter's Scorn, the Dragon Bow). Uses the weapon profile the app has for
+ * the item where there is one, otherwise the item's own range, S and AP.
+ * @param {import("../types").ResolvedMagicItem[]} magicItems
+ * @param {Ruleset} [ruleset]
+ */
+export function resolveMagicShootingWeapons(
+  magicItems,
+  ruleset = CORE_RULESET,
+) {
+  const weapons = [];
+  for (const item of magicItems) {
+    if (item.type !== "weapon" || !item.phases?.includes("shooting")) continue;
+    const profile = ruleset.rangedWeapons[normaliseItemName(item.name)];
+    const range =
+      profile?.range ?? item.effect?.match(/Range (\d+)"/)?.[1] ?? null;
+    weapons.push({
+      ...(profile ?? {}),
+      name: item.name,
+      range: profile?.range ?? (range ? `${range}"` : "—"),
+      s: profile?.s ?? item.s ?? "S",
+      ap: profile?.ap ?? item.ap ?? "—",
+      rules: profile
+        ? [...(profile.rules || []), item.effect].filter(Boolean)
+        : [item.effect],
+      magical: true,
+      attacks: profile?.attacks ?? null,
+    });
+  }
   return weapons;
 }
 

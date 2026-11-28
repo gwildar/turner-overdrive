@@ -152,6 +152,16 @@ const ITEMS = [
       "Single use. When the unit makes any Leadership test, including Break tests, it may roll an additional D6 and discard the highest result.",
     phases: ["combat"],
   },
+  {
+    name: "Hunter's Scorn",
+    type: "weapon",
+    points: 20,
+    effect:
+      "If an enemy model with 2+ Wounds suffers unsaved wounds from this weapon, it and its unit have -1 Initiative (min 1) for the rest of the game. The effect is lost if the wielder fails to wound its target.",
+    phases: ["shooting"],
+    s: "5",
+    ap: "-1",
+  },
 ];
 
 export default ITEMS;

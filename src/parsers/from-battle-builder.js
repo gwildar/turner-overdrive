@@ -93,6 +93,26 @@ function loreKey(id, name) {
 /** Armour and shields can sit in "equipment" groups */
 const ARMOUR_RE = /armour|shield|barding|armor/i;
 
+/**
+ * A unit entry as the list's force template changes it (Renegade costs,
+ * options and rules): the template's changed fields replace the entry's;
+ * changed option groups replace whole groups, null removing one.
+ */
+function withOverrides(entry, override) {
+  if (!entry || !override) return entry;
+  const merged = { ...entry, ...override };
+  for (const k of Object.keys(override))
+    if (override[k] === null) delete merged[k];
+  if (override.g) {
+    merged.g = { ...entry.g };
+    for (const [id, group] of Object.entries(override.g)) {
+      if (group === null) delete merged.g[id];
+      else merged.g[id] = group;
+    }
+  }
+  return merged;
+}
+
 /** "tow/dark-elves/de-renegade-v1" → "de-renegade"; grand army → the army. */
 function compositionOf(forceTemplateId, army) {
   const id =
@@ -105,7 +125,7 @@ function compositionOf(forceTemplateId, army) {
 
 /**
  * @param {any} json - a .bb.json export
- * @param {{ units: Record<string, any>, traits: Record<string, any>, forceTemplates?: Record<string, { v: string }> }} catalog
+ * @param {{ units: Record<string, any>, traits: Record<string, any>, forceTemplates?: Record<string, { v?: string, u?: Record<string, any>, t?: Record<string, number> }> }} catalog
  * @returns {any} an Old World Builder–shaped list
  */
 export function battleBuilderToOwb(json, catalog) {
@@ -126,8 +146,12 @@ export function battleBuilderToOwb(json, catalog) {
   };
   const unknown = [];
 
+  const template = catalog.forceTemplates?.[json.forceTemplateId] ?? {};
   json.units.forEach((u, index) => {
-    const entry = catalog.units[u.unitEntryId];
+    const entry = withOverrides(
+      catalog.units[u.unitEntryId],
+      template.u?.[u.unitEntryId],
+    );
     if (!entry) {
       unknown.push(u.unitEntryId);
       return;
@@ -246,9 +270,11 @@ export function battleBuilderToOwb(json, catalog) {
       });
 
     const selected = (u.traitIds || [])
-      .map((id) => catalog.traits[id])
-      .filter(Boolean)
-      .map((t) => ({ name_en: t.n, type: t.k, points: t.c }));
+      .filter((id) => catalog.traits[id])
+      .map((id) => {
+        const t = catalog.traits[id];
+        return { name_en: t.n, type: t.k, points: template.t?.[id] ?? t.c };
+      });
     if (selected.length) raw.items.push({ name_en: "Magic Items", selected });
 
     raw.specialRules = { name_en: [...new Set(rules)].join(", ") };

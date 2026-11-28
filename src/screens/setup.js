@@ -177,7 +177,7 @@ function renderWhatsNew() {
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Blast Template Tool</p>
-          <p class="text-xs">Tap &#9678; in the game header (or next to a template weapon) to see which models a 3" or 5" blast hits: set the target's files, ranks and base, drag the template to where it landed, and get automatic hits, 4+ rolls and expected hits.</p>
+          <p class="text-xs">Tap &#9678; in the game header (or next to a template weapon) to see which models a 3" or 5" blast hits: set the target's files, ranks and base, drag the template to where it landed, and get automatic hits, 4+ rolls and expected hits. Template spells like Doombolt have the shortcut too.</p>
         </div>
         <div>
           <p class="text-wh-text font-semibold text-xs uppercase tracking-wider mb-1">Works Offline</p>

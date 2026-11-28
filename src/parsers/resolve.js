@@ -300,6 +300,11 @@ function parseBonusInt(val) {
   return parseInt(String(val ?? "").match(/\(\+(\d+)\)/)?.[1] ?? "0", 10);
 }
 
+/** Whether an M value is a dice roll (Random Movement): "3D6", "2D6+1" */
+export function isDiceMovement(m) {
+  return /^\d*D\d+(?:\s*[+-]\s*\d+)?$/i.test(String(m ?? "").trim());
+}
+
 /**
  * @param {string | import("../types").Mount | null | undefined} name
  * @param {Ruleset} [ruleset]
@@ -365,7 +370,9 @@ export function findMount(name, ruleset = CORE_RULESET) {
     // The army list's name ("Scourgerunner Chariot", not the profile line's
     // "Chariot"; "Flamespyre Phoenix", not "Flamespyre Phoenix (Mount)")
     name: name.replace(/\s*\{[^}]*\}/g, "").trim(),
-    m: parseInt(motiveProfile.M, 10),
+    // A random mover's M is dice ("3D6"): no fixed Movement
+    m: isDiceMovement(motiveProfile.M) ? null : parseInt(motiveProfile.M, 10),
+    mDice: isDiceMovement(motiveProfile.M) ? motiveProfile.M : null,
     stomp: profile.Stomps ?? null,
     impactHits: profile["Impact-Hits"] ?? null,
     tBonus: parseBonusInt(profile.mountT ?? profile.T),

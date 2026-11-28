@@ -366,8 +366,10 @@ export interface Mount {
   t: number | null;
   w: number | null;
   name: string;
-  /** Movement in inches. */
-  m: number;
+  /** Movement in inches; null for a random mover (see mDice). */
+  m: number | null;
+  /** A random mover's Movement dice ("3D6"), else null. */
+  mDice: string | null;
   stomp: string | null;
   impactHits: string | null;
   /** Toughness/Wounds the mount adds to its rider ("(+1)" → 1). */

@@ -1,4 +1,5 @@
 import {
+  randomMovement,
   resolveMovement,
   extractFlyMovement,
   resolveBaseMv,
@@ -27,10 +28,12 @@ export function renderMovementStatsContext(army) {
     }
   }
 
+  // Random movers move in Compulsory Moves (see Random Movers), not here
   const rows = army.units
     .filter(
       (u) =>
-        !(CHARACTER_CATEGORIES.has(u.category) && assignedCharIds.has(u.id)),
+        !(CHARACTER_CATEGORIES.has(u.category) && assignedCharIds.has(u.id)) &&
+        !randomMovement(u),
     )
     .map((u) => {
       const mountData = u.mount ?? null;

@@ -1,4 +1,31 @@
-import { findMount } from "./parsers/resolve.js";
+import { findMount, isDiceMovement } from "./parsers/resolve.js";
+
+/**
+ * A random mover's dice (Random Movement): `null` if the unit moves
+ * normally. The dice are its Movement characteristic ("3D6", "2D6+1") —
+ * its own profiles' or its mount's. Several different dice in one unit
+ * (a character on a different random mover): roll each, use the lowest.
+ * @param {import("./types").Unit} unit
+ * @returns {{ dice: string[] } | null}
+ */
+export function randomMovement(unit) {
+  const ruleRe = /^random movement/i;
+  const hasRule =
+    (unit.specialRules || []).some(
+      (r) => r.id === "random movement" || ruleRe.test(r.displayName ?? ""),
+    ) || (unit.mount?.rules || []).some((r) => ruleRe.test(r));
+  if (!hasRule) return null;
+  const dice = new Set();
+  for (const p of unit.stats || [])
+    if (isDiceMovement(p.M)) dice.add(String(p.M).replace(/\s+/g, ""));
+  if (unit.mount?.mDice) dice.add(unit.mount.mDice);
+  // "Random Movement (2D6)" in the list's own rule text
+  for (const r of unit.specialRules || []) {
+    const m = (r.displayName ?? "").match(/^random movement\s*\(([^)]+)\)/i);
+    if (m && isDiceMovement(m[1])) dice.add(m[1].replace(/\s+/g, ""));
+  }
+  return { dice: [...dice] };
+}
 
 /** @param {import("./types").Unit} unit */
 export function resolveMovement(unit) {

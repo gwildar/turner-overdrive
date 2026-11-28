@@ -69,8 +69,8 @@ const ruleText = (id, param) => {
 const rulesFrom = (items) =>
   items.filter((g) => g.type === "rule").map((g) => ruleText(g.value, g.param));
 
-const units = {};
-for (const u of data.unitEntries) {
+/** A unit entry in the catalog's compact form */
+function compactUnit(u) {
   const groups = {};
   for (const g of u.selectionGroups || []) {
     const options = {};
@@ -98,7 +98,7 @@ for (const u of data.unitEntries) {
     )
       groups[g.id].lore = 1;
   }
-  units[u.id] = {
+  return {
     n: msg(u.name),
     c: u.categoryId,
     b: u.baseCost ?? 0,
@@ -112,6 +112,67 @@ for (const u of data.unitEntries) {
   };
 }
 
+/**
+ * A unit entry as a force template changes it (unitOverrides and
+ * unitTagGrants): costs, options, groups, rules and category. Profile and
+ * weapon changes aren't needed: the app has its own profiles per version.
+ */
+function applyOverrides(entry, o = {}, grantedTags = []) {
+  const u = structuredClone(entry);
+  if (o.baseCost != null) u.baseCost = o.baseCost;
+  if (o.categoryId) u.categoryId = o.categoryId;
+  if (o.minQuantity !== undefined) u.minQuantity = o.minQuantity;
+  if (o.maxQuantity !== undefined) u.maxQuantity = o.maxQuantity;
+  const removed = new Set(o.removeTagValues || []);
+  u.tags = [...(u.tags || []), ...grantedTags, ...(o.addTags || [])]
+    .filter((t) => !(t.type === "rule" && removed.has(t.value)))
+    .map((t) =>
+      t.type === "rule" && o.ruleParams?.[t.value] != null
+        ? { ...t, param: o.ruleParams[t.value] }
+        : t,
+    );
+  const removedGroups = new Set(o.removeGroupIds || []);
+  u.selectionGroups = [
+    ...(u.selectionGroups || []).filter((g) => !removedGroups.has(g.id)),
+    ...(o.addSelectionGroups || []),
+  ];
+  const removedOptions = new Set(o.removeOptionIds || []);
+  for (const g of u.selectionGroups) {
+    const added = o.addOptionsByGroupId?.[g.id] || [];
+    const addedIds = new Set(added.map((x) => x.id));
+    g.options = [
+      ...g.options.filter(
+        (x) => !removedOptions.has(x.id) && !addedIds.has(x.id),
+      ),
+      ...added,
+    ].map((x) => ({
+      ...x,
+      ...(o.optionCosts?.[x.id] != null ? { cost: o.optionCosts[x.id] } : {}),
+      ...(o.optionGrants?.[x.id]
+        ? { grants: [...(x.grants || []), ...o.optionGrants[x.id]] }
+        : {}),
+    }));
+  }
+  return u;
+}
+
+/** The fields (and option groups) of b that differ from a; null = removed */
+function diffUnit(a, b) {
+  const d = {};
+  for (const k of ["n", "c", "b", "pm", "r", "e"])
+    if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) d[k] = b[k] ?? null;
+  const g = {};
+  for (const id of new Set([...Object.keys(a.g), ...Object.keys(b.g)]))
+    if (JSON.stringify(a.g[id]) !== JSON.stringify(b.g[id]))
+      g[id] = b.g[id] ?? null;
+  if (Object.keys(g).length) d.g = g;
+  return Object.keys(d).length ? d : null;
+}
+
+const units = {};
+for (const u of data.unitEntries) units[u.id] = compactUnit(u);
+const entryById = new Map(data.unitEntries.map((u) => [u.id, u]));
+
 const kindOf = new Map(data.traitCategories.map((c) => [c.id, c.kind]));
 const traits = {};
 for (const t of data.traits)
@@ -121,13 +182,41 @@ for (const t of data.traits)
     c: t.cost ?? 0,
   };
 
-// Force templates name their rules version: "Renegades V2 beta - 1.5.3.1",
-// "Renegades V1 - 1.5" → the app's supplement version ids
+// Force templates: the rules version Renegade ones name ("Renegades V2
+// beta - 1.5.3.1" → "v1.5.3.1"), and how each changes units (u: only what
+// differs from the unit entry) and magic item costs (t)
 const forceTemplates = {};
 for (const t of data.forceTemplates) {
+  const ft = {};
   const version = msg(t.name).match(/\b(\d+(?:\.\d+)+)$/)?.[1];
-  if (version && /renegade/i.test(t.id))
-    forceTemplates[t.id] = { v: `v${version}` };
+  if (version && /renegade/i.test(t.id)) ft.v = `v${version}`;
+
+  const grants = new Map(); // unit id → tags from unitTagGrants
+  for (const grant of t.unitTagGrants || [])
+    for (const id of grant.filter?.entityIds || [])
+      grants.set(id, [...(grants.get(id) || []), ...(grant.tags || [])]);
+  const changed = new Set([
+    ...Object.keys(t.unitOverrides || {}),
+    ...grants.keys(),
+  ]);
+  const u = {};
+  for (const id of changed) {
+    const entry = entryById.get(id);
+    if (!entry) continue;
+    const diff = diffUnit(
+      units[id],
+      compactUnit(applyOverrides(entry, t.unitOverrides?.[id], grants.get(id))),
+    );
+    if (diff) u[id] = diff;
+  }
+  if (Object.keys(u).length) ft.u = u;
+
+  const traitCosts = {};
+  for (const [id, o] of Object.entries(t.traitOverrides || {}))
+    if (o.cost != null && o.cost !== traits[id]?.c) traitCosts[id] = o.cost;
+  if (Object.keys(traitCosts).length) ft.t = traitCosts;
+
+  if (Object.keys(ft).length) forceTemplates[t.id] = ft;
 }
 
 const out = {

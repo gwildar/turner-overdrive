@@ -155,6 +155,43 @@ describe("Battle Builder (.bb.json) import", () => {
     expect(treeman.points).toBe(300);
   });
 
+  it("uses the force template's Renegade costs and rules", async () => {
+    const army = importArmy(await convertArmyFile(DE));
+    expect(total(army)).toBe(2400);
+    const hydra = army.units.find((u) => u.name === "War Hydra");
+    const kharibdyss = army.units.find((u) => u.name === "Kharibdyss");
+    expect(hydra.points).toBe(165);
+    expect(kharibdyss.points).toBe(145);
+    expect(hydra.armourSave).toBe("4+");
+    expect(hydra.specialRules.map((r) => r.displayName)).toContain("Flammable");
+  });
+
+  it("uses legacy costs under the v1 template", async () => {
+    const v1 = { ...DE, forceTemplateId: "tow/dark-elves/de-renegade-v1" };
+    const owb = await convertArmyFile(v1);
+    const hydra = owb.special.find((u) => u.name_en === "War Hydra");
+    expect(hydra.points).not.toBe(165);
+  });
+
+  it("applies the template's magic item costs", () => {
+    const tpl = catalog.forceTemplates["tow/dark-elves/de-renegade"];
+    const [id, cost] = Object.entries(tpl.t)[0];
+    const owb = battleBuilderToOwb(
+      {
+        factionId: "tow/dark-elves",
+        forceTemplateId: "tow/dark-elves/de-renegade",
+        units: [
+          {
+            unitEntryId: "tow/dark-elves/supreme-sorceress",
+            traitIds: [id],
+          },
+        ],
+      },
+      catalog,
+    );
+    expect(owb.characters[0].items[0].selected[0].points).toBe(cost);
+  });
+
   it("names units the catalog doesn't have", () => {
     expect(() =>
       battleBuilderToOwb(

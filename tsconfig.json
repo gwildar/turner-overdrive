@@ -23,6 +23,7 @@
     "src/context/**/*.js",
     "src/screens/**/*.js",
     "src/utils/**/*.js",
+    "src/tools/**/*.js",
     "scripts/**/*.mjs"
   ]
 }

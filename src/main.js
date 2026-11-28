@@ -17,6 +17,7 @@ import { showErrorOverlay } from "./error-overlay.js";
 import { getAllSubPhases, PHASES, subPhaseToIndex } from "./phases.js";
 import { router, navigate, redirectLegacyHashRoute } from "./navigate.js";
 import { loadStoredArmy } from "./army.js";
+import { installToolLaunchers } from "./tools/launchers.js";
 
 import { renderSetupScreen } from "./screens/setup.js";
 import { renderGameScreen } from "./screens/game.js";
@@ -113,6 +114,8 @@ try {
 } catch (err) {
   showErrorOverlay(err);
 }
+
+installToolLaunchers();
 
 // Offline cache and automatic updates (see pwa.js); not in dev or tests
 if (import.meta.env.PROD)

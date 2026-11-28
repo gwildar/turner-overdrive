@@ -4,11 +4,14 @@
 // Usage:
 //   node scripts/crawl-tow-rules.mjs [--output ~/path/to/output]
 //   node scripts/crawl-tow-rules.mjs --subpages-only   # skip top-level re-fetch
+//   node scripts/crawl-tow-rules.mjs --units-only      # only phase 3 (linked unit pages)
 //
 // Output (default: ~/tow-rules/):
 //   index.json                      — route index
 //   raw/{type}.json                 — top-level page props
 //   raw/{type}/{entry}.json         — sub-page props
+//   raw/unit/{slug}.json            — units the army pages only link to
+//                                     (mounts, some named characters)
 //   pages/{type}.md                 — consolidated Markdown per type
 //   meta.json                       — buildId + fetch timestamps
 //
@@ -44,7 +47,8 @@ function parseArgs(argv) {
       ? argv[outputIdx + 1].replace(/^~/, os.homedir())
       : path.join(os.homedir(), "tow-rules");
   const subpagesOnly = argv.includes("--subpages-only");
-  return { outputDir, subpagesOnly };
+  const unitsOnly = argv.includes("--units-only");
+  return { outputDir, subpagesOnly, unitsOnly };
 }
 
 // ---------------------------------------------------------------------------
@@ -354,12 +358,71 @@ function typePageToMarkdown(typeSlug, pageProps, entryPages) {
 // Main
 // ---------------------------------------------------------------------------
 
+/**
+ * Phase 3: army pages only link to some units (a slug and name, no
+ * profile) — mounts such as the Great Stag and some named characters. Their
+ * full entries live at /unit/{slug}; fetch those into raw/unit/.
+ */
+async function fetchLinkedUnits(rawDir, buildId) {
+  const full = new Set();
+  const linked = new Set();
+  (function scan(dir) {
+    for (const f of fs.readdirSync(dir)) {
+      const p = path.join(dir, f);
+      if (fs.statSync(p).isDirectory()) scan(p);
+      else if (p.endsWith(".json"))
+        (function walk(n) {
+          if (!n || typeof n !== "object") return;
+          if (n.sys?.contentType?.sys?.id === "armyListEntry" && n.fields?.slug)
+            (n.fields.unitProfile ? full : linked).add(n.fields.slug);
+          for (const v of Object.values(n)) walk(v);
+        })(JSON.parse(fs.readFileSync(p, "utf8")));
+    }
+  })(rawDir);
+  const unitDir = path.join(rawDir, "unit");
+  fs.mkdirSync(unitDir, { recursive: true });
+  const todo = [...linked].filter(
+    (s) => !full.has(s) && !fs.existsSync(path.join(unitDir, slugFilename(s))),
+  );
+  console.log(`\nPhase 3: ${todo.length} linked unit pages to fetch`);
+  let saved = 0;
+  let failed = 0;
+  for (const slug of todo) {
+    const url = `${BASE_URL}/_next/data/${buildId}/unit/${slug}.json`;
+    try {
+      const body = await getWithRetry(url);
+      fs.writeFileSync(
+        path.join(unitDir, slugFilename(slug)),
+        JSON.stringify(JSON.parse(body), null, 2),
+      );
+      saved++;
+    } catch (err) {
+      console.log(`    FAILED /unit/${slug}: ${err.message}`);
+      failed++;
+    }
+    await sleep(DELAY_MS);
+  }
+  console.log(
+    `  unit pages fetched: ${saved}${failed ? `, failed: ${failed}` : ""}`,
+  );
+  return failed;
+}
+
 async function main() {
-  const { outputDir, subpagesOnly } = parseArgs(process.argv.slice(2));
+  const { outputDir, subpagesOnly, unitsOnly } = parseArgs(
+    process.argv.slice(2),
+  );
   const rawDir = path.join(outputDir, "raw");
   const pagesDir = path.join(outputDir, "pages");
 
   console.log(`Output: ${outputDir}`);
+
+  if (unitsOnly) {
+    const meta = readMeta(outputDir);
+    if (!meta) throw new Error("No meta.json found — run a full crawl first");
+    await fetchLinkedUnits(rawDir, meta.buildId);
+    return;
+  }
 
   let buildId;
   let topRoutes;
@@ -526,6 +589,8 @@ async function main() {
     console.log(`    → pages/${typeSlug}.md (${entries.length} entries)`);
   }
 
+  const failedUnits = await fetchLinkedUnits(rawDir, buildId);
+
   fs.writeFileSync(
     path.join(outputDir, "index.json"),
     JSON.stringify(index, null, 2),
@@ -533,7 +598,7 @@ async function main() {
   writeMeta(outputDir, {
     ...meta,
     completedAt: new Date().toISOString(),
-    failedSubPages: failedSub,
+    failedSubPages: failedSub + failedUnits,
   });
 
   console.log(

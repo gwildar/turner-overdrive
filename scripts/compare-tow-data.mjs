@@ -165,6 +165,8 @@ const UNIT_KEY_ALIASES = {
   "bolt-thrower": "bolt-thrower-dwarfs",
   cannon: "cannon-dwarfs",
   "treemen-ancient": "treeman-ancient",
+  "warhorse-realms-of-men": "warhorse",
+  "great-eagle-mount": "great-eagle",
 };
 
 /**
@@ -207,7 +209,7 @@ async function compareUnits() {
       [k, w.name].map((n) => key(n).replace(/s$/, "")),
     ),
   );
-  const site = collect(["warhammer-armies"], "armyListEntry").filter(
+  const site = collect(["warhammer-armies", "unit"], "armyListEntry").filter(
     (e) => e.unitProfile,
   );
   const appKeys = new Map(Object.keys(UNIT_STATS).map((k) => [key(k), k]));
@@ -535,7 +537,7 @@ async function compareRules(since) {
     }));
 
   const usage = new Map();
-  for (const e of collect(["warhammer-armies"], "armyListEntry")) {
+  for (const e of collect(["warhammer-armies", "unit"], "armyListEntry")) {
     const names = new Set();
     (function links(n) {
       if (!n || typeof n !== "object") return;

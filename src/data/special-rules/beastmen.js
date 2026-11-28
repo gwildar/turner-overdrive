@@ -158,6 +158,29 @@ const RULES = [
     phases: ["shoot", "choose-fight"],
     opponentOnly: true,
   },
+  {
+    id: "father of beasts",
+    displayName: "Father of Beasts",
+    description:
+      "Friendly Centigor Herds within Ghorros's Command range may re-roll the D6 on the Drunken table.",
+    phases: ["start-of-turn"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "the sons of ghorros",
+    displayName: "The Sons of Ghorros",
+    description:
+      "Army building: 0-1 Centigor Herd may be Sons of Ghorros (+2 pts per model): +1 WS and Ld (max 10) and Armour Bane (1).",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "herdstones",
+    displayName: "Herdstones",
+    description:
+      'Special feature (impassable, up to 6" across), placed after terrain outside the opponent\'s deployment zone and more than 6" from the centre. Controlled by the closest non-fleeing unit of US 5+ within 6". Controller gains Magic Resistance (-1). If a Beastmen unit controls it: Beastmen within 12" re-roll To Wound 1s in combat, Beastmen Wizards within 12" get +1 to cast (enemy Wizards -1), and enemies within 12" have -1 Ld for Fear, Panic and Terror tests.',
+    phases: ["deployment", "choose-fight", "conjuration"],
+  },
 ];
 
 export default RULES;

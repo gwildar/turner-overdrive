@@ -259,6 +259,36 @@ const RULES = [
       "To Wound rolls of 4+ always succeed. Each unsaved wound against a behemoth has Multiple Wounds (D3).",
     phases: ["choose-fight"],
   },
+  {
+    id: "prepared positions",
+    displayName: "Prepared Positions",
+    description:
+      "During deployment, Entrench one non-character war machine and one unit of Quarrellers or Thunderers: partial cover and defending a low linear obstacle until they move.",
+    phases: ["deployment"],
+  },
+  {
+    id: "range finding optics",
+    displayName: "Range Finding Optics",
+    description:
+      "Unless fleeing or in combat, once per turn a friendly Quarrellers, Thunderers or Dwarf war machine unit within Command range may re-roll To Hit 1s or one Artillery dice. Burlok and his unit ignore the long range penalty.",
+    phases: ["shoot"],
+    yourTurnOnly: true,
+  },
+  {
+    id: "borne aloft",
+    displayName: "Borne Aloft",
+    description:
+      "The character and three Shieldbearers form one model with a split profile (Split Profile (Cavalry)); otherwise heavy infantry.",
+    passive: true,
+    phases: [],
+  },
+  {
+    id: "grudgelore",
+    displayName: "Grudgelore",
+    description:
+      "Once the Grudgestone is set, Thorgrim and his unit replace Hatred (Orcs & Goblins) with Hatred (all enemies).",
+    phases: ["choose-fight"],
+  },
 ];
 
 export default RULES;

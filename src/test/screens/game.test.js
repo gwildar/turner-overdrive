@@ -1731,6 +1731,28 @@ describe("Terror priority banner at Declare Charges", () => {
     expect(getApp().textContent).toContain("Terror tests!");
   });
 
+  it("shows the reminder as a status card in the phase colour that leaves once faded", () => {
+    const army = loadArmy("dark-elves");
+    startGame(army);
+    savePhaseIndex(declareIdx);
+    renderGameScreen(army);
+    const card = /** @type {HTMLElement} */ (
+      getApp().querySelector(".priority-reminder")
+    );
+    expect(card.getAttribute("role")).toBe("status");
+    expect(card.style.getPropertyValue("--reminder")).toBe(
+      "var(--color-wh-phase-movement)",
+    );
+    const end = new Event("animationend");
+    Object.assign(end, { animationName: "reminder-glow" });
+    card.dispatchEvent(end);
+    expect(card.isConnected).toBe(true);
+    const out = new Event("animationend");
+    Object.assign(out, { animationName: "reminder-out" });
+    card.dispatchEvent(out);
+    expect(card.isConnected).toBe(false);
+  });
+
   it("hides the Terror reminder when nothing in the army causes Terror", () => {
     const army = stripTerror(loadArmy("dark-elves"));
     saveArmy(army);

@@ -1477,6 +1477,38 @@ const UNITS = {
       optionalRules: [],
     },
   ],
+  "chaos-furies": [
+    {
+      A: "1",
+      I: "4",
+      M: "4",
+      S: "4",
+      T: "3",
+      W: "1",
+      BS: "0",
+      Ld: "5",
+      WS: "3",
+      Name: "Chaos Fury",
+      Fly: "8",
+      rules: [
+        "Daemonic",
+        "Fly (8)",
+        "Furious Charge",
+        "Skirmishers",
+        "Swiftstride",
+        "Vanguard",
+      ],
+      equipment: ["Daemonic talons"],
+      troopType: ["RI"],
+      magic: [],
+      optionalRules: [
+        "Daemons of Khorne",
+        "Daemons of Nurgle",
+        "Daemons of Slaanesh",
+        "Daemons of Tzeentch",
+      ],
+    },
+  ],
 };
 
 export default UNITS;

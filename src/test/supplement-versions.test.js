@@ -19,7 +19,7 @@ import {
   getSupplementVersions,
   saveSupplementVersion,
 } from "../state.js";
-import { parseArmyList } from "../army.js";
+import { parseArmyList, importArmy, loadStoredArmy } from "../army.js";
 import { renderSetupScreen } from "../screens/setup.js";
 import { renderSpecialRulesContext } from "../context/special-rules-context.js";
 import { getApp } from "./helpers.js";
@@ -146,29 +146,52 @@ describe("the old draft checkbox setting", () => {
   });
 });
 
-describe("Settings — Community Supplements", () => {
-  it("has a version picker for each Renegade army with more than one version", () => {
+describe("army card — Renegade rules version picker", () => {
+  const picker = () =>
+    getApp().querySelector("select[data-supplement-composition]");
+
+  it("shows below the unit strength for a Renegade army, above the units", () => {
+    importArmy(deRenegadeJson);
     renderSetupScreen();
-    const pickers = getApp().querySelectorAll(
-      "select[data-supplement-composition]",
+    const select = picker();
+    expect(select).not.toBeNull();
+    expect(select.dataset.supplementComposition).toBe("de-renegade");
+    // In the army card: after the unit strength line, before the unit list
+    const strength = [...getApp().querySelectorAll("p")].find((p) =>
+      p.textContent.includes("Unit Strength"),
     );
-    const multi = Object.entries(SUPPLEMENT_VERSIONS).filter(
-      ([, v]) => v.length > 1,
-    );
-    expect(pickers).toHaveLength(multi.length);
+    const firstCategory = getApp().querySelector("h3");
+    const after = (a, b) =>
+      Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(after(strength, select)).toBe(true);
+    expect(after(select, firstCategory)).toBe(true);
+    expect(firstCategory.textContent).toBe("characters");
   });
 
-  it("saves the version chosen for that army", () => {
+  it("is not shown for a standard army", () => {
+    importArmy(standardDarkElvesJson);
     renderSetupScreen();
-    const select = /** @type {HTMLSelectElement} */ (
-      getApp().querySelector(
-        'select[data-supplement-composition="ok-renegade"]',
-      )
-    );
+    expect(picker()).toBeNull();
+  });
+
+  it("is no longer in Settings", () => {
+    renderSetupScreen();
+    expect(
+      document.querySelector(
+        "#settings-modal select[data-supplement-composition]",
+      ),
+    ).toBeNull();
+  });
+
+  it("saves the chosen version and applies it to the army straight away", () => {
+    importArmy(deRenegadeJson);
+    renderSetupScreen();
+    const select = /** @type {HTMLSelectElement} */ (picker());
     select.value = "v1.5.2.2";
     select.dispatchEvent(new Event("change"));
-    expect(getSupplementVersion("ok-renegade")).toBe("v1.5.2.2");
-    expect(getSupplementVersion("de-renegade")).toBeNull();
+    expect(getSupplementVersion("de-renegade")).toBe("v1.5.2.2");
+    expect(/** @type {HTMLSelectElement} */ (picker()).value).toBe("v1.5.2.2");
+    expect(loadStoredArmy().supplementVersion).toBe("v1.5.2.2");
   });
 });
 

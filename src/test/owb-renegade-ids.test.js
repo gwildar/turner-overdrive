@@ -66,3 +66,20 @@ describe("magic missile weapons show as shooting attacks", () => {
     ).toEqual([]);
   });
 });
+
+describe("Ring of Doom", () => {
+  it("shows in your Shooting phase magic items as a Doombolt bound spell", async () => {
+    const { renderMagicItemsContext } = await import("../context/items.js");
+    const army = {
+      units: [
+        {
+          name: "Dark Elf Shades",
+          magicItems: resolveMagicItems(["Ring of Doom"]),
+        },
+      ],
+    };
+    const html = renderMagicItemsContext(army, "shooting", "shoot");
+    expect(html).toContain("Ring of Doom");
+    expect(html).toContain("Doombolt");
+  });
+});

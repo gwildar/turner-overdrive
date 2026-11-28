@@ -162,6 +162,15 @@ const ITEMS = [
     s: "5",
     ap: "-1",
   },
+  {
+    name: "Ring of Doom",
+    type: "enchanted-item",
+    points: 25,
+    effect:
+      'The bearer can cast Doombolt (Dark Magic) as a Bound spell, with a Power Level of 2. Doombolt: Magic Missile, Casting Value 8+, Range 24". Each time it is successfully cast, your opponent rolls a D6: on a 4+ the bearer loses 1 Toughness (min 1).',
+    phases: ["shooting"],
+    yourTurnOnly: true,
+  },
 ];
 
 export default ITEMS;

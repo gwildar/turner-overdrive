@@ -11,6 +11,7 @@ import {
   resolveMagicItems,
   resolveSpecialRules,
   resolveMount,
+  resolveMagicShootingWeapons,
   getRuleset,
   CORE_RULESET,
   resolveStats,
@@ -206,6 +207,11 @@ function parseCanonicalUnit(
       ? { ...item, championOnly: true }
       : item,
   );
+  // Magic bows and other magic missile weapons (e.g. Hunter's Scorn)
+  for (const w of resolveMagicShootingWeapons(magicItems, ruleset)) {
+    if (!shootingWeapons.some((sw) => sw.name === w.name))
+      shootingWeapons.push(w);
+  }
   let specialRules = resolveSpecialRules(specialRulesText, ruleset);
 
   // Inject rules from supplement unit definition that aren't in the OWB text.
